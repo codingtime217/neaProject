@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2f76gsujk25n"]
+
+[ext_resource type="Script" path="res://vector_field_manager.gd" id="1_uf1fd"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="vectorfield" type="Node2D" parent="."]
+script = ExtResource("1_uf1fd")
