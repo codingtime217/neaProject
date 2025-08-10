@@ -27,11 +27,13 @@ func _ready() -> void:
 
 func _getneighbours(position = Vector2()):
 	var neighbours = [[],[],[]]
+	
 	for i in range(-1,2):
 		for j in range(-1,2):
-			var value = grid.get([position+Vector2(i,j)],null)
+
+			var value = grid.get(position+Vector2(i,j),null)
 			if value == null:
-				print("null")
+				neighbours[i].append("")
 			else:
 				neighbours[i].append(value)
 	return neighbours
