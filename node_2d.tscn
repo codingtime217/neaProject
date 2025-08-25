@@ -6,4 +6,5 @@
 
 [node name="vectorfield" type="Node2D" parent="."]
 script = ExtResource("1_uf1fd")
-height = 1.0
+height = 20.0
+width = 20.0
