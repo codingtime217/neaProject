@@ -7,8 +7,8 @@
 
 [node name="gridManager" type="Node2D" parent="."]
 script = ExtResource("1_uf1fd")
-height = 3.0
-width = 3.0
+height = 20.0
+width = 20.0
 
 [node name="tile" type="Node2D" parent="gridManager"]
 script = ExtResource("2_3jsjn")

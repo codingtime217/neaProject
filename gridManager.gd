@@ -12,7 +12,9 @@ extends Node2D
 func _generate_grid() -> void:
 	for i in width:
 		for j in height:
-			grid[Vector2(i,j)] = {"colour" = Color(0,i/width,0),"vector" = Vector2(0,0), "value" = 10*i,"conductivity"	= 1,"specificCapacity" = 100.0}
+			grid[Vector2(i,j)] = {"colour" = Color(0,i/width,0),"vector" = Vector2(0,0), "value" = 100,"conductivity"	= 1,"specificCapacity" = 100.0}
+	
+	
 func _draw() -> void:
 	
 	var offset = get_viewport_rect().size/2
