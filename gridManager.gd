@@ -6,14 +6,21 @@ extends Node2D
 @export var height = 10.0 #rectangle of cell dimesnon
 @export var width = 10.0
 @export var grid = {}
+var tile = load("res://tile.gd")
 
 # Called when the node enters the scene tree for the first time.
 
 func _generate_grid() -> void:
 	for i in width:
 		for j in height:
-			grid[Vector2(i,j)] = {"colour" = Color(0,i/width,0),"vector" = Vector2(0,0), "value" = 100,"conductivity"	= 1,"specificCapacity" = 100.0}
-	
+			grid[Vector2(i,j)] = {"colour" = Color(0,i/width,0),"vector" = Vector2(0,0), "value" = 10*i*j,"conductivity"	= 1,"specificCapacity" = 100.0}
+			
+func _generateGrid() -> void:
+	var newcoord #stores the key for each tile about to be made
+	for i in width:
+		for j in height:
+			newcoord = Vector2(i,j) #sets the key/coordinates
+			grid[newcoord] = tile.new("water",newcoord*32) # instantiates a new water tile, and gives it its global position (the key * 32 as 32 by 32 sqaures)
 	
 func _draw() -> void:
 	
@@ -25,7 +32,7 @@ func _draw() -> void:
 		draw_rect(Rect2(screen_pos, screen_size), grid[coord]["colour"])
 		draw_line((screen_pos+Vector2(16,16)),(screen_pos+Vector2(16,16))+grid[coord]["vector"],Color(1,1,1))
 func _ready() -> void:
-	_generate_grid()
+	_generateGrid()
 	
 	pass # Replace with function body.
 
@@ -43,6 +50,25 @@ func _getneighbours(location = Vector2()):
 		else:
 			neighbours.append({"conductivity" = 0.0})
 	return neighbours
+
+func _getNeighbours(location = Vector2()):
+	var value
+	const fetchVectors = [Vector2(1,0),Vector2(-1,0),Vector2(0,1),Vector2(0,-1)]
+	var neighbours = []
+	var toFetch = Vector2(0,0)
+	#fetches the 4 tiles around the position given, in anticlockwise order from the left hand side
+	for i in fetchVectors:
+		toFetch = location + i
+		value = grid.get(toFetch,null)
+		if value != null:
+			neighbours.append(value)
+		else:
+			neighbours.append(null)
+	return neighbours
+	
+	
+	
+
 
 func _getHeatFlux(tile1,tile2):
 	#finding heat flux using equation q = -kdeltaT, finding flux from 1 to 2
@@ -95,5 +121,5 @@ func _update():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	_update()
+	#_update()
 	pass
