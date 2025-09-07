@@ -23,16 +23,7 @@ func _generateGrid() -> void:
 			add_child(newtile)
 			grid[newcoord] = newtile
 			 # instantiates a new water tile, and gives it its global position (the key * 32 as 32 by 32 sqaures)
-	
-#func _draw() -> void:
-	#
-	#var offset = get_viewport_rect().size/2
-	##draws all the tiles, offsetting such that the centre tile is the in middle of the screen
-	#for coord in grid.keys():
-		#var screen_pos : Vector2 = (coord-Vector2(width/2,height/2)) * dimensions + offset
-		#var screen_size := Vector2(32,32)
-		#draw_rect(Rect2(screen_pos, screen_size), grid[coord]["colour"])
-		#draw_line((screen_pos+Vector2(16,16)),(screen_pos+Vector2(16,16))+grid[coord]["vector"],Color(1,1,1))
+
 func _ready() -> void:
 	_generateGrid()
 	
@@ -49,14 +40,10 @@ func _getNeighbours(location = Vector2()):
 		toFetch = location + i
 		value = grid.get(toFetch,null)
 		if value != null:
-			neighbours.append(value)
+			neighbours.append(value) #if we got something append it
 		else:
-			neighbours.append(null)
+			neighbours.append(null) #if not make sure the list is still the right length and we have an indiator of a blank
 	return neighbours
-	
-	
-	
-
 
 func _getHeatFlux(tile1,tile2):
 	#finding heat flux using equation q = -kdeltaT, finding flux from 1 to 2
@@ -93,18 +80,15 @@ func _overallFlux(pos1= Vector2()): #define flux from left to right as positive 
 func _update():
 	var netFlux
 	var fluxes
-	
+	var cell
 	for currentCell in grid.keys():
-		#_overallFlux(Vector2(i,j))
-		#fluxIn =_summedFlux(currentCell)
+		cell = grid[currentCell]
 		fluxes =  _overallFlux(currentCell) 
 		netFlux= fluxes[0]#get the overall change
 		
-		grid[currentCell].temp += netFlux/grid[currentCell].specificHeatCap #change the temp
-		grid[currentCell].vector = fluxes[1] #update vector
-
-
-	#queue_redraw() #redraw
+		cell.temp += netFlux/cell.specificHeatCap #change the temp
+		cell.vector = fluxes[1] #update vector
+		cell.queue_redraw() #force a new draw for the cell to update its appearance
 
 
 
