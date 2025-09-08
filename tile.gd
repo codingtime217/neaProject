@@ -1,19 +1,26 @@
 extends Node2D
 var compound = "water"
-@export var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
-@export var temp = 0.0 #in kelvin
-@export var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
-@export var specificHeatCap = 100.0 #in KJ^-1kg^-1
-@export var colour = Color(0,0,0)
-@export var density = 1000.0 #kgm^-3
-@export var mass = 0.0
+var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
+var temp = 0.0 #in kelvin
+var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
+var specificHeatCap = 100.0 #in KJ^-1kg^-1
+var colour = Color(0,0,0)
+var density = 1000.0 #kgm^-3
+var mass = 0.0
+
+var neutronFlux = [Vector4(1,0,0,1),Vector4(1,0,0,1),Vector4(1,0,0,1),Vector4(1,0,0,1)] 
+#magnitude is velocity
+#w value is quantitity (ie no. of neutrons, might measure in kg)
+var neutronCrossSection
+var absorbChance
+
 var screen_size := Vector2(32,32)
 
 #func _ready():
 	#offset = get_viewport_rect().size/2
 
 const materialsDict = {
-	"water" : { #numbers from wikipidia, using numbers for 0*C
+	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
 		"conductivity" : 0.6089,
 		"specificHeat" : 4184.0,
 		"density" : 1000.0},
@@ -40,19 +47,19 @@ func setup(mat = "void",pos = Vector2(0,0)):
 		properties = materialsDict["water"]
 	compound = mat
 	
-	temp = pos.x/16 *10 + pos.y/16 *5
+	temp = (pos.x/16)**2 + pos.y/16 *10
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
 	mass = density / 1000.0  #as volume is 1/1000 m^3
-	colour = Color(0,temp/200,0)	
+	colour = Color(0,temp/150,0)	
 	
 
 
 
 func _draw() -> void:
 	
-	colour = Color(0,temp/200,0) #updates colour
+	colour = Color(0,temp/150,0) #updates colour
 	draw_rect(Rect2(position, screen_size), colour) #draws cell
 	
 

@@ -10,9 +10,10 @@ var tile = load("res://tile.gd")
 
 # Called when the node enters the scene tree for the first time.
 
-			
+
+
+
 func _generateGrid() -> void:
-	var offset = get_viewport_rect().size/2 - Vector2(width*16, height *16)
 	var newcoord  #stores the key for each tile about to be made
 	var newtile #stores the tile breifly
 	for i in width:
@@ -83,11 +84,9 @@ func _update():
 	var cell
 	for currentCell in grid.keys():
 		cell = grid[currentCell]
-		fluxes =  _overallFlux(currentCell) 
-		netFlux= fluxes[0]#get the overall change
-		
-		cell.temp += netFlux/cell.specificHeatCap #change the temp
-		cell.vector = fluxes[1] #update vector
+		fluxes = _overallFlux(currentCell) 
+		netFlux = fluxes[0]#get the overall change
+		cell.temp += netFlux/(cell.specificHeatCap * cell.mass) #change the temp
 		cell.queue_redraw() #force a new draw for the cell to update its appearance
 
 
