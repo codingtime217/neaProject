@@ -8,11 +8,15 @@ var colour = Color(0,0,0)
 var density = 1000.0 #kgm^-3
 var mass = 0.0
 
-var neutronFlux = [Vector4(1,0,0,1),Vector4(1,0,0,1),Vector4(1,0,0,1),Vector4(1,0,0,1)] 
-#magnitude is velocity
-#w value is quantitity (ie no. of neutrons, might measure in kg)
+#neyuron implementation plan, each tile has neutron cross section, asbrob chance and atomic mass in neutrons
+#neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision
+#The actual neutron flux in each direaction is stored as average energy (eV), no. of neutrons and a flow direction
+var neutronFlux = {"energy": 0.0, "no": 0.0}
+var neutronFluxList  = {"up": neutronFlux.duplicate(),"down":neutronFlux.duplicate(),"left":neutronFlux.duplicate(),"right":neutronFlux.duplicate()}
 var neutronCrossSection
+
 var absorbChance
+var atomicMass
 
 var screen_size := Vector2(32,32)
 

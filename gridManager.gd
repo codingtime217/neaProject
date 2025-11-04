@@ -57,9 +57,12 @@ func _getHeatFlux(tile1,tile2):
 		#print("not coid")
 		var dT = (tile1.temp - tile2.temp)/distance # should find flux into tile1 (positive is tile1 going up)
 		return dT*-tile1.conductivity
+	elif tile1.conductivity == 0 or tile2.conductivity == 0:
+		return 0.0
 	else:
-		#print("void tile")
-		return 0.0 #i aint working this out yer
+		var dT = (tile1.temp - tile2.temp)/distance
+		return dT *-((tile1.conductivity+tile2.conductivity)/2) #just average the two conductivityies 
+		
 
 func _overallFlux(pos1= Vector2()): #define flux from left to right as positive and right to left as negative
 	#flux down is pos, flux up is negative
