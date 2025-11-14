@@ -10,12 +10,15 @@ var mass = 0.0
 
 #neyuron implementation plan, each tile has neutron cross section, asbrob chance and atomic mass in neutrons
 #neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision
+#if a neutron is absorbed, use fission chance to determine if it results in fission
 #The actual neutron flux in each direaction is stored as average energy (eV), no. of neutrons and a flow direction
 var neutronFlux = {"energy": 0.0, "no": 0.0}
 var neutronFluxList  = {"up": neutronFlux.duplicate(),"down":neutronFlux.duplicate(),"left":neutronFlux.duplicate(),"right":neutronFlux.duplicate()}
 var neutronCrossSection
-
+var specificActivity #decays per unit mass
+var decayDistribution #lists what % is what type of decy
 var absorbChance
+var fissionChancethe
 var atomicMass
 
 var screen_size := Vector2(32,32)
