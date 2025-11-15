@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://c423cv5tcej76"
+path="res://.godot/imported/thermal.glsl-295fa82542cf4ace69e064eab411a225.res"
+
+[deps]
+
+source_file="res://thermal.glsl"
+dest_files=["res://.godot/imported/thermal.glsl-295fa82542cf4ace69e064eab411a225.res"]
+
+[params]
+
