@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2f76gsujk25n"]
+[gd_scene load_steps=4 format=3 uid="uid://b2f76gsujk25n"]
 
 [ext_resource type="Script" uid="uid://cfd4vip1pqp6p" path="res://gridManager.gd" id="1_uf1fd"]
 [ext_resource type="Script" uid="uid://byjhnx38d5prh" path="res://tile.gd" id="2_3jsjn"]
+[ext_resource type="Script" uid="uid://dj8ph2dn8kt6k" path="res://shaderssssss.gd" id="3_epypp"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -10,3 +11,6 @@ script = ExtResource("1_uf1fd")
 
 [node name="tile" type="Node2D" parent="gridManager"]
 script = ExtResource("2_3jsjn")
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("3_epypp")
