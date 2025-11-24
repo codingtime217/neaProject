@@ -24,7 +24,7 @@ var compute_list := rd.compute_list_begin()
 var run = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	uniformIn.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	uniformIn.uniform_type = RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER
 	uniformIn.binding = 0 # this needs to match the "binding" in our shader file
 	uniformIn.add_id(inBuffer)
 	uniformOut.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
