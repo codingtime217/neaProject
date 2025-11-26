@@ -12,5 +12,5 @@ script = ExtResource("1_uf1fd")
 [node name="tile" type="Node2D" parent="gridManager"]
 script = ExtResource("2_3jsjn")
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="thermal" type="Node2D" parent="."]
 script = ExtResource("3_epypp")
