@@ -7,7 +7,7 @@ extends Node2D
 @export var width = 10.0
 @export var grid = {}
 var tile = load("res://tile.gd")
-
+var energy : float
 # Called when the node enters the scene tree for the first time.
 
 
@@ -85,13 +85,15 @@ func _update():
 	var netFlux
 	var fluxes
 	var cell
+
 	for currentCell in grid.keys():
 		cell = grid[currentCell]
 		fluxes = _overallFlux(currentCell) 
 		netFlux = fluxes[0]#get the overall change
 		cell.temp += netFlux/(cell.specificHeatCap * cell.mass) #change the temp
 		cell.queue_redraw() #force a new draw for the cell to update its appearance
-
+	
+	
 
 
 

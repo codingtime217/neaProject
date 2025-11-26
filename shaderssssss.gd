@@ -7,10 +7,11 @@ var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
-var input := PackedFloat32Array([1,[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
+var input := Array([1,[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
 				[[1,1,1,1],[10,1,1,1],[1,1,1,1]],
 				[[1,1,1,1],[1,1,1,1],[1,1,1,1]]])
 var inputBytes := input.to_byte_array()
+
 var output := PackedFloat32Array([[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
 				[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
 				[[1,1,1,1],[1,1,1,1],[1,1,1,1]]])
@@ -41,28 +42,33 @@ func shaderSetup() -> void:
 	
 	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,1,1)) #finish shader setup
 	
+func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
+	var outputAsBytes := rendering.buffer_get_data(buffer)
+	return outputAsBytes
+	
+
 	
 func _ready() -> void:
 	shaderSetup()
-	#uniformIn.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-#	uniformIn.binding = 0 # this needs to match the "binding" in our shader file
-#	uniformIn.add_id(inBuffer)
-#	uniformOut.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-#	uniformOut.binding = 1
-#	uniformOut.add_id(outBuffer)
-#	uniformSet = rd.uniform_set_create([uniformIn,uniformOut],shader,0)
-#	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
-#	rd.compute_list_bind_uniform_set(compute_list, uniformSet, 0)
-#	rd.compute_list_dispatch(compute_list, 1, 3, 1)
-#	rd.compute_list_end()
-	pass
-
-
+	
+func freeRIDS() -> void:
+	rd.free_rid(inBufferRID)
+	rd.free_rid(outBufferRID)
+	rd.free_rid(shaderRID)
+	rd.free()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
 	if not run:
 		rd.submit()
 		rd.sync()
+		var outputValues = get_output(rd,outBufferRID)
+		var inValues = get_output(rd,inBufferRID)
+		print(input)
+		print("Input: ", inValues.to_float32_array())
+		print(outputValues.to_float32_array())
+		print(outputValues)
 		run = true
+		freeRIDS()
+	
 	pass
