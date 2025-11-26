@@ -7,7 +7,7 @@ var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
-var input := Array([1,[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
+var input := PackedFloat32Array([1,[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
 				[[1,1,1,1],[10,1,1,1],[1,1,1,1]],
 				[[1,1,1,1],[1,1,1,1],[1,1,1,1]]])
 var inputBytes := input.to_byte_array()
