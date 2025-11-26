@@ -27,19 +27,11 @@ func createUniform(type : RenderingDevice.UniformType, binding : int, buffer : R
 func bindUnifromSet(rd : RenderingDevice, compileList, unifromSet : RID, setId : int) -> void:
 	rd.compute_list_bind_uniform_set(compileList,unifromSet,setId)
 
-func run_shader(rd : RenderingDevice, pipeline : RID, uniformSets : Dictionary, workGroups : Vector3i ) -> void: #unifrom sets is a dictionary of {setID: unifromSet}
-	var compileList = rd.compile_list_begin()
+func runShader(rd : RenderingDevice, pipeline : RID, uniformSets : Dictionary, workGroups : Vector3i ) -> void: #unifrom sets is a dictionary of {setID: unifromSet}
+	var compileList = rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compileList, pipeline)
 	for i in uniformSets.keys():
 		bindUnifromSet(rd,compileList,uniformSets[i],i)
 	rd.compute_list_dispatch(compileList,workGroups.x,workGroups.y,workGroups.z)
 	rd.compute_list_end()
 	
-
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
