@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bk47kvhaeoo48"]
+[gd_scene load_steps=7 format=3 uid="uid://bk47kvhaeoo48"]
 
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://theme.tres" id="1_b3bc3"]
+[ext_resource type="Texture2D" uid="uid://dqaputuv146mo" path="res://things/pause.svg" id="2_0mc3e"]
 [ext_resource type="ButtonGroup" uid="uid://dfbwid3hged4b" path="res://SimButtons.tres" id="2_3b2b5"]
+[ext_resource type="Texture2D" uid="uid://boy66lgfhdfus" path="res://things/play.svg" id="4_2n5f6"]
+[ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://things/play2.svg" id="5_27c8x"]
+[ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://things/play3.svg" id="6_i1vam"]
 
 [node name="UISim" type="Control"]
 layout_mode = 3
@@ -31,25 +35,29 @@ text = "Halt"
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
-text = "Play/Pause"
+icon = ExtResource("2_0mc3e")
+expand_icon = true
 
 [node name="Button3" type="Button" parent="FoldableContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 button_group = ExtResource("2_3b2b5")
-text = "Play Speed 1"
+icon = ExtResource("4_2n5f6")
+expand_icon = true
 
 [node name="Button2" type="Button" parent="FoldableContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 button_group = ExtResource("2_3b2b5")
-text = "Play Speed 2"
+icon = ExtResource("5_27c8x")
+expand_icon = true
 
 [node name="Button" type="Button" parent="FoldableContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 button_group = ExtResource("2_3b2b5")
-text = "Play Speed 3"
+icon = ExtResource("6_i1vam")
+expand_icon = true
