@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://bk47kvhaeoo48"]
+
+[ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://theme.tres" id="1_b3bc3"]
+[ext_resource type="ButtonGroup" uid="uid://dfbwid3hged4b" path="res://SimButtons.tres" id="2_3b2b5"]
+
+[node name="UISim" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FoldableContainer" type="FoldableContainer" parent="."]
+layout_mode = 0
+offset_right = 630.0
+offset_bottom = 164.0
+theme = ExtResource("1_b3bc3")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FoldableContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button5" type="Button" parent="FoldableContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Halt"
+
+[node name="Button4" type="Button" parent="FoldableContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Play/Pause"
+
+[node name="Button3" type="Button" parent="FoldableContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = ExtResource("2_3b2b5")
+text = "Play Speed 1"
+
+[node name="Button2" type="Button" parent="FoldableContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = ExtResource("2_3b2b5")
+text = "Play Speed 2"
+
+[node name="Button" type="Button" parent="FoldableContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = ExtResource("2_3b2b5")
+text = "Play Speed 3"
