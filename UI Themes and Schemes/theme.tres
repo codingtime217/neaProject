@@ -1,4 +1,9 @@
-[gd_resource type="Theme" load_steps=30 format=4 uid="uid://xd21ediqvmb5"]
+[gd_resource type="Theme" load_steps=33 format=4 uid="uid://xd21ediqvmb5"]
+
+[ext_resource type="StyleBox" uid="uid://dxpy1ttloslti" path="res://UI Themes and Schemes/hoverhighlight.tres" id="1_spaha"]
+[ext_resource type="StyleBox" uid="uid://whdq6pyypnm7" path="res://UI Themes and Schemes/hoverHighlightPressed.tres" id="2_udo4b"]
+[ext_resource type="StyleBox" uid="uid://cnf7t5j3yerwy" path="res://UI Themes and Schemes/Unpressed.tres" id="3_lfr7t"]
+[ext_resource type="StyleBox" uid="uid://cctg0y8na4v82" path="res://UI Themes and Schemes/Pressed.tres" id="4_t8sev"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvktn"]
 content_margin_left = 8.0
@@ -884,63 +889,6 @@ corner_detail = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wvktn"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1x85"]
-bg_color = Color(0.3491902, 0.3491902, 0.3491902, 0.6)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.31373173, 0.6965841, 0.69179535, 1)
-border_blend = true
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cjfk0"]
-bg_color = Color(0, 0, 0, 0.5)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.31639665, 0.7011371, 0.69543576, 1)
-border_blend = true
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1rmny"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
-shadow_color = Color(0.76240367, 0.76240367, 0.76240367, 0.6)
-shadow_size = 1
-shadow_offset = Vector2(-1, -1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mihib"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0, 0, 0, 0.6)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
-shadow_color = Color(0.46618086, 0.4661808, 0.4661808, 0.6)
-shadow_size = 2
-shadow_offset = Vector2(1, 1)
-
 [sub_resource type="DPITexture" id="DPITexture_yin2u"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#b2b2b2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-opacity=\".45\" stroke-width=\"2\" d=\"m9 11-3-3 3-3\"/></svg>
 "
@@ -1021,6 +969,25 @@ _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#b2b2b2\" d=\"M8 2C5.443 2 2.209 3.948 1.045 7.705a1 1 0 0 0 0 .55C2.163 12.211 5.5 14 8 14s5.836-1.789 6.961-5.725a1 1 0 0 0 0-.55C13.861 3.935 10.554 2 8 2zm0 2a4 4 0 0 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 0 0 0 4 2 2 0 0 0 0-4z\"/></svg>
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_td33w"]
+bg_color = Color(0.16206557, 0.1620656, 0.16206557, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_110ce"]
+bg_color = Color(0.41215244, 0.4121525, 0.41215235, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05tig"]
+bg_color = Color(0.07451301, 0.6606129, 0.8314612, 1)
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(4.428029e-06, 0.8999316, 0.9993512, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [resource]
 AcceptDialog/colors/title_color = Color(0.90359825, 0.90359825, 0.9035982, 1)
 AcceptDialog/constants/buttons_separation = 10
@@ -1028,14 +995,14 @@ AcceptDialog/styles/panel = SubResource("StyleBoxFlat_wvktn")
 Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
-Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_color = Color(0.94905275, 0.94915384, 0.9468455, 1)
 Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
 Button/colors/icon_focus_color = Color(1, 1, 1, 1)
-Button/colors/icon_hover_color = Color(1, 1, 1, 1)
-Button/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_color = Color(0, 1, 1, 1)
+Button/colors/icon_hover_pressed_color = Color(0, 1, 1, 1)
 Button/colors/icon_normal_color = Color(1, 1, 1, 1)
 Button/colors/icon_pressed_color = Color(1, 1, 1, 1)
 Button/constants/align_to_largest_stylebox = 0
@@ -1046,10 +1013,10 @@ Button/font_sizes/font_size = 16
 Button/fonts/font = SubResource("FontFile_cjfk0")
 Button/styles/disabled = SubResource("StyleBoxFlat_vj6dk")
 Button/styles/focus = SubResource("StyleBoxEmpty_wvktn")
-Button/styles/hover = SubResource("StyleBoxFlat_e1x85")
-Button/styles/hover_pressed = SubResource("StyleBoxFlat_cjfk0")
-Button/styles/normal = SubResource("StyleBoxFlat_1rmny")
-Button/styles/pressed = SubResource("StyleBoxFlat_mihib")
+Button/styles/hover = ExtResource("1_spaha")
+Button/styles/hover_pressed = ExtResource("2_udo4b")
+Button/styles/normal = ExtResource("3_lfr7t")
+Button/styles/pressed = ExtResource("4_t8sev")
 FileDialog/colors/file_disabled_color = Color(1, 1, 1, 0.25)
 FileDialog/colors/file_icon_color = Color(1, 1, 1, 1)
 FileDialog/colors/folder_icon_color = Color(1, 1, 1, 1)
@@ -1074,3 +1041,9 @@ FileDialog/icons/sort = SubResource("DPITexture_hqigj")
 FileDialog/icons/thumbnail_mode = SubResource("DPITexture_pvf4r")
 FileDialog/icons/toggle_filename_filter = SubResource("DPITexture_fsxoa")
 FileDialog/icons/toggle_hidden = SubResource("DPITexture_ybu1x")
+ItemList/styles/hovered = ExtResource("1_spaha")
+ItemList/styles/hovered_selected = ExtResource("2_udo4b")
+ItemList/styles/panel = SubResource("StyleBoxFlat_td33w")
+ItemList/styles/selected = ExtResource("3_lfr7t")
+Tree/styles/button_pressed = SubResource("StyleBoxFlat_110ce")
+Tree/styles/hovered = SubResource("StyleBoxFlat_05tig")

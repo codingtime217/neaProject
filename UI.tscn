@@ -1,11 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://bk47kvhaeoo48"]
+[gd_scene load_steps=8 format=3 uid="uid://bk47kvhaeoo48"]
 
-[ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://theme.tres" id="1_b3bc3"]
-[ext_resource type="Texture2D" uid="uid://dqaputuv146mo" path="res://things/pause.svg" id="2_0mc3e"]
-[ext_resource type="ButtonGroup" uid="uid://dfbwid3hged4b" path="res://SimButtons.tres" id="2_3b2b5"]
-[ext_resource type="Texture2D" uid="uid://boy66lgfhdfus" path="res://things/play.svg" id="4_2n5f6"]
-[ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://things/play2.svg" id="5_27c8x"]
-[ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://things/play3.svg" id="6_i1vam"]
+[ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="1_b3bc3"]
+[ext_resource type="Texture2D" uid="uid://co4mtoujwtmca" path="res://Icons/halt.svg" id="2_2n5f6"]
+[ext_resource type="ButtonGroup" uid="uid://dfbwid3hged4b" path="res://speedControlsGroup.tres" id="2_3b2b5"]
+[ext_resource type="Texture2D" uid="uid://dqaputuv146mo" path="res://Icons/pause.svg" id="4_27c8x"]
+[ext_resource type="Texture2D" uid="uid://boy66lgfhdfus" path="res://Icons/play.svg" id="5_i1vam"]
+[ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://Icons/play2.svg" id="6_q77pa"]
+[ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://Icons/play3.svg" id="7_n8582"]
 
 [node name="UISim" type="Control"]
 layout_mode = 3
@@ -15,49 +16,93 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="FoldableContainer" type="FoldableContainer" parent="."]
+[node name="SpeedOptions" type="FoldableContainer" parent="."]
 layout_mode = 0
 offset_right = 630.0
 offset_bottom = 164.0
 theme = ExtResource("1_b3bc3")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="FoldableContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SpeedOptions"]
 layout_mode = 2
 alignment = 1
 
-[node name="Button5" type="Button" parent="FoldableContainer/HBoxContainer"]
+[node name="Halt" type="Button" parent="SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
-text = "Halt"
-
-[node name="Button4" type="Button" parent="FoldableContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-icon = ExtResource("2_0mc3e")
+tooltip_text = "Halt Simulation"
+icon = ExtResource("2_2n5f6")
+icon_alignment = 1
 expand_icon = true
 
-[node name="Button3" type="Button" parent="FoldableContainer/HBoxContainer"]
+[node name="Pause" type="Button" parent="SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Pause Simulation"
 toggle_mode = true
 button_group = ExtResource("2_3b2b5")
-icon = ExtResource("4_2n5f6")
+icon = ExtResource("4_27c8x")
+icon_alignment = 1
 expand_icon = true
 
-[node name="Button2" type="Button" parent="FoldableContainer/HBoxContainer"]
+[node name="PlaySpeed1" type="Button" parent="SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Play Sim at speed 1"
 toggle_mode = true
 button_group = ExtResource("2_3b2b5")
-icon = ExtResource("5_27c8x")
+icon = ExtResource("5_i1vam")
+icon_alignment = 1
 expand_icon = true
 
-[node name="Button" type="Button" parent="FoldableContainer/HBoxContainer"]
+[node name="PlaySpeed2" type="Button" parent="SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Play Simulation at speed 2"
 toggle_mode = true
 button_group = ExtResource("2_3b2b5")
-icon = ExtResource("6_i1vam")
+icon = ExtResource("6_q77pa")
+icon_alignment = 1
 expand_icon = true
+
+[node name="PlaySpeed3" type="Button" parent="SpeedOptions/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Play Simulation at speed 3"
+toggle_mode = true
+button_group = ExtResource("2_3b2b5")
+icon = ExtResource("7_n8582")
+icon_alignment = 1
+expand_icon = true
+
+[node name="DrawModes" type="FoldableContainer" parent="."]
+layout_mode = 0
+offset_left = 419.0
+offset_top = 203.0
+offset_right = 752.8093
+offset_bottom = 517.6752
+rotation = 1.5707964
+theme = ExtResource("1_b3bc3")
+
+[node name="Control" type="Control" parent="DrawModes"]
+layout_mode = 2
+theme = ExtResource("1_b3bc3")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="DrawModes/Control"]
+layout_mode = 0
+offset_left = -4.0000043
+offset_top = -121.0
+offset_right = 282.0
+offset_bottom = 211.0
+rotation = -1.5707964
+pivot_offset = Vector2(200, 200)
+theme = ExtResource("1_b3bc3")
+
+[node name="ItemList" type="ItemList" parent="DrawModes/Control/AspectRatioContainer"]
+layout_mode = 2
+theme = ExtResource("1_b3bc3")
+allow_search = false
+wraparound_items = false
+item_count = 3
+item_0/text = "Temp Draw"
+item_1/text = "Flux Draw"
+item_2/text = "Density Draw"
