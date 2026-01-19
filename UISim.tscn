@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bk47kvhaeoo48"]
+[gd_scene load_steps=12 format=3 uid="uid://bk47kvhaeoo48"]
 
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="1_tu31e"]
 [ext_resource type="Texture2D" uid="uid://co4mtoujwtmca" path="res://Icons/halt.svg" id="2_2cg7b"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://boy66lgfhdfus" path="res://Icons/play.svg" id="5_ajvhm"]
 [ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://Icons/play2.svg" id="6_bwhil"]
 [ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://Icons/play3.svg" id="7_8248f"]
+[ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="8_2cg7b"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
 
@@ -15,19 +16,6 @@ colors = PackedColorArray(0, 0.5686275, 0, 1, 0.08235294, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_27c8x"]
 gradient = SubResource("Gradient_2n5f6")
-
-[sub_resource type="Gradient" id="Gradient_27c8x"]
-colors = PackedColorArray(0.48028153, 0.4069125, 0.18098983, 1, 0.38431373, 1, 1, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_i1vam"]
-frequency = 0.0245
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_q77pa"]
-width = 16
-height = 16
-noise = SubResource("FastNoiseLite_i1vam")
-color_ramp = SubResource("Gradient_27c8x")
-bump_strength = 0.0
 
 [node name="UISim" type="Control"]
 layout_mode = 3
@@ -197,27 +185,46 @@ text = "Uranium 235"
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme = ExtResource("1_tu31e")
-texture = SubResource("NoiseTexture2D_q77pa")
+texture = ExtResource("8_2cg7b")
 expand_mode = 3
 
 [node name="CurrentSelected" type="FoldableContainer" parent="."]
 layout_mode = 0
-offset_left = 48.0
-offset_top = 648.0
-offset_right = 72.0
-offset_bottom = 684.0
+offset_left = 1.0
+offset_top = 671.0
+offset_right = 209.0
+offset_bottom = 920.0
+title_position = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CurrentSelected"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CurrentSelected/VBoxContainer"]
 layout_mode = 2
+alignment = 1
 
 [node name="TileName" type="Label" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+text = "Uranium 235"
 
-[node name="Tile Icon" type="ColorRect" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
+[node name="Colour" type="TextureRect" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
+theme = ExtResource("1_tu31e")
+texture = ExtResource("8_2cg7b")
+expand_mode = 3
 
-[node name="Attributes" type="GridContainer" parent="CurrentSelected/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="CurrentSelected/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("1_tu31e")
+
+[node name="Temp" type="Label" parent="CurrentSelected/VBoxContainer"]
+layout_mode = 2
+text = "Temperature: 300K"
+
+[node name="Activity" type="Label" parent="CurrentSelected/VBoxContainer"]
+layout_mode = 2
+text = "Activity: 2000/s"
