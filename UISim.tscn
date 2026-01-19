@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="1_tu31e"]
 [ext_resource type="Texture2D" uid="uid://co4mtoujwtmca" path="res://Icons/halt.svg" id="2_2cg7b"]
-[ext_resource type="ButtonGroup" uid="uid://dfbwid3hged4b" path="res://speedControlsGroup.tres" id="3_8fc3u"]
+[ext_resource type="ButtonGroup" uid="uid://dfbwid3hged4b" path="res://UI Themes and Schemes/speedControlsGroup.tres" id="3_8fc3u"]
 [ext_resource type="Texture2D" uid="uid://dqaputuv146mo" path="res://Icons/pause.svg" id="4_ar0f7"]
 [ext_resource type="Texture2D" uid="uid://boy66lgfhdfus" path="res://Icons/play.svg" id="5_ajvhm"]
 [ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://Icons/play2.svg" id="6_bwhil"]
