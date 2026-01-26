@@ -6,20 +6,22 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
-
-var input := PackedFloat32Array([1,[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
-				[[1,1,1,1],[10,1,1,1],[1,1,1,1]],
-				[[1,1,1,1],[1,1,1,1],[1,1,1,1]]])
+var input := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,10,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,1,1])
 var inputBytes := input.to_byte_array()
-
-var output := PackedFloat32Array([[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
-				[[1,1,1,1],[1,1,1,1],[1,1,1,1]],
-				[[1,1,1,1],[1,1,1,1],[1,1,1,1]]])
+var constants := PackedFloat32Array([10.0,3.0])
+var constBytes := constants.to_byte_array() + PackedInt32Array([10]).to_byte_array()
+var output := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,1,1])
 var outputBytes := output.to_byte_array()
+var constRid : RID
 var inBufferRID : RID
 var outBufferRID : RID
 var inUniform : RDUniform
 var outUniform : RDUniform
+var constUniform : RDUniform
 var uniformSet : RID
 var pipeline : RID
 var run = false
@@ -34,11 +36,13 @@ func shaderSetup() -> void:
 	
 	
 	#setting up uniforms and buffers
+	constRid = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)
 	inBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,inputBytes.size(),inputBytes)
 	outBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,outputBytes.size(),outputBytes)
 	inUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,0,inBufferRID)
 	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,1,outBufferRID)
-	uniformSet = rd.uniform_set_create([inUniform,outUniform],shaderRID,0) #creates the set
+	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
+	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
 	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,1,1)) #finish shader setup
 	
@@ -65,8 +69,8 @@ func _process(_dellta: float) -> void:
 		var outputValues = get_output(rd,outBufferRID)
 		var inValues = get_output(rd,inBufferRID)
 		print(input)
-		print("Input: ", inValues.to_float32_array())
-		print(outputValues.to_float32_array())
+		print("Input: ", inValues.to_float64_array())
+		print(outputValues.to_float64_array())
 		print(outputValues)
 		run = true
 		freeRIDS()

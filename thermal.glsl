@@ -19,8 +19,9 @@ inBuffer;
 
 layout(binding = 2, std140) uniform constants {
     float distance;
+    float timeStep;    
     uint gridx; // used for finding where in the grid the cell is
-    float timeStep;
+    
 } ;
 
 
@@ -40,12 +41,14 @@ uint findIndex(uint globalX, uint globalY, uint gridX) {
  return globalX + globalY*gridX;  //finds the index in the 1d array given its invocation coordinates
 }
 
-cell tryGet(uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds
+cell tryGet(uint index, out cell outcell) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index > inBuffer.grid.length()) {
         return cell(0,0,0,0); }
     else if (index < 0) {
-        return cell(0,0,0,0); };
-    return (inBuffer.grid(index))
+    return cell(0,0,0,0); 
+    }
+    else
+        outcell = inBuffer.grid(index); return outcell
 
 }
 
