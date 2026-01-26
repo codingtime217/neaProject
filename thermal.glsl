@@ -2,47 +2,65 @@
 #version 450
 // setup stuff
 
+struct cell { // defining as a structure to simplify things
+    highp float thermalE;
+    highp float conductivity;
+    highp float specHeatCap;
+    highp float mass;
+};
+
 layout(local_size_x = 3, local_size_y = 1, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
 layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
-    float distance;
-    highp float grid[3][3][4]; //have first value be thermal energy, then conductivity, specHeatCap, then mass
+    cell grid[]; // array of the cells
 }
 inBuffer;
 
+layout(binding = 2, std140) uniform constants {
+    float distance;
+    uint gridx; // used for finding where in the grid the cell is
+    float timeStep;
+} ;
+
+
 layout(set = 0, binding = 1, std430) restrict buffer OutBuffer{
-    highp float[4] newGrid[3][3];
+    cell newGrid[]; //defines the outputbuffer
 }
 outBuffer;
 
 
-highp float getFlux(highp float tile1[4], highp float tile2[4])
+highp float getFlux(cell cell1, cell cell2)
 {
-    float tile1Temp = (tile1[1]*tile1[3])/tile1[2];
-    float tile2Temp = (tile2[1]*tile2[3])/tile2[2];
-    float flux = -tile1[1]*((tile1Temp - tile2Temp)/inBuffer.distance);
+    float flux = -cell1.conductivity*(((cell1.thermalE*cell1.specHeatCap)/cell1.mass - (cell2.thermalE * cell2.specHeatCap)/cell2.mass)/distance);
     return flux;
 }
 
-//for each invocation (tile)
-void main() {
-    highp float grid[3][3][4];
-    grid = inBuffer.grid;
-    
-    highp float tiles[5][4] = float[5][4]((grid[gl_GlobalInvocationID.x][gl_GlobalInvocationID.y]),(grid[gl_GlobalInvocationID.x+1][gl_GlobalInvocationID.y]),(grid[gl_GlobalInvocationID.x-1][gl_GlobalInvocationID.y]),(grid[gl_GlobalInvocationID.x][gl_GlobalInvocationID.y+1]),(grid[gl_GlobalInvocationID.x][gl_GlobalInvocationID.y-1]));
-    if (gl_GlobalInvocationID.x == grid.length())
-        tiles[1] = float[4](0.0,0.0,0.0,0.0);
-    else if (gl_GlobalInvocationID.x == 0)
-       tiles[2] =  float[4](0.0,0.0,0.0,0.0);
-    if (gl_GlobalInvocationID.y == grid.length())
-        tiles[3] =  float[4](0.0,0.0,0.0,0.0);
-    else if (gl_GlobalInvocationID.y == 0)
-        tiles[4] =  float[4](0.0,0.0,0.0,0.0);
-    
-    highp float[4] fluxes = float[4](getFlux(tiles[0],tiles[1]),getFlux(tiles[0],tiles[2]),getFlux(tiles[0],tiles[3]),getFlux(tiles[0],tiles[4]));
-    highp float netFlux = fluxes[0] + fluxes[1] + fluxes[2] + fluxes[3];
-    //net flux is the sum of fluxes between the cell and its neighbours
-    highp float newData = tiles[0][0] + netFlux;
-    outBuffer.newGrid[gl_GlobalInvocationID.x][gl_GlobalInvocationID.y][0] = newData;
+uint findIndex(uint globalX, uint globalY, uint gridX) {
+ return globalX + globalY*gridX;  //finds the index in the 1d array given its invocation coordinates
 }
+
+cell tryGet(uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds
+    if (index > inBuffer.grid.length()) {
+        return cell(0,0,0,0); }
+    else if (index < 0) {
+        return cell(0,0,0,0); };
+    return (inBuffer.grid(index))
+
+}
+
+void main { // for each invoke
+    currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
+    currentCell = inBuffer.grid[currentIndex]; //grab te cell
+    cell neighbours[4] = [tryGet(currentIndex + 1 ),tryGet(currentIndex + gridx ),tryGet(currentIndex - 1 ), tryGet(currentIndex - gridx )]; //list of neighbours in anticlockwise order, starting with the one to the right
+
+    highp float netFlux;
+    for (int i = 1; i < 5; ++i) {
+        netFlux += getFlux(currentCell, neighbours[i]); //find the net flux in/out
+    } 
+    cell newCell = currentCell.duplicate(); //make a duplicate
+
+    newCell.thermalE += netFlux; //update the duplicate
+    outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
+}
+
