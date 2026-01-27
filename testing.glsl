@@ -11,7 +11,7 @@ struct cell { // defining as a structure to simplify things
 
 
 
-layout(local_size_x = 3, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 3, local_size_y = 3, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
 layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
@@ -53,25 +53,17 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.thermalE,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass);
+    return cell(cellToCopy.thermalE + 1,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass);
 }
 
 void main() { // for each invoke
     uint currentIndex;
     cell currentCell;
-    cell[4] neighbours; 
 
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
-    neighbours = cell[4](tryGet(currentIndex + 1 ),tryGet(currentIndex + gridx ),tryGet(currentIndex - 1 ), tryGet(currentIndex - gridx )); //list of neighbours in anticlockwise order, starting with the one to the right
-
-    highp float netFlux;
-    for (int i = 1; i < 5; ++i) {
-        netFlux += getFlux(currentCell, neighbours[i]); //find the net flux in/out
-    } 
     cell newCell = copyCell(currentCell); //make a duplicate
 
-    newCell.thermalE += netFlux; //update the duplicate
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

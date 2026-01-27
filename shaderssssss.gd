@@ -1,4 +1,5 @@
 extends Node2D
+@export_file var shaderPath : String
 
 var rdManager = load("res://shaderManager.gd").new()
 
@@ -6,12 +7,12 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
-var input := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,10,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1])
+var input := PackedFloat64Array([1,1,1,1,2,2,2,2,3,3,3,3,
+4,4,4,4,5,5,5,5,6,6,6,6,
+7,7,7,7,8,8,8,8,9,9,9,9])
 var inputBytes := input.to_byte_array()
-var constants := PackedFloat32Array([10.0,3.0])
-var constBytes := constants.to_byte_array() + PackedInt32Array([10]).to_byte_array()
+var constants := PackedFloat64Array([10.0,1])
+var constBytes := constants.to_byte_array() + PackedInt32Array([3]).to_byte_array()
 var output := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1])
@@ -29,8 +30,8 @@ var run = false
 
 func shaderSetup() -> void:
 	rd = RenderingServer.create_local_rendering_device() #create rendering device, local so we choose when to call it
-	shaderFile = load("res://thermal.glsl")
-	shaderSpirv = rdManager.importShaderFromFile("res://thermal.glsl")
+	shaderFile = load(shaderPath)
+	shaderSpirv = rdManager.importShaderFromFile(shaderPath)
 	shaderRID = rd.shader_create_from_spirv(shaderSpirv) #setup the shader RID
 	pipeline = rd.compute_pipeline_create(shaderRID) #create the pipeline
 	
@@ -44,7 +45,7 @@ func shaderSetup() -> void:
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
 	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,1,1)) #finish shader setup
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,3,1)) #finish shader setup
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
@@ -59,7 +60,7 @@ func freeRIDS() -> void:
 	rd.free_rid(inBufferRID)
 	rd.free_rid(outBufferRID)
 	rd.free_rid(shaderRID)
-	rd.free()
+	rd.free_rid(constRid)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
@@ -68,10 +69,9 @@ func _process(_dellta: float) -> void:
 		rd.sync()
 		var outputValues = get_output(rd,outBufferRID)
 		var inValues = get_output(rd,inBufferRID)
-		print(input)
 		print("Input: ", inValues.to_float64_array())
+		print("Output:")
 		print(outputValues.to_float64_array())
-		print(outputValues)
 		run = true
 		freeRIDS()
 	
