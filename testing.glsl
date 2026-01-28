@@ -53,7 +53,7 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(gl_GlobalInvocationID.y,gl_GlobalInvocationID.y,cellToCopy.thermalE,cellToCopy.mass);
+    return cell(cellToCopy.thermalE,cellToCopy.conductivity,gl_GlobalInvocationID.x,gl_GlobalInvocationID.x);
     //return cell(cellToCopy.thermalE,gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,cellToCopy.mass);
 }
 

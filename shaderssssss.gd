@@ -7,15 +7,11 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
-var input := PackedFloat64Array([1,1,1,1,2,2,2,2,3,3,3,3,
-4,4,4,4,5,5,5,5,6,6,6,6,
-7,7,7,7,8,8,8,8,9,9,9,9])
+var input := PackedFloat64Array([1,2,3,4,5,6,7,8])
 var inputBytes := input.to_byte_array()
 var constants := PackedInt32Array([10,1,3,0])
 var constBytes := constants.to_byte_array()
-var output := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1])
+var output := input.duplicate()
 var outputBytes := output.to_byte_array()
 var constRid : RID
 var inBufferRID : RID
