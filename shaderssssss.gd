@@ -11,8 +11,8 @@ var input := PackedFloat64Array([1,1,1,1,2,2,2,2,3,3,3,3,
 4,4,4,4,5,5,5,5,6,6,6,6,
 7,7,7,7,8,8,8,8,9,9,9,9])
 var inputBytes := input.to_byte_array()
-var constants := PackedFloat64Array([10.0,1])
-var constBytes := constants.to_byte_array() + PackedInt32Array([3]).to_byte_array()
+var constants := PackedInt32Array([10,1,3,0])
+var constBytes := constants.to_byte_array()
 var output := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1])
@@ -45,7 +45,7 @@ func shaderSetup() -> void:
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
 	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,3,1)) #finish shader setup
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(9,1,1)) #finish shader setup
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
@@ -69,9 +69,28 @@ func _process(_dellta: float) -> void:
 		rd.sync()
 		var outputValues = get_output(rd,outBufferRID)
 		var inValues = get_output(rd,inBufferRID)
-		print("Input: ", inValues.to_float64_array())
-		print("Output:")
-		print(outputValues.to_float64_array())
+		print("Input: ")
+		var j = 0
+		var toPrint := ""
+		for i in inValues.to_float64_array():
+			if j < 3:
+				toPrint = toPrint + "," + str(i)
+				j += 1
+			else:
+				j = 0
+				print(toPrint,",",i)
+				toPrint = ""
+		print("Output: ")
+		toPrint = ""
+		for i in outputValues.to_float64_array():
+			if j < 3:
+				toPrint = toPrint + "," + str(i)
+				j += 1
+			else:
+				j = 0
+				print(toPrint,",",i)
+				toPrint = ""
+		#print(outputValues.to_float64_array())
 		run = true
 		freeRIDS()
 	

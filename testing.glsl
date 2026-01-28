@@ -3,15 +3,15 @@
 // setup stuff
 
 struct cell { // defining as a structure to simplify things
-    highp float thermalE;
-    highp float conductivity;
-    highp float specHeatCap;
-    highp float mass;
+    float thermalE;
+    float conductivity;
+    float specHeatCap;
+    float mass;
 };
 
 
 
-layout(local_size_x = 3, local_size_y = 3, local_size_z = 1) in;
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
 layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
@@ -20,8 +20,8 @@ layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
 inBuffer;
 
 layout(binding = 2, std140) uniform constants {
-    float distance;
-    float timeStep;    
+    uint distance;
+    uint timeStep;    
     uint gridx; // used for finding where in the grid the cell is
     
 } ;
@@ -53,7 +53,8 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.thermalE + 1,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass);
+    return cell(gl_GlobalInvocationID.y,gl_GlobalInvocationID.y,cellToCopy.thermalE,cellToCopy.mass);
+    //return cell(cellToCopy.thermalE,gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,cellToCopy.mass);
 }
 
 void main() { // for each invoke
