@@ -3,15 +3,15 @@
 // setup stuff
 
 struct cell { // defining as a structure to simplify things
-    highp float thermalE;
-    highp float conductivity;
-    highp float specHeatCap;
-    highp float mass;
+    double thermalE;
+    double conductivity;
+    double specHeatCap;
+    double mass;
 };
 
 
 
-layout(local_size_x = 3, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
 layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
@@ -20,8 +20,8 @@ layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
 inBuffer;
 
 layout(binding = 2, std140) uniform constants {
-    float distance;
-    float timeStep;    
+    uint distance;
+    uint timeStep;    
     uint gridx; // used for finding where in the grid the cell is
     
 } ;
@@ -33,9 +33,9 @@ layout(set = 0, binding = 1, std430) restrict buffer OutBuffer{
 outBuffer;
 
 
-highp float getFlux(in cell cell1, in cell cell2)
+double getFlux(in cell cell1, in cell cell2)
 {
-    float flux = -cell1.conductivity*(((cell1.thermalE*cell1.specHeatCap)/cell1.mass - (cell2.thermalE * cell2.specHeatCap)/cell2.mass)/distance);
+    double flux = -cell1.conductivity*(((cell1.thermalE*cell1.specHeatCap)/cell1.mass - (cell2.thermalE * cell2.specHeatCap)/cell2.mass)/distance);
     return flux;
 }
 
@@ -53,25 +53,19 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 }
 
 cell copyCell(in cell cellToCopy) {
+    //return cell( cellToCopy.thermalE, cellToCopy.conductivity, double(gl_GlobalInvocationID.x), double(gl_GlobalInvocationID.y));
     return cell(cellToCopy.thermalE,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass);
 }
 
 void main() { // for each invoke
     uint currentIndex;
     cell currentCell;
-    cell[4] neighbours; 
 
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
-    neighbours = cell[4](tryGet(currentIndex + 1 ),tryGet(currentIndex + gridx ),tryGet(currentIndex - 1 ), tryGet(currentIndex - gridx )); //list of neighbours in anticlockwise order, starting with the one to the right
+    cell newCell = copyCell(currentCell);
+    //newCell.conductivity = double(currentIndex); //make a duplicate
 
-    highp float netFlux;
-    for (int i = 1; i < 5; ++i) {
-        netFlux += getFlux(currentCell, neighbours[i]); //find the net flux in/out
-    } 
-    cell newCell = copyCell(currentCell); //make a duplicate
-
-    newCell.thermalE += netFlux; //update the duplicate
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

@@ -14,4 +14,4 @@ script = ExtResource("2_3jsjn")
 
 [node name="thermal" type="Node2D" parent="."]
 script = ExtResource("3_epypp")
-shaderPath = "uid://c423cv5tcej76"
+shaderPath = "uid://dttbmseyxve34"

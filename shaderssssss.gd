@@ -7,9 +7,9 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
-var input := PackedFloat64Array([1,2,3,4,5,6,7,8])
+var input := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
 var inputBytes := input.to_byte_array()
-var constants := PackedInt32Array([10,1,3,0])
+var constants := PackedInt32Array([10,1,3,3])
 var constBytes := constants.to_byte_array()
 var output := input.duplicate()
 var outputBytes := output.to_byte_array()
@@ -25,6 +25,8 @@ var run = false
 # Called when the node enters the scene tree for the first time.
 
 func shaderSetup() -> void:
+	
+
 	rd = RenderingServer.create_local_rendering_device() #create rendering device, local so we choose when to call it
 	shaderFile = load(shaderPath)
 	shaderSpirv = rdManager.importShaderFromFile(shaderPath)
@@ -41,7 +43,7 @@ func shaderSetup() -> void:
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
 	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(9,1,1)) #finish shader setup
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,3,1)) #finish shader setup
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
@@ -68,6 +70,7 @@ func _process(_dellta: float) -> void:
 		print("Input: ")
 		var j = 0
 		var toPrint := ""
+		#print(inValues.to_float64_array())
 		for i in inValues.to_float64_array():
 			if j < 3:
 				toPrint = toPrint + "," + str(i)
@@ -78,6 +81,8 @@ func _process(_dellta: float) -> void:
 				toPrint = ""
 		print("Output: ")
 		toPrint = ""
+
+		#print(outputValues.to_float64_array())
 		for i in outputValues.to_float64_array():
 			if j < 3:
 				toPrint = toPrint + "," + str(i)
