@@ -35,10 +35,15 @@ outBuffer;
 
 double getFlux(in cell cell1, in cell cell2)
 {
-    if ((cell1.conductivity == 0) || (cell2.conductivity == 0)) {
+    if ((cell1.mass == 0) || (cell2.mass == 0)) {
         return 0;
     }
-    double flux = -cell1.conductivity*(((cell1.thermalE*cell1.specHeatCap)/cell1.mass - (cell2.thermalE * cell2.specHeatCap)/cell2.mass)/distance);
+    double temp1 = (cell1.thermalE*cell1.specHeatCap);
+    double temp2 = (cell2.thermalE * cell2.specHeatCap);
+    double flux = -cell1.conductivity*(((temp1/cell1.mass) - (temp2/cell2.mass))/distance);
+    if (isnan(flux)) {
+        return 0;
+    }
     return flux;
 }
 
@@ -46,17 +51,17 @@ uint findIndex(in uint globalX, in uint globalY, in int gridX) {
  return globalX + globalY*gridX;  //finds the index in the 1d array given its invocation coordinates
 }
 
-cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
+cell tryGet(in int index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index > inBuffer.grid.length()) {
         return cell(0,0,0,0); }
     else if (index < 0) {
-    return cell(0,0,0,0); 
+        return cell(0,0,0,0); 
     } 
     return inBuffer.grid[index];
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.thermalE,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass);
+    return cell(cellToCopy.thermalE,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass); //used to copy a cell as structs get treated as memeory refs rather than data
 }
 
 void main() { // for each invoke
@@ -66,15 +71,30 @@ void main() { // for each invoke
 
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
-    neighbours = cell[4](tryGet(currentIndex + 1 ),tryGet(currentIndex + gridx ),tryGet(currentIndex - 1 ), tryGet(currentIndex - gridx )); //list of neighbours in anticlockwise order, starting with the one to the right
 
+    int indexInt = int(currentIndex);
+
+    neighbours = cell[4](tryGet(indexInt + 1),tryGet(indexInt + gridx),tryGet(indexInt - 1),tryGet(indexInt - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
+    double flux;
     double netFlux;
-    for (int i = 1; i < 5; ++i) {
-        netFlux += getFlux(currentCell, neighbours[i]); //find the net flux in/out
-    } 
-    cell newCell = copyCell(currentCell); //make a duplicate
+    double temp;
+    for (int i = 0; i < 5; ++i) {
+        flux = getFlux(currentCell, neighbours[i]);
+        if (isnan(flux)) {
+            netFlux = 10000;
+            break;
+        }
+        temp = netFlux;
+        netFlux = temp + flux; //find the net flux in/out
+    }; 
 
-    newCell.thermalE += netFlux; //update the duplicate
+
+    cell newCell = copyCell(currentCell); //make a duplicate
+    
+    
+    newCell.thermalE = newCell.thermalE + netFlux; //update the duplicate
+
+    
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 
