@@ -24,7 +24,7 @@ layout(binding = 2, std140) uniform constants {
     int timeStep;    
     int gridx; // used for finding where in the grid the cell is
     
-} ;
+};
 
 
 layout(set = 0, binding = 1, std430) restrict buffer OutBuffer{
@@ -37,13 +37,15 @@ double getFlux(in cell cell1, in cell cell2)
 {
     if ((cell1.mass == 0) || (cell2.mass == 0)) {
         return 0;
-    }
+    };
+
     double temp1 = (cell1.thermalE*cell1.specHeatCap);
-    double temp2 = (cell2.thermalE * cell2.specHeatCap);
+    double temp2 = (cell2.thermalE*cell2.specHeatCap);
+
     double flux = -cell1.conductivity*(((temp1/cell1.mass) - (temp2/cell2.mass))/distance);
-    if (isnan(flux)) {
-        return 0;
-    }
+    //if (isnan(flux)) {
+     //   return 0;
+    // };
     return flux;
 }
 
@@ -76,21 +78,17 @@ void main() { // for each invoke
 
     neighbours = cell[4](tryGet(indexInt + 1),tryGet(indexInt + gridx),tryGet(indexInt - 1),tryGet(indexInt - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
     double flux;
-    double netFlux;
+    double netFlux = 0;
     double temp;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 4; ++i) {
         flux = getFlux(currentCell, neighbours[i]);
-        if (isnan(flux)) {
-            netFlux = 10000;
-            break;
-        }
+
         temp = netFlux;
         netFlux = temp + flux; //find the net flux in/out
     }; 
 
 
     cell newCell = copyCell(currentCell); //make a duplicate
-    
     
     newCell.thermalE = newCell.thermalE + netFlux; //update the duplicate
 
