@@ -7,9 +7,9 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
-var input := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+var input := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5])
 var inputBytes := input.to_byte_array()
-var constants := PackedInt32Array([10,1,3,3])
+var constants := PackedInt32Array([10,1,4,4])
 var constBytes := constants.to_byte_array()
 var output := input.duplicate()
 var outputBytes := output.to_byte_array()
@@ -21,7 +21,7 @@ var outUniform : RDUniform
 var constUniform : RDUniform
 var uniformSet : RID
 var pipeline : RID
-var run = false
+var run = 0
 # Called when the node enters the scene tree for the first time.
 
 func shaderSetup() -> void:
@@ -43,7 +43,7 @@ func shaderSetup() -> void:
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
 	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(3,3,1)) #finish shader setup
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(4,5,1)) #finish shader setup
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
@@ -62,7 +62,7 @@ func freeRIDS() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
-	if not run:
+	if run < 2:
 		rd.submit()
 		rd.sync()
 		var outputValues = get_output(rd,outBufferRID)
@@ -81,18 +81,20 @@ func _process(_dellta: float) -> void:
 				toPrint = ""
 		print("Output: ")
 		toPrint = ""
-
+		var outputArray =outputValues.to_float64_array()
 		#print(outputValues.to_float64_array())
-		for i in outputValues.to_float64_array():
-			if j < 3:
-				toPrint = toPrint + "," + str(i)
-				j += 1
-			else:
-				j = 0
-				print(toPrint,",",i)
-				toPrint = ""
+		for i in range(0,len(outputArray)):
+			if i % 4 == 0:
+				if j < 3:
+					toPrint = toPrint + "," + str(outputArray[i])
+					j += 1
+				else:
+					j = 0
+					print(toPrint,",",outputArray[i])
+					toPrint = ""
 		#print(outputValues.to_float64_array())
-		run = true
+		run += 1
+		rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
+	else:
 		freeRIDS()
-	
 	pass

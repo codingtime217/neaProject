@@ -54,12 +54,24 @@ uint findIndex(in uint globalX, in uint globalY, in int gridX) {
 }
 
 cell tryGet(in int index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
-    if (index > inBuffer.grid.length()) {
+    if (index >= inBuffer.grid.length()) {
         return cell(0,0,0,0); }
     else if (index < 0) {
         return cell(0,0,0,0); 
     } 
     return inBuffer.grid[index];
+}
+
+cell[4] getNeighbours(in int index) {
+    cell[4] neighbours;
+    neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
+
+    if ((index % gridx) == 0) { //accounts for cells on the right or left edges, top and bottom would create invalid indices already account for in tryGet()
+        neighbours[2] = cell(0,0,0,0);
+    } else if ((index + 1) % gridx == 0) {
+        neighbours[0] = cell(0,0,0,0) ;
+    };
+    return neighbours;
 }
 
 cell copyCell(in cell cellToCopy) {
@@ -74,9 +86,8 @@ void main() { // for each invoke
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
 
-    int indexInt = int(currentIndex);
+    neighbours = getNeighbours(int(currentIndex)); // get the neighbours
 
-    neighbours = cell[4](tryGet(indexInt + 1),tryGet(indexInt + gridx),tryGet(indexInt - 1),tryGet(indexInt - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
     double flux;
     double netFlux = 0;
     double temp;
