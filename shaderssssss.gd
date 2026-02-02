@@ -7,12 +7,12 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
-var input := PackedFloat64Array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5])
-var inputBytes := input.to_byte_array()
-var constants := PackedInt32Array([10,1,4,4])
+var input : PackedFloat64Array
+var inputBytes : PackedByteArray
+var constants := PackedInt32Array([10,1,10,10])
 var constBytes := constants.to_byte_array()
-var output := input.duplicate()
-var outputBytes := output.to_byte_array()
+var output : PackedFloat64Array
+var outputBytes : PackedByteArray
 var constRid : RID
 var inBufferRID : RID
 var outBufferRID : RID
@@ -33,6 +33,10 @@ func shaderSetup() -> void:
 	shaderRID = rd.shader_create_from_spirv(shaderSpirv) #setup the shader RID
 	pipeline = rd.compute_pipeline_create(shaderRID) #create the pipeline
 	
+	#making input data
+	inputBytes = makeBufferArray(get_node("gridManager").grid)
+	outputBytes = inputBytes
+	
 	
 	#setting up uniforms and buffers
 	constRid = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)
@@ -43,13 +47,32 @@ func shaderSetup() -> void:
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
 	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(4,5,1)) #finish shader setup
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,2,1)) #finish shader setup
+	
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
 	return outputAsBytes
 	
 
+func makeBufferArray(cells : Dictionary) -> PackedByteArray:
+	var bufferArray : PackedFloat64Array
+	var currentCell
+	print(cells["height"])
+	for i in range(0,cells["height"]): #goes through in order from top to bottom left to right
+		for j in range(0,cells["width"]):
+			currentCell = cells[Vector2(j,i)]
+			bufferArray = bufferArray + PackedFloat64Array([currentCell.thermalE,currentCell.conductivity,currentCell.specificHeatCap,currentCell.mass])
+	return bufferArray.to_byte_array()
+	
+func outputGrid(buffer : PackedByteArray,width : int) -> void:
+	var bufferFloat = buffer.to_float64_array()
+	for i in range(0,len(bufferFloat)/(4*width)):
+		var toPrint = []
+		toPrint.append("Row: " + str(i))
+		for j in range(0,width):
+			toPrint.append(int(bufferFloat[4*(i*width+j)]))
+		print(toPrint)
 	
 func _ready() -> void:
 	shaderSetup()
@@ -67,32 +90,10 @@ func _process(_dellta: float) -> void:
 		rd.sync()
 		var outputValues = get_output(rd,outBufferRID)
 		var inValues = get_output(rd,inBufferRID)
-		print("Input: ")
-		var j = 0
-		var toPrint := ""
-		#print(inValues.to_float64_array())
-		for i in inValues.to_float64_array():
-			if j < 3:
-				toPrint = toPrint + "," + str(i)
-				j += 1
-			else:
-				j = 0
-				print(toPrint,",",i)
-				toPrint = ""
-		print("Output: ")
-		toPrint = ""
-		var outputArray =outputValues.to_float64_array()
-		#print(outputValues.to_float64_array())
-		for i in range(0,len(outputArray)):
-			if i % 4 == 0:
-				if j < 3:
-					toPrint = toPrint + "," + str(outputArray[i])
-					j += 1
-				else:
-					j = 0
-					print(toPrint,",",outputArray[i])
-					toPrint = ""
-		#print(outputValues.to_float64_array())
+		print("Input:")
+		outputGrid(inValues,10)
+		print("Output:")
+		outputGrid(outputValues,10)
 		run += 1
 		rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
 	else:

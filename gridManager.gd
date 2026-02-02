@@ -16,6 +16,8 @@ var energy : float
 func _generateGrid() -> void:
 	var newcoord  #stores the key for each tile about to be made
 	var newtile #stores the tile breifly
+	grid["width"] = width
+	grid["height"] = height
 	for i in width:
 		for j in height:
 			newcoord = Vector2(i,j) #sets the key/coordinates
@@ -99,5 +101,5 @@ func _update():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	_update()
+	#_update()
 	pass

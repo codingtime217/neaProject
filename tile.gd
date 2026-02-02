@@ -2,11 +2,13 @@ extends Node2D
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
 var temp = 0.0 #in kelvin
+var thermalE = 10.0
 var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
 var specificHeatCap = 100.0 #in KJ^-1kg^-1
 var colour = Color(0,0,0)
 var density = 1000.0 #kgm^-3
 var mass = 0.0
+
 
 #neyuron implementation plan, each tile has neutron cross section, asbrob chance and atomic mass in neutrons
 #neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision
@@ -54,10 +56,12 @@ func setup(mat = "void",pos = Vector2(0,0)):
 		properties = materialsDict["water"]
 	compound = mat
 	
-	temp = (pos.x/16)**2 + pos.y/16 *10
+	
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
+	thermalE = 10 + randf_range(-5,5)
+	temp = thermalE/specificHeatCap
 	mass = density / 1000.0  #as volume is 1/1000 m^3
 	colour = Color(0,temp/150,0)	
 	
