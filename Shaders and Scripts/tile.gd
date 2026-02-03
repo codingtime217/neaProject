@@ -60,9 +60,10 @@ func setup(mat = "void",pos = Vector2(0,0)):
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
-	thermalE = 10 + randf_range(-1,1)
-	temp = thermalE/specificHeatCap
-	mass = density / 1000.0  #as volume is 1/1000 m^3
+	thermalE = 100000 + randf_range(-1000,1000)
+
+	mass = density / 1000.0 #as volume is 1/1000 m^3
+	temp = thermalE/(specificHeatCap*mass)
 	colour = Color(0,temp/150,0)	
 	
 

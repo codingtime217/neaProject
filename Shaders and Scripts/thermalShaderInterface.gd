@@ -9,7 +9,7 @@ var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 var input : PackedFloat64Array
 var inputBytes : PackedByteArray
-var constants := PackedInt32Array([10,1,10,10])
+var constants := PackedInt32Array([10,3600,10,10])
 var constBytes := constants.to_byte_array()
 var output : PackedFloat64Array
 var outputBytes : PackedByteArray
@@ -88,19 +88,21 @@ func freeRIDS() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
-	if run < 2:
+	if run < 10000:
 		rd.submit()
 		rd.sync()
 		var outputValues = get_output(rd,outBufferRID)
 		var inValues = get_output(rd,inBufferRID)
-		print("Input:")
-		outputGrid(inValues,10)
-		print("Output:")
-		outputGrid(outputValues,10)
+		#print("Input:")
+		#outputGrid(inValues,10)
+		#print("Output:")
+		#outputGrid(outputValues,10)
 		run += 1
 		rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
 		rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,2,1))
-	elif run <= 2:
+		print(run)
+	elif run <= 10000:
+		outputGrid(get_output(rd,outBufferRID),10)
 		freeRIDS()
 		run +=1
 	else:

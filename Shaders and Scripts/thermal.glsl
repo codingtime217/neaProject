@@ -39,8 +39,8 @@ double getFlux(in cell cell1, in cell cell2)
         return 0;
     };
 
-    double temp1 = (cell1.thermalE*cell1.specHeatCap)/cell1.mass;
-    double temp2 = (cell2.thermalE*cell2.specHeatCap)/cell2.mass;
+    double temp1 = (cell1.thermalE/(cell1.specHeatCap*cell1.mass));
+    double temp2 = (cell2.thermalE/(cell2.specHeatCap*cell2.mass));
     if (temp1 == temp2) {
         return 0;
     };
@@ -49,6 +49,8 @@ double getFlux(in cell cell1, in cell cell2)
     //if (isnan(flux)) {
      //   return 0;
     // };
+
+    
     return flux;
 }
 
