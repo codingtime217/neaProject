@@ -47,7 +47,7 @@ func shaderSetup() -> void:
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
 	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
 	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,2,1)) #finish shader setup
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,10,1)) #finish shader setup
 	
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
@@ -78,10 +78,13 @@ func _ready() -> void:
 	shaderSetup()
 	
 func freeRIDS() -> void:
+	#assert(rd.uniform_set_is_valid(uniformSet))
 	rd.free_rid(inBufferRID)
 	rd.free_rid(outBufferRID)
-	rd.free_rid(shaderRID)
 	rd.free_rid(constRid)
+	rd.free_rid(shaderRID)
+	#assert(rd.uniform_set_is_valid(uniformSet))
+	print("Freed")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
@@ -96,6 +99,9 @@ func _process(_dellta: float) -> void:
 		outputGrid(outputValues,10)
 		run += 1
 		rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
-	else:
+		rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,2,1))
+	elif run <= 2:
 		freeRIDS()
-	pass
+		run +=1
+	else:
+		pass

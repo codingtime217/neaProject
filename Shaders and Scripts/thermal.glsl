@@ -11,7 +11,7 @@ struct cell { // defining as a structure to simplify things
 
 
 
-layout(local_size_x = 3, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
 layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
@@ -39,10 +39,13 @@ double getFlux(in cell cell1, in cell cell2)
         return 0;
     };
 
-    double temp1 = (cell1.thermalE*cell1.specHeatCap);
-    double temp2 = (cell2.thermalE*cell2.specHeatCap);
+    double temp1 = (cell1.thermalE*cell1.specHeatCap)/cell1.mass;
+    double temp2 = (cell2.thermalE*cell2.specHeatCap)/cell2.mass;
+    if (temp1 == temp2) {
+        return 0;
+    };
 
-    double flux = -cell1.conductivity*(((temp1/cell1.mass) - (temp2/cell2.mass))/distance);
+    double flux = -cell1.conductivity*((temp1 - temp2)/distance) * timeStep;
     //if (isnan(flux)) {
      //   return 0;
     // };
@@ -102,7 +105,6 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell); //make a duplicate
     
     newCell.thermalE = newCell.thermalE + netFlux; //update the duplicate
-
     
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
