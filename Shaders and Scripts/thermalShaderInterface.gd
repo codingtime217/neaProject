@@ -1,7 +1,7 @@
 extends Node2D
 @export_file var shaderPath : String
 
-var rdManager = load("res://shaderManager.gd").new()
+var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
 
 var rd : RenderingDevice
 var shaderFile : Resource

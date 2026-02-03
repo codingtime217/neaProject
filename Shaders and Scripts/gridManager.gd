@@ -6,7 +6,7 @@ extends Node2D
 @export var height = 10.0 #rectangle of cell dimesnon
 @export var width = 10.0
 @export var grid = {}
-var tile = load("res://tile.gd")
+var tile = load("res://Shaders and Scripts/tile.gd")
 var energy : float
 # Called when the node enters the scene tree for the first time.
 
