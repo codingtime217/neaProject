@@ -23,9 +23,9 @@ func createUniform(type : RenderingDevice.UniformType, binding : int, buffer : R
 	uniform.uniform_type = type
 	uniform.add_id(buffer) #assign it the buffer
 	return uniform #return the uniform
-				
+
 func bindUnifromSet(rd : RenderingDevice, compileList, unifromSet : RID, setId : int) -> void:
-	rd.compute_list_bind_uniform_set(compileList,unifromSet,setId)
+	rd.compute_list_bind_uniform_set(compileList,unifromSet,setId) #literally just does this one thing
 
 func runShader(rd : RenderingDevice, pipeline : RID, uniformSets : Dictionary, workGroups : Vector3i ) -> void: #unifrom sets is a dictionary of {setID: unifromSet}
 	var compileList = rd.compute_list_begin()

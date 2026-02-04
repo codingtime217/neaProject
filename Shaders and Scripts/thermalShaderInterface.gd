@@ -2,7 +2,7 @@ extends Node2D
 @export_file var shaderPath : String
 
 var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
-
+@export var workGroups := Vector3i(1,1,1)
 var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
@@ -45,10 +45,7 @@ func shaderSetup() -> void:
 	inUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,0,inBufferRID)
 	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,1,outBufferRID)
 	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
-	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set
-	
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,10,1)) #finish shader setup
-	
+	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set	
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
@@ -84,24 +81,21 @@ func freeRIDS() -> void:
 	rd.free_rid(constRid)
 	rd.free_rid(shaderRID)
 	#assert(rd.uniform_set_is_valid(uniformSet))
-	print("Freed")
+
+
+func _runShader() -> void:
+	rd.submit()
+	rd.sync()
+	var outputValues = get_output(rd,outBufferRID)
+	rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},workGroups)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
-	if run < 10000:
-		rd.submit()
-		rd.sync()
-		var outputValues = get_output(rd,outBufferRID)
-		var inValues = get_output(rd,inBufferRID)
-		#print("Input:")
-		#outputGrid(inValues,10)
-		#print("Output:")
-		#outputGrid(outputValues,10)
+	if run < 1000:
+		_runShader()
 		run += 1
-		rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
-		rdManager.runShader(rd,pipeline,{0 : uniformSet},Vector3i(10,2,1))
-		print(run)
-	elif run <= 10000:
+	elif run <= 1000:
 		outputGrid(get_output(rd,outBufferRID),10)
 		freeRIDS()
 		run +=1

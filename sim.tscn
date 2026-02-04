@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://b2f76gsujk25n"]
+
+[ext_resource type="Script" uid="uid://dj8ph2dn8kt6k" path="res://Shaders and Scripts/thermalShaderInterface.gd" id="1_rhrn2"]
+[ext_resource type="Script" uid="uid://cfd4vip1pqp6p" path="res://Shaders and Scripts/gridManager.gd" id="2_peo6w"]
+[ext_resource type="Script" uid="uid://byjhnx38d5prh" path="res://Shaders and Scripts/tile.gd" id="3_e83b4"]
+
+[node name="Sim" type="Node2D"]
+
+[node name="thermal" type="Node2D" parent="."]
+script = ExtResource("1_rhrn2")
+shaderPath = "uid://c423cv5tcej76"
+workGroups = Vector3i(10, 10, 1)
+
+[node name="gridManager" type="Node2D" parent="thermal"]
+script = ExtResource("2_peo6w")
+
+[node name="tile" type="Node2D" parent="thermal/gridManager"]
+script = ExtResource("3_e83b4")

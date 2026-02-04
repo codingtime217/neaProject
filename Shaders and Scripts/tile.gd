@@ -1,7 +1,7 @@
 extends Node2D
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
-var temp = 0.0 #in kelvin
+@export var temp = 293.15 #in kelvin
 var thermalE = 10.0
 var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
 var specificHeatCap = 100.0 #in KJ^-1kg^-1
@@ -60,11 +60,10 @@ func setup(mat = "void",pos = Vector2(0,0)):
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
-	thermalE = 100000 + randf_range(-1000,1000)
+	mass = density / 1000.0 
+	thermalE = temp*mass*specificHeatCap
 
-	mass = density / 1000.0 #as volume is 1/1000 m^3
-	temp = thermalE/(specificHeatCap*mass)
-	colour = Color(0,temp/150,0)	
+	colour = Color(0,temp/400,0)	
 	
 
 
