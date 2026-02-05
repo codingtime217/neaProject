@@ -6,8 +6,3 @@ func _ready() -> void:
 	var tileMap := get_node(^"/root/Editor/tileManager")
 	tileMap._link_signals()
 	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
