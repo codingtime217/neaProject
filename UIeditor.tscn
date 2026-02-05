@@ -10,10 +10,10 @@ grow_vertical = 2
 
 [node name="FoldableContainer" type="FoldableContainer" parent="."]
 layout_mode = 0
-offset_left = 965.0
-offset_top = 164.0
-offset_right = 1193.0
-offset_bottom = 196.0
+offset_left = 448.0
+offset_top = 125.0
+offset_right = 817.0
+offset_bottom = 459.0
 
 [node name="ItemList" type="ItemList" parent="FoldableContainer"]
 layout_mode = 2
