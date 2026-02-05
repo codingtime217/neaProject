@@ -1,10 +1,16 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://emnl307k20am"]
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://emnl307k20am"]
 
 [ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/materialNoise.tres" id="1_4a4t8"]
+[ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/materialNoise1.tres" id="2_j05kv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j05kv"]
 texture = ExtResource("1_4a4t8")
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m6dgf"]
+texture = ExtResource("2_j05kv")
+0:0/0 = 0
+
 [resource]
 sources/0 = SubResource("TileSetAtlasSource_j05kv")
+sources/1 = SubResource("TileSetAtlasSource_m6dgf")
