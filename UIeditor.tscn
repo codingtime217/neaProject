@@ -62,10 +62,11 @@ grow_horizontal = 0
 
 [node name="ItemList" type="ItemList" parent="cont"]
 layout_mode = 2
-item_count = 2
+item_count = 3
 max_columns = 2
 item_0/icon = ExtResource("1_pmaai")
 item_1/icon = ExtResource("2_ib31x")
+item_2/text = "scene"
 script = ExtResource("1_ib31x")
 
 [node name="CurrentSelected" type="FoldableContainer" parent="."]

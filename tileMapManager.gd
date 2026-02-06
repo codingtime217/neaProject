@@ -12,25 +12,39 @@ func _link_signals():
 	UINode.item_selected.connect(selected)
 	var saveButton = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
-	pass
+	
 
 func selected(index : int):
 	currentMatAtlas.x = index
-	pass
+	
 	
 func save() -> void:
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/simName")
-	var fileName = fileNameNode.text
+	var fileName = fileNameNode.text + ".txt"
 	if fileName == "":
 		fileName = "sim.txt"
 	print(fileName)
-	writeToFile(fileName,"hello")
-	pass
+	writeToFile(fileName,metaData())
+	
+	
+func convertToData() -> String:
+	var cellData : String
+	var cell : TileData
+	for i in get_used_cells():
+		cell = get_cell_tile_data(i)
+		cellData = cell.temperature
+	return cellData
+	
+func metaData() -> String:
+	var dimensions = str(get_used_rect().size) + "\n"
+	
+	return dimensions + "hello"
+	
 	
 func writeToFile(fileName,content):
 	var file = FileAccess.open(fileName,FileAccess.WRITE)
-	file.store_string(content)
+	file.store_string(convertToData())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -41,6 +55,5 @@ func _process(_delta: float) -> void:
 	elif Input.is_action_pressed("right_click"):
 		var tilePos = local_to_map(mousePos)
 		set_cell(tilePos,-1)
-	pass
 
 #func _notification(what: int) -> void:

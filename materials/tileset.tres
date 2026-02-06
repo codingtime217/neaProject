@@ -1,7 +1,8 @@
-[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://emnl307k20am"]
+[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://emnl307k20am"]
 
 [ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/materialNoise.tres" id="1_4a4t8"]
 [ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/materialNoise1.tres" id="2_j05kv"]
+[ext_resource type="PackedScene" uid="uid://8dsgvgvvqq2t" path="res://tile.tscn" id="3_m6dgf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j05kv"]
 texture = ExtResource("1_4a4t8")
@@ -11,6 +12,10 @@ texture = ExtResource("1_4a4t8")
 texture = ExtResource("2_j05kv")
 0:0/0 = 0
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4ph2q"]
+scenes/1/scene = ExtResource("3_m6dgf")
+
 [resource]
 sources/0 = SubResource("TileSetAtlasSource_j05kv")
 sources/1 = SubResource("TileSetAtlasSource_m6dgf")
+sources/2 = SubResource("TileSetScenesCollectionSource_4ph2q")
