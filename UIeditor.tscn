@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://ctt21mckv2qd3"]
+[gd_scene load_steps=8 format=3 uid="uid://ctt21mckv2qd3"]
 
 [ext_resource type="Script" uid="uid://cumi0nvxjnvst" path="res://matSelected.gd" id="1_ib31x"]
+[ext_resource type="Script" uid="uid://ncx5os7ugqts" path="res://linkSignals.gd" id="1_pla2u"]
 [ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/materialNoise.tres" id="1_pmaai"]
 [ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/materialNoise1.tres" id="2_ib31x"]
 [ext_resource type="Script" uid="uid://bvvaaa6p254pk" path="res://currentSelectedEditor.gd" id="4_56m11"]
@@ -14,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_pla2u")
 metadata/_edit_lock_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

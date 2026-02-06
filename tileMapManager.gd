@@ -5,17 +5,32 @@ var currentMatAtlas : Vector3i # will be used to store the current material's at
 # x is the atlas no, y and z are the atlas coords
 
 func _ready() -> void:
-	#call_deferred("_link_signals")
 	pass # Replace with function body.
 
 func _link_signals():
 	var UINode = get_node(^"/root/UIEditor/cont/ItemList")
 	UINode.item_selected.connect(selected)
+	var saveButton = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/save")
+	saveButton.pressed.connect(save)
 	pass
 
 func selected(index : int):
 	currentMatAtlas.x = index
 	pass
+	
+func save() -> void:
+	#use some stuff to turn the tileMap into a big string array
+	var fileNameNode = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/simName")
+	var fileName = fileNameNode.text
+	if fileName == "":
+		fileName = "sim.txt"
+	print(fileName)
+	writeToFile(fileName,"hello")
+	pass
+	
+func writeToFile(fileName,content):
+	var file = FileAccess.open(fileName,FileAccess.WRITE)
+	file.store_string(content)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
