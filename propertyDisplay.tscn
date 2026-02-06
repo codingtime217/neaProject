@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dylmup2i8e3ca"]
+
+[node name="propertyDisplay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="container" type="HBoxContainer" parent="."]
+layout_mode = 0
+alignment = 1
+
+[node name="propertyLabel" type="Label" parent="container"]
+layout_mode = 2
+text = "Uranium 235"
+
+[node name="propertyData" type="Label" parent="container"]
+layout_mode = 2
+text = "Uranium 235"

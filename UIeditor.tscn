@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://ctt21mckv2qd3"]
+[gd_scene load_steps=7 format=3 uid="uid://ctt21mckv2qd3"]
 
 [ext_resource type="Script" uid="uid://cumi0nvxjnvst" path="res://matSelected.gd" id="1_ib31x"]
 [ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/materialNoise.tres" id="1_pmaai"]
 [ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/materialNoise1.tres" id="2_ib31x"]
+[ext_resource type="Script" uid="uid://bvvaaa6p254pk" path="res://currentSelectedEditor.gd" id="4_56m11"]
+[ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="5_pla2u"]
+[ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="6_rjp24"]
 
 [node name="UIEditor" type="Control"]
 layout_mode = 3
@@ -28,3 +31,37 @@ max_columns = 2
 item_0/icon = ExtResource("1_pmaai")
 item_1/icon = ExtResource("2_ib31x")
 script = ExtResource("1_ib31x")
+
+[node name="CurrentSelected" type="FoldableContainer" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 671.0
+offset_right = 209.0
+offset_bottom = 920.0
+title_position = 1
+script = ExtResource("4_56m11")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CurrentSelected"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CurrentSelected/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TileName" type="Label" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Uranium 235"
+
+[node name="Colour" type="TextureRect" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme = ExtResource("5_pla2u")
+texture = ExtResource("6_rjp24")
+expand_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="CurrentSelected/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_pla2u")
