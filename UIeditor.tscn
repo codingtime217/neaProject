@@ -13,11 +13,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="cont" type="FoldableContainer" parent="."]
-layout_mode = 0
-offset_left = 911.0
-offset_top = 7.0
-offset_right = 1231.0
-offset_bottom = 133.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_bottom = 126.0
+grow_horizontal = 0
 
 [node name="ItemList" type="ItemList" parent="cont"]
 layout_mode = 2
