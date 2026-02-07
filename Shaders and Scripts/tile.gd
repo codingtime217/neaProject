@@ -16,17 +16,22 @@ var mass = 0.0
 #The actual neutron flux in each direaction is stored as average energy (eV), no. of neutrons and a flow direction
 var neutronFlux = {"energy": 0.0, "no": 0.0}
 var neutronFluxList  = {"up": neutronFlux.duplicate(),"down":neutronFlux.duplicate(),"left":neutronFlux.duplicate(),"right":neutronFlux.duplicate()}
-var neutronCrossSection
+var neutronCrossSection 
 var specificActivity #decays per unit mass
 var decayDistribution #lists what % is what type of decy
-var absorbChance
-var fissionChancethe
+var absorbChance : float
+var fissionChance : float
 var atomicMass
-
+var button
 var screen_size := Vector2(32,32)
 
-#func _ready():
-	#offset = get_viewport_rect().size/2
+func _ready():
+	button = get_node("Button")
+	button.icon = load("res://materials/materialNoise1.tres")
+	print(button.icon.get_size())
+	button.size = Vector2(16,16)
+	print(button.size)
+	setup()
 
 const materialsDict = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
@@ -68,10 +73,10 @@ func setup(mat = "void",pos = Vector2(0,0)):
 
 
 
-func _draw() -> void:
+#func _draw() -> void:
 	
-	colour = Color(0,temp/150,0) #updates colour
-	draw_rect(Rect2(position, screen_size), colour) #draws cell
+	#colour = Color(0,temp/150,0) #updates colour
+	#draw_rect(Rect2(position, screen_size), colour) #draws cell
 	
 
 

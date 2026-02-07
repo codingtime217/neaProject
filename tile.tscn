@@ -1,14 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://8dsgvgvvqq2t"]
 
 [ext_resource type="Script" uid="uid://byjhnx38d5prh" path="res://Shaders and Scripts/tile.gd" id="1_n3f48"]
-[ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/materialNoise.tres" id="2_vx4y2"]
+[ext_resource type="Theme" uid="uid://ckjnpalw4k1dd" path="res://UI Themes and Schemes/tileTheme.tres" id="2_vx4y2"]
 
 [node name="tile" type="Node2D"]
-
-[node name="tile" type="Node2D" parent="."]
 script = ExtResource("1_n3f48")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("2_vx4y2")
+[node name="Button" type="Button" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0
+theme = ExtResource("2_vx4y2")
+toggle_mode = true
+icon_alignment = 1
+expand_icon = true

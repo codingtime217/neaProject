@@ -15,7 +15,8 @@ func _link_signals():
 	
 
 func selected(index : int):
-	currentMatAtlas.x = index
+	print(index)
+	currentMatAtlas.x = index + 1
 	
 	
 func save() -> void:
@@ -51,7 +52,7 @@ func _process(_delta: float) -> void:
 	mousePos = get_local_mouse_position()
 	if Input.is_action_pressed("left_click"):
 		var tilePos = local_to_map(mousePos)
-		set_cell(tilePos,currentMatAtlas.x,Vector2i(currentMatAtlas.y,currentMatAtlas.z))
+		set_cell(tilePos,currentMatAtlas.x,Vector2i(currentMatAtlas.y,currentMatAtlas.z),1)
 	elif Input.is_action_pressed("right_click"):
 		var tilePos = local_to_map(mousePos)
 		set_cell(tilePos,-1)

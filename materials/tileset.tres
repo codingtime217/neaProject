@@ -12,10 +12,10 @@ texture = ExtResource("1_4a4t8")
 texture = ExtResource("2_j05kv")
 0:0/0 = 0
 
-[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4ph2q"]
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_m6dgf"]
 scenes/1/scene = ExtResource("3_m6dgf")
 
 [resource]
 sources/0 = SubResource("TileSetAtlasSource_j05kv")
 sources/1 = SubResource("TileSetAtlasSource_m6dgf")
-sources/2 = SubResource("TileSetScenesCollectionSource_4ph2q")
+sources/2 = SubResource("TileSetScenesCollectionSource_m6dgf")
