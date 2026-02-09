@@ -12,10 +12,12 @@ func _place_tile_(localposition : Vector2, material) -> void:
 	grid[localposition] = tile
 	
 func _global_to_local(global : Vector2) -> Vector2:
+	@warning_ignore("integer_division")
 	var local = Vector2i(int(global.x)/16,int(global.y)/16)
 	return local
 	
 func _local_to_global(local : Vector2i):
+	@warning_ignore("integer_division")
 	var global =local * tileDimensions + 1/2*tileDimensions
 	return global
 

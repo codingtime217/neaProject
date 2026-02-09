@@ -27,12 +27,12 @@ var button
 var screen_size := Vector2(32,32)
 
 
-static func newTile(pos : Vector2, material : String, args : Dictionary = {}):
+static func newTile(pos : Vector2, mat : String, _args : Dictionary = {}):
 	var tileInstance := selfScene.instantiate()
 	var tileData = tileInstance.get_node(".")
-	tileData.compound = material
+	tileData.compound = mat
 	tileData.position = pos
-	tileData.setup(material)
+	tileData.setup(mat)
 	return tileInstance
 
 func _ready():
