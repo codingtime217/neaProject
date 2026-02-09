@@ -1,4 +1,5 @@
 extends Node2D
+
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
 @export var temp = 293.15 #in kelvin
@@ -8,7 +9,7 @@ var specificHeatCap = 100.0 #in KJ^-1kg^-1
 var colour = Color(0,0,0)
 var density = 1000.0 #kgm^-3
 var mass = 0.0
-
+const selfScene = preload("res://tile.tscn")
 
 #neyuron implementation plan, each tile has neutron cross section, asbrob chance and atomic mass in neutrons
 #neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision
@@ -25,13 +26,20 @@ var atomicMass
 var button
 var screen_size := Vector2(32,32)
 
+
+static func _newTile(pos : Vector2, material : String, args : Dictionary):
+	var selfScene := selfScene.instantiate()
+	selfScene.compound = material
+	selfScene.position = pos
+	selfScene.setup(material)
+	return selfScene
+
 func _ready():
 	button = get_node("Button")
 	button.icon = load("res://materials/materialNoise1.tres")
 	print(button.icon.get_size())
 	button.size = Vector2(16,16)
 	print(button.size)
-	setup()
 
 const materialsDict = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
@@ -54,8 +62,7 @@ func _updateColour():#make colour chnage with temp, try and accurate blackbody
 
 
 
-func setup(mat = "void",pos = Vector2(0,0)):
-	position = pos
+func setup(mat = "void"):
 	var properties = materialsDict.get(mat,null)
 	if properties == null:
 		properties = materialsDict["water"]
@@ -67,9 +74,6 @@ func setup(mat = "void",pos = Vector2(0,0)):
 	density = properties["density"]
 	mass = density / 1000.0 
 	thermalE = temp*mass*specificHeatCap
-
-	colour = Color(0,temp/400,0)	
-	
 
 
 

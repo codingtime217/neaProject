@@ -3,9 +3,11 @@ extends Node
 #but use tilemap stuff to lock position to increments
 
 @export var tileDimensions = Vector2i(16,16)
+var tileScene = load("res://tile.tscn")
 
-
-
+func _place_tile_(position : Vector2, material) -> void:
+	var tile = tileScene.instantiate()
+	
 func _global_to_local(global : Vector2) -> Vector2:
 	var local = Vector2i(global/tileDimensions)
 	return local
