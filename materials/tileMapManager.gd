@@ -8,9 +8,9 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func _link_signals():
-	var UINode = get_node(^"/root/UIEditor/cont/ItemList")
+	var UINode = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
 	UINode.item_selected.connect(selected)
-	var saveButton = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/save")
+	var saveButton = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
 	
 
@@ -52,7 +52,7 @@ func _process(_delta: float) -> void:
 	mousePos = get_local_mouse_position()
 	if Input.is_action_pressed("left_click"):
 		var tilePos = local_to_map(mousePos)
-		set_cell(tilePos,currentMatAtlas.x,Vector2i(currentMatAtlas.y,currentMatAtlas.z),1)
+		set_cell(tilePos,currentMatAtlas.x,Vector2i(currentMatAtlas.y,currentMatAtlas.z))
 	elif Input.is_action_pressed("right_click"):
 		var tilePos = local_to_map(mousePos)
 		set_cell(tilePos,-1)
