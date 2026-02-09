@@ -45,7 +45,7 @@ func metaData() -> String:
 	
 func writeToFile(fileName,content):
 	var file = FileAccess.open(fileName,FileAccess.WRITE)
-	file.store_string(convertToData())
+	file.store_string(content)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
