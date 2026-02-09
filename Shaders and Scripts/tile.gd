@@ -27,19 +27,18 @@ var button
 var screen_size := Vector2(32,32)
 
 
-static func _newTile(pos : Vector2, material : String, args : Dictionary):
+static func newTile(pos : Vector2, material : String, args : Dictionary = {}):
 	var tileInstance := selfScene.instantiate()
-	tileInstance.compound = material
-	tileInstance.position = pos
-	tileInstance.setup(material)
+	var tileData = tileInstance.get_node(".")
+	tileData.compound = material
+	tileData.position = pos
+	tileData.setup(material)
 	return tileInstance
 
 func _ready():
 	button = get_node("Button")
 	button.icon = load("res://materials/materialNoise1.tres")
-	print(button.icon.get_size())
 	button.size = Vector2(16,16)
-	print(button.size)
 
 const materialsDict = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg

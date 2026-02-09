@@ -3,17 +3,25 @@ extends Node
 #but use tilemap stuff to lock position to increments
 
 @export var tileDimensions = Vector2i(16,16)
-var tileScene = load("res://tile.tscn")
+var tileScene = preload("res://Shaders and Scripts/tile.gd")
+var grid : Dictionary
 
-func _place_tile_(position : Vector2, material) -> void:
-	var tile = tileScene.instantiate()
+func _place_tile_(localposition : Vector2, material) -> void:
+	var tile = tileScene.newTile(_local_to_global(localposition),material)
+	add_child(tile)
+	grid[localposition] = tile
 	
 func _global_to_local(global : Vector2) -> Vector2:
-	var local = Vector2i(global/tileDimensions)
+	var local = Vector2i(int(global.x)/16,int(global.y)/16)
 	return local
+	
+func _local_to_global(local : Vector2i):
+	var global =local * tileDimensions + 1/2*tileDimensions
+	return global
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_place_tile_(Vector2(100,100),"water")
 	pass # Replace with function body.
 
 
