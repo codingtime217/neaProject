@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=4 uid="uid://cxyehu7ibrtv1"]
+[gd_scene load_steps=5 format=3 uid="uid://cxyehu7ibrtv1"]
 
 [ext_resource type="TileSet" uid="uid://emnl307k20am" path="res://materials/tileset.tres" id="1_wlowb"]
 [ext_resource type="Script" uid="uid://cdpoq45eay2pk" path="res://Shaders and Scripts/editor.gd" id="1_wrb8p"]
@@ -9,7 +9,6 @@
 script = ExtResource("1_wrb8p")
 
 [node name="tileManager" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAACAAMAAwAAAAAAAQADAAMAAwAAAAAAAQAEAAMAAwAAAAAAAQAFAAMAAwAAAAAAAQAGAAMAAwAAAAAAAQAHAAMAAwAAAAAAAQAIAAMAAwAAAAAAAQAJAAMAAwAAAAAAAQAKAAMAAwAAAAAAAQALAAMAAwAAAAAAAQAMAAMAAwAAAAAAAQANAAMAAwAAAAAAAQAOAAMAAwAAAAAAAQAPAAMAAwAAAAAAAQAQAAMAAwAAAAAAAQARAAMAAwAAAAAAAQASAAMAAwAAAAAAAQATAAMAAwAAAAAAAQATAAQAAwAAAAAAAQA=")
 tile_set = ExtResource("1_wlowb")
 script = ExtResource("2_vjobr")
 
