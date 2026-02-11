@@ -16,7 +16,7 @@ func _link_signals():
 
 func selected(index : int):
 	print(index)
-	currentMatAtlas.x = index + 1
+	currentMatAtlas.x = index
 	
 	
 func save() -> void:

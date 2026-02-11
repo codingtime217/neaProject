@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bhvq6wnufa6ru"]
 
-[ext_resource type="Script" uid="uid://b5txqyu1tkiii" path="res://property_input.gd" id="1_jr4nj"]
+[ext_resource type="Script" uid="uid://b5txqyu1tkiii" path="res://Shaders and Scripts/property_input.gd" id="1_jr4nj"]
 
 [node name="propertyInput" type="Control"]
 layout_mode = 3

@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://Icons/play2.svg" id="6_bwhil"]
 [ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://Icons/play3.svg" id="7_8248f"]
 [ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="8_2cg7b"]
-[ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://currentSelectedSim.gd" id="9_8fc3u"]
+[ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_8fc3u"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
 
