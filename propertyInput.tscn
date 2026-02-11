@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bhvq6wnufa6ru"]
+[gd_scene load_steps=2 format=3 uid="uid://bhvq6wnufa6ru"]
+
+[ext_resource type="Script" uid="uid://b5txqyu1tkiii" path="res://property_input.gd" id="1_jr4nj"]
 
 [node name="propertyInput" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_jr4nj")
 
 [node name="container" type="HBoxContainer" parent="."]
 layout_mode = 0
