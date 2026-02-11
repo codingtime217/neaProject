@@ -9,7 +9,7 @@ var specificHeatCap = 100.0 #in KJ^-1kg^-1
 var colour = Color(0,0,0)
 var density = 1000.0 #kgm^-3
 var mass = 0.0
-const selfScene = preload("res://tile.tscn")
+const selfScene = preload("res://Scenes/tile.tscn")
 
 #neyuron implementation plan, each tile has neutron cross section, asbrob chance and atomic mass in neutrons
 #neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision

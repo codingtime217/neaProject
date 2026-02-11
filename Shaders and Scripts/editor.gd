@@ -1,5 +1,5 @@
 extends Node2D
-var UI = preload("res://UIeditor.tscn")
+var UI = preload("res://Scenes/UIeditor.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
