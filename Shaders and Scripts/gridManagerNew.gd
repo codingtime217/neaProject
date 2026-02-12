@@ -25,14 +25,20 @@ func selectToMat():
 	var matList = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
 	return matList.get_language(selectedIndex).lower()
 
-func _place_tile_(posMode : String, position : Vector2, material) -> void:
+func _place_tile_(posMode : String, pos : Vector2, mat) -> void:
 	var tile
+	print(grid)
 	if posMode == "l":
-		tile = tileScene.newTile(_local_to_global(position),material)
+		if grid.get(pos) != null:
+			grid[pos].queue_free()
+		tile = tileScene.newTile(_local_to_global(pos),mat)
 		grid[position] = tile
 	elif posMode == "g":
-		tile = tileScene.newTile(position,material)
-		grid[_global_to_local(position)] = tile
+		var localPos = _global_to_local(pos)
+		if grid.get(pos) != null:
+			grid[pos].queue_free()
+		tile = tileScene.newTile(pos,mat)
+		grid[localPos] = tile
 	assert(tile != null,"no posMode Specified, no tile placed")
 	add_child(tile)
 	
@@ -41,9 +47,9 @@ func _global_to_local(global : Vector2) -> Vector2:
 	var local = Vector2i(int(global.x)/16,int(global.y)/16)
 	return local
 	
-func _local_to_global(local : Vector2i):
+func _local_to_global(local : Vector2i) -> Vector2:
 	@warning_ignore("integer_division")
-	var global =local * tileDimensions + 1/2*tileDimensions
+	var global = local * tileDimensions + 1/2*tileDimensions
 	return global
 
 # Called when the node enters the scene tree for the first time.
@@ -56,9 +62,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var mousePos = get_local_mouse_position()
 	if Input.is_action_pressed("left_click"):
-		var tilePos = _local_to_global(mousePos)
-		
+		var tilePos = _global_to_local(mousePos)
+		_place_tile_("l",tilePos,"water")
+		print("place tile")
 	elif Input.is_action_pressed("right_click"):
-		var tilePos = _local_to_global(mousePos)
-		grid[tilePos] = null
+		var tilePos = _global_to_local(mousePos)
+		grid[tilePos].queue_free()
 	pass
