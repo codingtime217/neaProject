@@ -9,15 +9,14 @@ var selectedIndex
 
 func _link_signals(): #fetches the UI nodes and links the signals
 	var UINode = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
-	UINode.item_selected.connect(selected)
+	UINode.item_selected.connect(selectedMat)
 	var saveButton = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
 	
 
 
-func selected(index : int):#updates which material is currently selected
+func selectedMat(index : int):#updates which material is currently selected
 	selectedIndex = index
-	
 	
 func selectToMat():
 	var matList = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")

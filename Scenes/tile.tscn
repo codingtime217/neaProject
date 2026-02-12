@@ -1,15 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://8dsgvgvvqq2t"]
+[gd_scene load_steps=5 format=3 uid="uid://8dsgvgvvqq2t"]
 
 [ext_resource type="Script" uid="uid://byjhnx38d5prh" path="res://Shaders and Scripts/tile.gd" id="1_n3f48"]
 [ext_resource type="Theme" uid="uid://ckjnpalw4k1dd" path="res://UI Themes and Schemes/tileTheme.tres" id="2_vx4y2"]
+[ext_resource type="ButtonGroup" uid="uid://clk2mxsp0qi55" path="res://UI Themes and Schemes/editorTileGroup.tres" id="3_4kj4d"]
+[ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/materialNoise1.tres" id="4_khers"]
 
 [node name="tile" type="Node2D"]
 script = ExtResource("1_n3f48")
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="." groups=["editorTiles"]]
 offset_right = 8.0
 offset_bottom = 8.0
 theme = ExtResource("2_vx4y2")
 toggle_mode = true
+button_group = ExtResource("3_4kj4d")
+text = "button"
+icon = ExtResource("4_khers")
 icon_alignment = 1
 expand_icon = true
