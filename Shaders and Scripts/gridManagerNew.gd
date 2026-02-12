@@ -27,12 +27,11 @@ func selectToMat():
 
 func _place_tile_(posMode : String, pos : Vector2, mat) -> void:
 	var tile
-	print(grid)
 	if posMode == "l":
 		if grid.get(pos) != null:
-			grid[pos].queue_free()
+			grid[pos].free()
 		tile = tileScene.newTile(_local_to_global(pos),mat)
-		grid[position] = tile
+		grid[pos] = tile
 	elif posMode == "g":
 		var localPos = _global_to_local(pos)
 		if grid.get(pos) != null:
@@ -64,8 +63,8 @@ func _process(_delta: float) -> void:
 	if Input.is_action_pressed("left_click"):
 		var tilePos = _global_to_local(mousePos)
 		_place_tile_("l",tilePos,"water")
-		print("place tile")
 	elif Input.is_action_pressed("right_click"):
 		var tilePos = _global_to_local(mousePos)
-		grid[tilePos].queue_free()
+		if grid.get(tilePos) != null:
+			grid[tilePos].queue_free()
 	pass
