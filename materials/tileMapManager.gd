@@ -21,7 +21,7 @@ func selected(index : int):
 	
 func save() -> void:
 	#use some stuff to turn the tileMap into a big string array
-	var fileNameNode = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/simName")
+	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
 	if fileName == "":
 		fileName = "sim.txt"
