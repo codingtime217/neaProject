@@ -21,3 +21,5 @@ text = "Uranium 235"
 
 [node name="SpinBox" type="SpinBox" parent="container"]
 layout_mode = 2
+
+[connection signal="value_changed" from="container/SpinBox" to="." method="changed"]

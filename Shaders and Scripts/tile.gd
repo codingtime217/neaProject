@@ -40,6 +40,14 @@ func _ready():
 	button.icon = load("res://materials/materialNoise1.tres")
 	button.size = Vector2(32,32)
 
+func _get_property_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
+	var constants : Dictionary
+	var variables : Dictionary
+	
+	return [constants,variables]
+
+
+
 const materialsDict = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
 		"conductivity" : 0.6089,
