@@ -11,6 +11,7 @@ script = ExtResource("1_wrb8p")
 
 [node name="tileManager" type="TileMapLayer" parent="."]
 visible = false
+enabled = false
 tile_set = ExtResource("1_wlowb")
 script = ExtResource("2_vjobr")
 

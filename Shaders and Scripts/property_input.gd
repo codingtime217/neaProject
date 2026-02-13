@@ -2,11 +2,15 @@ extends Control
 var parent : Node
 var property := 0
 var mat : String
+var labelBox
+var valueBox
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	parent = get_parent()
+	labelBox = get_node("container/property")
+	valueBox = get_node("container/SpinBox")
+	parent = get_node("...")
 	property = get_index()
-	mat = parent.material
+	mat = parent.mat
 	pass # Replace with function body.
 
 

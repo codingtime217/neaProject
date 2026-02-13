@@ -38,7 +38,7 @@ static func newTile(pos : Vector2, mat : String, _args : Dictionary = {}):
 func _ready():
 	button = get_node("Button")
 	button.icon = load("res://materials/materialNoise1.tres")
-	button.size = Vector2(16,16)
+	button.size = Vector2(32,32)
 
 const materialsDict = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
@@ -82,8 +82,8 @@ func setup(mat = "void"):
 	#draw_rect(Rect2(position, screen_size), colour) #draws cell
 	
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	
 	#queue_redraw()
 	pass

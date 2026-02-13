@@ -7,11 +7,13 @@ var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var grid : Dictionary
 var selectedIndex
 
+
 func _link_signals(): #fetches the UI nodes and links the signals
 	var UINode = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
 	UINode.item_selected.connect(selectedMat)
 	var saveButton = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
+
 	
 
 
