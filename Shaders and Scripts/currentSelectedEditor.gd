@@ -1,6 +1,8 @@
 extends FoldableContainer
 
 #this will instantiate propertyInput scenes in order to allow the properties of the tile to be modified
+
+signal freeDisplays
 var buttonGroup = load("res://UI Themes and Schemes/editorTileGroup.tres")
 var propertyInput = load("res://Scenes/propertyInput.tscn")
 var propertyDisplay = load("res://Scenes/propertyDisplay.tscn")
@@ -13,23 +15,30 @@ func _ready() -> void:
 	pass # Replace with function body.
  
 func changeSelected(button : BaseButton):
+	freeDisplays.emit()
 	selected = button.get_parent()
 	mat = selected.compound
 	var label = get_node("VBoxContainer/HBoxContainer/TileName")
 	label.text = mat.capitalize()
 	var display = get_node("VBoxContainer/HBoxContainer/Colour")
 	display.texture = selected.get_child(0).icon
+	var properties = selected._get_property_list()
+	for i in properties[0].keys():
+		addDisplay(i,properties[0][i],true)
+	for i in properties[1].keys():
+		addDisplay(i,properties[1 ][i])
 	
 func addDisplay(property,value,constant := false):
 	var display
 	if constant:
 		display = propertyDisplay.instantiate()
-		display.property = property
+		#display.property = property
+		#display.value = value
 	else:
 		display = propertyInput.instantiate()
-		display.property = property
-	get_node("VBoxContainer/HBoxContainer").add_child(display)
-	
+		#display.property = property
+		#display.value = value
+	get_node("VBoxContainer").add_child(display)
 
 func updateProperty():
 	pass

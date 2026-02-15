@@ -3,7 +3,7 @@ extends Control
 signal ValueChanged(property,newValue)
 
 var parent : Node
-var property := 0
+var property : String
 var value
 var mat : String
 var labelBox
@@ -14,7 +14,8 @@ var valueBox
 func _ready() -> void:
 	labelBox = get_node("container/property")
 	valueBox = get_node("container/SpinBox")
-	parent = get_node("...")
+	parent = get_node("..")
+	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat
 	pass # Replace with function body.
 

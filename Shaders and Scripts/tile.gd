@@ -43,6 +43,9 @@ func _ready():
 func _get_property_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary
 	var variables : Dictionary
+	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
+	variables = {"thermalE" = thermalE}
+	
 	
 	return [constants,variables]
 
