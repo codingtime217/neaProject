@@ -14,7 +14,7 @@ var valueBox
 func _ready() -> void:
 	labelBox = get_node("container/property")
 	valueBox = get_node("container/SpinBox")
-	parent = get_node("..")
+	parent = get_node("../..")
 	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat
 	pass # Replace with function body.
