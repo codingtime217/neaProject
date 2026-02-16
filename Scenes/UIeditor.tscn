@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://ctt21mckv2qd3"]
+[gd_scene load_steps=9 format=3 uid="uid://ctt21mckv2qd3"]
 
 [ext_resource type="Script" uid="uid://cumi0nvxjnvst" path="res://Shaders and Scripts/matSelected.gd" id="1_ib31x"]
 [ext_resource type="Script" uid="uid://ncx5os7ugqts" path="res://Shaders and Scripts/linkSignals.gd" id="1_pla2u"]
 [ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/materialNoise.tres" id="1_pmaai"]
 [ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/materialNoise1.tres" id="2_ib31x"]
 [ext_resource type="Script" uid="uid://bvvaaa6p254pk" path="res://Shaders and Scripts/currentSelectedEditor.gd" id="4_56m11"]
+[ext_resource type="PackedScene" uid="uid://bhvq6wnufa6ru" path="res://Scenes/propertyInput.tscn" id="5_11c7x"]
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="5_pla2u"]
 [ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="6_rjp24"]
 
@@ -57,6 +58,12 @@ expand_mode = 3
 [node name="HSeparator" type="HSeparator" parent="CanvasLayer/CurrentSelected/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("5_pla2u")
+
+[node name="propertyInput" parent="CanvasLayer/CurrentSelected/VBoxContainer" instance=ExtResource("5_11c7x")]
+layout_mode = 2
+
+[node name="propertyInput2" parent="CanvasLayer/CurrentSelected/VBoxContainer" instance=ExtResource("5_11c7x")]
+layout_mode = 2
 
 [node name="cont" type="FoldableContainer" parent="CanvasLayer"]
 anchors_preset = 1

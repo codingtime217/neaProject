@@ -2,24 +2,13 @@
 
 [ext_resource type="Script" uid="uid://b5txqyu1tkiii" path="res://Shaders and Scripts/property_input.gd" id="1_jr4nj"]
 
-[node name="propertyInput" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="container" type="HBoxContainer"]
+alignment = 1
 script = ExtResource("1_jr4nj")
 
-[node name="container" type="HBoxContainer" parent="."]
-layout_mode = 0
-alignment = 1
-
-[node name="property" type="Label" parent="container"]
+[node name="property" type="Label" parent="."]
 layout_mode = 2
 text = "Uranium 235"
 
-[node name="SpinBox" type="SpinBox" parent="container"]
+[node name="SpinBox" type="SpinBox" parent="."]
 layout_mode = 2
-
-[connection signal="value_changed" from="container/SpinBox" to="." method="changed"]

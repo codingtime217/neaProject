@@ -23,6 +23,7 @@ func changeSelected(button : BaseButton):
 	var display = get_node("VBoxContainer/HBoxContainer/Colour")
 	display.texture = selected.get_child(0).icon
 	var properties = selected._get_property_list()
+	print(properties)
 	for i in properties[0].keys():
 		addDisplay(i,properties[0][i],true)
 	for i in properties[1].keys():
@@ -32,11 +33,11 @@ func addDisplay(property,value,constant := false):
 	var display
 	if constant:
 		display = propertyDisplay.instantiate()
-		#display.property = property
+		display.label = property
 		#display.value = value
 	else:
 		display = propertyInput.instantiate()
-		#display.property = property
+		display.label = property
 		#display.value = value
 	get_node("VBoxContainer").add_child(display)
 

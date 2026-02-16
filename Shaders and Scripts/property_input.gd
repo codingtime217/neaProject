@@ -3,7 +3,7 @@ extends Control
 signal ValueChanged(property,newValue)
 
 var parent : Node
-var property : String
+var label : String
 var value
 var mat : String
 var labelBox
@@ -12,8 +12,8 @@ var valueBox
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	labelBox = get_node("container/property")
-	valueBox = get_node("container/SpinBox")
+	labelBox = get_node("property")
+	valueBox = get_node("SpinBox")
 	parent = get_node("../..")
 	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat
@@ -22,10 +22,11 @@ func _ready() -> void:
 
 func changed(newValue : float):
 	value = newValue
-	ValueChanged.emit(property,newValue)
+	ValueChanged.emit(label,newValue)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	labelBox.text = label
 	#needs to both display current values and if changed overwrite them
 	pass
