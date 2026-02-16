@@ -4,7 +4,7 @@ signal ValueChanged(property,newValue)
 
 var parent : Node
 var label : String
-var value
+var value := 0
 var mat : String
 var labelBox
 var valueBox
@@ -12,12 +12,16 @@ var valueBox
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	labelBox = get_node("property")
+	labelBox = get_node("propertyLabel")
 	valueBox = get_node("SpinBox")
 	parent = get_node("../..")
 	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat
+	labelBox.text = label
+	valueBox.value = value
 	pass # Replace with function body.
+
+
 
 
 func changed(newValue : float):
@@ -27,6 +31,5 @@ func changed(newValue : float):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	labelBox.text = label
 	#needs to both display current values and if changed overwrite them
 	pass

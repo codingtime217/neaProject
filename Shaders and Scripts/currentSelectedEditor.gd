@@ -34,11 +34,11 @@ func addDisplay(property,value,constant := false):
 	if constant:
 		display = propertyDisplay.instantiate()
 		display.label = property
-		#display.value = value
+		display.value = value
 	else:
 		display = propertyInput.instantiate()
 		display.label = property
-		#display.value = value
+		display.value = value
 	get_node("VBoxContainer").add_child(display)
 
 func updateProperty():
