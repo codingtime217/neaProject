@@ -39,9 +39,10 @@ func addDisplay(property,value,constant := false):
 		display = propertyInput.instantiate()
 		display.label = property
 		display.value = value
+		display.ValueChanged.connect(updateProperty)
 	get_node("VBoxContainer").add_child(display)
 
-func updateProperty():
+func updateProperty(property, newValue):
 	pass
 	
 	
