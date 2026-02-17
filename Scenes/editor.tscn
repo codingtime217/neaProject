@@ -1,19 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://cxyehu7ibrtv1"]
+[gd_scene load_steps=4 format=3 uid="uid://cxyehu7ibrtv1"]
 
-[ext_resource type="TileSet" uid="uid://emnl307k20am" path="res://materials/tileset.tres" id="1_wlowb"]
 [ext_resource type="Script" uid="uid://cdpoq45eay2pk" path="res://Shaders and Scripts/editor.gd" id="1_wrb8p"]
-[ext_resource type="Script" uid="uid://dtfh541mplykn" path="res://materials/tileMapManager.gd" id="2_vjobr"]
 [ext_resource type="Script" uid="uid://wcmprtyrn02b" path="res://Shaders and Scripts/camera_2d.gd" id="4_q0a35"]
 [ext_resource type="Script" uid="uid://drbf5iuvjge7j" path="res://Shaders and Scripts/gridManagerNew.gd" id="5_wkuwf"]
 
 [node name="Editor" type="Node2D"]
 script = ExtResource("1_wrb8p")
-
-[node name="tileManager" type="TileMapLayer" parent="."]
-visible = false
-enabled = false
-tile_set = ExtResource("1_wlowb")
-script = ExtResource("2_vjobr")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 460)
@@ -23,3 +15,5 @@ script = ExtResource("4_q0a35")
 
 [node name="gridManager" type="Node2D" parent="."]
 script = ExtResource("5_wkuwf")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="gridManager"]

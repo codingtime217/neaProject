@@ -4,7 +4,7 @@ signal ValueChanged(property,newValue)
 
 var parent : Node
 var label : String
-var value := 0
+var value := 0.0
 var mat : String
 var labelBox
 var valueBox

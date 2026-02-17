@@ -6,6 +6,7 @@ extends Node2D
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var grid : Dictionary
 var selectedIndex
+var canvas
 
 
 func _link_signals(): #fetches the UI nodes and links the signals
@@ -38,7 +39,7 @@ func _place_tile_(posMode : String, pos : Vector2, mat) -> void: #places a tile 
 		tile = tileScene.newTile(pos,mat)
 		grid[localPos] = tile
 	assert(tile != null,"no posMode Specified, no tile placed") #check we actually placed a tile
-	add_child(tile) #place the tile as a child
+	canvas.add_child(tile) #place the tile as a child
 	
 func _global_to_local(global : Vector2) -> Vector2: #converts global coords to coords on the grid
 	@warning_ignore("integer_division")
@@ -47,11 +48,12 @@ func _global_to_local(global : Vector2) -> Vector2: #converts global coords to c
 	
 func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid to global coords
 	@warning_ignore("integer_division")
-	var global = local * tileDimensions + 1/2*tileDimensions
+	var global = Vector2i(local.x * 16,local.y*16) + 1/2*tileDimensions
 	return global
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	canvas = get_node("CanvasLayer")
 	pass # Replace with function body.
 
 

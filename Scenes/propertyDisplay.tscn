@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dylmup2i8e3ca"]
 
-[ext_resource type="Script" uid="uid://diwgricx6lxth" path="res://Scenes/property_display.gd" id="1_vmq37"]
+[ext_resource type="Script" uid="uid://diwgricx6lxth" path="res://Shaders and Scripts/property_display.gd" id="1_vmq37"]
 
 [node name="container" type="HBoxContainer"]
 alignment = 1
