@@ -1,9 +1,15 @@
 [gd_scene load_steps=2 format=3 uid="uid://dylmup2i8e3ca"]
 
-[ext_resource type="Script" uid="uid://diwgricx6lxth" path="res://Shaders and Scripts/property_display.gd" id="1_vmq37"]
+[sub_resource type="GDScript" id="GDScript_ldnmm"]
+script/source = "extends \"res://Shaders and Scripts/propDisplaySuperClass.gd\"
+
+var me = Display()
+# Called when the node enters the scene tree for the first time.
+"
 
 [node name="container" type="HBoxContainer"]
-script = ExtResource("1_vmq37")
+alignment = 1
+script = SubResource("GDScript_ldnmm")
 
 [node name="propertyLabel" type="Label" parent="."]
 layout_mode = 2
@@ -12,4 +18,3 @@ text = "Uranium 235"
 [node name="propertyData" type="Label" parent="."]
 layout_mode = 2
 text = "Uranium 235"
-horizontal_alignment = 2

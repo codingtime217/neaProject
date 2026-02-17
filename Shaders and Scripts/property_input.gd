@@ -17,10 +17,17 @@ func _ready() -> void:
 	parent = get_node("../..")
 	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat
-	labelBox.text = label
+	labelBox.text = cleanup(label)
 	valueBox.value = value
 	pass # Replace with function body.
 
+func cleanup(text : String) -> String:
+	var cleanedText = ""
+	var text2 = text.split("_")
+	for i in text2:
+		cleanedText = cleanedText + " " + i.capitalize()
+		cleanedText.strip_edges()
+	return cleanedText + ":"
 
 
 
