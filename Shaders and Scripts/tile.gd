@@ -3,7 +3,7 @@ extends Node2D
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
 @export var temp = 293.15 #in kelvin
-var thermalE = 10.0
+var thermal_energy = 10.0
 var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
 var specificHeatCap = 100.0 #in KJ^-1kg^-1
 var colour = Color(0,0,0)
@@ -44,10 +44,14 @@ func _get_property_list() -> Array[Dictionary]: #will return an array of dicts o
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
-	variables = {"thermalE" = thermalE}
-	
-	
+	variables = {"thermal_energy" = thermal_energy}
 	return [constants,variables]
+	
+func _update_properties(properties : Dictionary) -> void:
+	print(properties)
+	if properties.get("thermal_energy") != null:
+		thermal_energy = properties.get(thermal_energy)
+	pass
 
 
 
@@ -83,7 +87,7 @@ func setup(mat = "void"):
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
 	mass = density / 1000.0 
-	thermalE = temp*mass*specificHeatCap
+	thermal_energy = temp*mass*specificHeatCap
 
 
 
