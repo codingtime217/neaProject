@@ -13,6 +13,7 @@ text = "Uranium 235"
 layout_mode = 2
 max_value = 1000000.0
 step = 0.0
+value = 100.0
 alignment = 2
 
 [connection signal="value_changed" from="SpinBox" to="." method="changed"]

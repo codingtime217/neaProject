@@ -40,7 +40,7 @@ func _ready():
 	button.icon = load("res://materials/materialNoise1.tres")
 	button.size = Vector2(32,32)
 
-func _get_property_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
+func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
@@ -50,7 +50,8 @@ func _get_property_list() -> Array[Dictionary]: #will return an array of dicts o
 func _update_properties(properties : Dictionary) -> void:
 	print(properties)
 	if properties.get("thermal_energy") != null:
-		thermal_energy = properties.get(thermal_energy)
+		
+		thermal_energy = properties.get("thermal_energy")
 	pass
 
 

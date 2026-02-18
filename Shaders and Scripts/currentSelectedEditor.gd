@@ -7,6 +7,7 @@ var buttonGroup = load("res://UI Themes and Schemes/editorTileGroup.tres")
 var propertyInput = load("res://Scenes/propertyInput.tscn")
 var propertyDisplay = load("res://Scenes/propertyDisplay.tscn")
 
+var displaysActive := false
 var selected : Node2D
 var mat : String
 # Called when the node enters the scene tree for the first time.
@@ -15,6 +16,7 @@ func _ready() -> void:
 	pass # Replace with function body.
  
 func changeSelected(button : BaseButton):
+	displaysActive = false
 	freeDisplays.emit()
 	selected = button.get_parent()
 	mat = selected.compound
@@ -22,7 +24,7 @@ func changeSelected(button : BaseButton):
 	label.text = mat.capitalize()
 	var display = get_node("VBoxContainer/HBoxContainer/Colour")
 	display.texture = selected.get_child(0).icon
-	var properties = selected._get_property_list()
+	var properties = selected.get_variable_list()
 	for i in properties[0].keys():
 		addDisplay(i,properties[0][i],true)
 	for i in properties[1].keys():
@@ -33,7 +35,6 @@ func addDisplay(property,value,constant := false):
 	if constant:
 		display = propertyDisplay.instantiate()
 		display.label = property
-		print(property)
 		display.value = value
 	else:
 		display = propertyInput.instantiate()
@@ -41,9 +42,12 @@ func addDisplay(property,value,constant := false):
 		display.value = value
 		display.ValueChanged.connect(updateProperty)
 	get_node("VBoxContainer").add_child(display)
+	displaysActive = true
 
 func updateProperty(property, newValue):
-	selected._update_properties({property : newValue})
+	if displaysActive:
+		print({property:newValue})
+		selected._update_properties({property : newValue})
 	pass
 	
 	
