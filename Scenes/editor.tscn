@@ -17,3 +17,4 @@ script = ExtResource("4_q0a35")
 script = ExtResource("5_wkuwf")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="gridManager"]
+follow_viewport_enabled = true

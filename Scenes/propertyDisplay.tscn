@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://diwgricx6lxth" path="res://Shaders and Scripts/property_display.gd" id="1_vmq37"]
 
 [node name="container" type="HBoxContainer"]
+size_flags_horizontal = 3
 script = ExtResource("1_vmq37")
 
 [node name="propertyLabel" type="Label" parent="."]
@@ -11,5 +12,6 @@ text = "Uranium 235"
 
 [node name="propertyData" type="Label" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Uranium 235"
 horizontal_alignment = 2

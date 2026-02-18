@@ -8,6 +8,7 @@ var value := 0.0
 var mat : String
 var labelBox
 var valueBox
+const units := {"temperature" : " (K)"}
 
 
 # Called when the node enters the scene tree for the first time.
@@ -27,7 +28,7 @@ func cleanup(text : String) -> String:
 	for i in text2:
 		cleanedText = cleanedText + " " + i.capitalize()
 		cleanedText.strip_edges()
-	return cleanedText + ":"
+	return cleanedText +units[text] +  ":"
 
 
 

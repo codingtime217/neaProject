@@ -46,7 +46,6 @@ func addDisplay(property,value,constant := false):
 
 func updateProperty(property, newValue):
 	if displaysActive:
-		print({property:newValue})
 		selected._update_properties({property : newValue})
 	pass
 	

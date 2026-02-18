@@ -8,8 +8,8 @@
 script = ExtResource("1_n3f48")
 
 [node name="Button" type="Button" parent="." groups=["editorTiles"]]
-offset_right = 16.0
-offset_bottom = 16.0
+offset_left = -8.0
+offset_right = -8.0
 focus_mode = 0
 theme = ExtResource("2_vx4y2")
 toggle_mode = true

@@ -38,20 +38,23 @@ static func newTile(pos : Vector2, mat : String, _args : Dictionary = {}):
 func _ready():
 	button = get_node("Button")
 	button.icon = load("res://materials/materialNoise1.tres")
-	button.size = Vector2(32,32)
+	button.size = Vector2(16,16)
 
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
-	variables = {"thermal_energy" = thermal_energy}
+	variables = {"temperature" = temp}
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
 	print(properties)
 	if properties.get("thermal_energy") != null:
-		
 		thermal_energy = properties.get("thermal_energy")
+		temp = mass*specificHeatCap/thermal_energy
+	elif properties.get("temperature") != null:
+		temp = properties.get("temperature")
+		thermal_energy = temp*mass*specificHeatCap
 	pass
 
 
