@@ -23,9 +23,12 @@ var decayDistribution #lists what % is what type of decy
 var absorbChance : float
 var fissionChance : float
 var atomicMass
-@onready var button = $Button
+
 var screen_size := Vector2(32,32)
 
+
+@onready var button = $Button
+@onready var overlay = $overlay
 
 static func newTile(pos : Vector2, mat : String, _args : Dictionary = {}):
 	var tileInstance := selfScene.instantiate()
@@ -106,3 +109,8 @@ func _process(_delta: float) -> void:
 
 
  # Replace with function body.
+
+
+func _on_button_toggled(toggled_on: bool) -> void:
+	overlay.visible = toggled_on
+	pass # Replace with function body.
