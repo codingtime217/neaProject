@@ -1,0 +1,105 @@
+extends Node2D
+#note on sim, each cell is treated as a 0.001m^3 cube (0.1m by 0.1m by 0.1m)
+
+
+@export var dimensions = Vector2(32,32) #dimensions of each cell
+@export var height = 10.0 #rectangle of cell dimesnon
+@export var width = 10.0
+@export var grid = {}
+var tile = load("res://Shaders and Scripts/tile.gd")
+var energy : float
+# Called when the node enters the scene tree for the first time.
+
+
+
+
+func _generateGrid() -> void:
+	var newcoord  #stores the key for each tile about to be made
+	var newtile #stores the tile breifly
+	grid["width"] = width
+	grid["height"] = height
+	for i in width:
+		for j in height:
+			newcoord = Vector2(i,j) #sets the key/coordinates
+			newtile = tile.new()
+			newtile.setup("water",newcoord*16)
+			add_child(newtile)
+			grid[newcoord] = newtile
+			 # instantiates a new water tile, and gives it its global position (the key * 32 as 32 by 32 sqaures)
+
+func _ready() -> void:
+	_generateGrid()
+	
+	pass # Replace with function body.
+
+
+func _getNeighbours(location = Vector2()):
+	var value
+	const fetchVectors = [Vector2(1,0),Vector2(-1,0),Vector2(0,1),Vector2(0,-1)]
+	var neighbours = []
+	var toFetch = Vector2(0,0)
+	#fetches the 4 tiles around the position given, in anticlockwise order from the left hand side
+	for i in fetchVectors:
+		toFetch = location + i
+		value = grid.get(toFetch,null)
+		if value != null:
+			neighbours.append(value) #if we got something append it
+		else:
+			neighbours.append(null) #if not make sure the list is still the right length and we have an indiator of a blank
+	return neighbours
+
+func _getHeatFlux(tile1,tile2):
+	#finding heat flux using equation q = -kdeltaT, finding flux from 1 to 2
+	#q is flux, k is conductivty, detlaT is differecne in temp/distance	
+	if (tile1 == null) or (tile2 == null) or tile1.compound == "void" or tile2.compound == "void":
+		return 0
+	var distance = 0.1 #o.1 m
+	if tile1.conductivity == tile2.conductivity:
+		#smae material, this simplifies things
+		#print("not coid")
+		var dT = (tile1.temp - tile2.temp)/distance # should find flux into tile1 (positive is tile1 going up)
+		return dT*-tile1.conductivity
+	elif tile1.conductivity == 0 or tile2.conductivity == 0:
+		return 0.0
+	else:
+		var dT = (tile1.temp - tile2.temp)/distance
+		return dT *-((tile1.conductivity+tile2.conductivity)/2) #just average the two conductivityies 
+		
+
+func _overallFlux(pos1= Vector2()): #define flux from left to right as positive and right to left as negative
+	#flux down is pos, flux up is negative
+	#thus aligns with screen coords
+	var neighbours = _getNeighbours(pos1)
+	var fluxes = []
+	var net  = 0.0
+	var flux = 0.0
+	for i in neighbours: #finds all the individual fluxes
+		flux =_getHeatFlux(grid[pos1],i) 
+		fluxes.append(flux) #stores in an array for vector drawing
+		net += flux #sums them for the overall cahnge
+	var vFlux = Vector2()
+	vFlux.x = fluxes[1] - fluxes[0]
+	vFlux.y = fluxes[2] - fluxes[3] #makes the vector by resolving opposite sides
+	return [net,vFlux]
+
+
+func _update():
+	var netFlux
+	var fluxes
+	var cell
+
+	for currentCell in grid.keys():
+		cell = grid[currentCell]
+		fluxes = _overallFlux(currentCell) 
+		netFlux = fluxes[0]#get the overall change
+		cell.temp += netFlux/(cell.specificHeatCap * cell.mass) #change the temp
+		cell.queue_redraw() #force a new draw for the cell to update its appearance
+	
+	
+
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	#_update()
+	pass

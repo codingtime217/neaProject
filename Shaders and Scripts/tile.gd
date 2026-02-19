@@ -23,7 +23,7 @@ var decayDistribution #lists what % is what type of decy
 var absorbChance : float
 var fissionChance : float
 var atomicMass
-var button
+@onready var button = $Button
 var screen_size := Vector2(32,32)
 
 
@@ -36,8 +36,7 @@ static func newTile(pos : Vector2, mat : String, _args : Dictionary = {}):
 	return tileInstance
 
 func _ready():
-	button = get_node("Button")
-	button.icon = load("res://materials/materialNoise1.tres")
+	button.texture_normal = load("res://materials/" + compound + ".tres")
 	button.size = Vector2(16,16)
 
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
@@ -85,8 +84,6 @@ func setup(mat = "void"):
 	if properties == null:
 		properties = materialsDict["water"]
 	compound = mat
-	
-	
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
@@ -106,3 +103,6 @@ func _process(_delta: float) -> void:
 	
 	#queue_redraw()
 	pass
+
+
+ # Replace with function body.

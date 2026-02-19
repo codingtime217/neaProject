@@ -2,7 +2,7 @@
 
 [sub_resource type="Gradient" id="Gradient_dils4"]
 offsets = PackedFloat32Array(0, 0.52422905, 1)
-colors = PackedColorArray(0.8024569, 0.747735, 0, 1, 0.2277188, 0.51858246, 0.9139803, 1, 0.88495314, 0.4410757, 0.8727262, 1)
+colors = PackedColorArray(0.1795238, 0.8153061, 0.9213319, 1, 0.2277188, 0.51858246, 0.9139803, 1, 0.55048716, 0.60666513, 0.97078127, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8gs6s"]
 seed = 2

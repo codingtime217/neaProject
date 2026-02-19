@@ -1,5 +1,6 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://ckjnpalw4k1dd"]
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://ckjnpalw4k1dd"]
 
+[ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/uranium235.tres" id="1_87bg2"]
 [ext_resource type="StyleBox" uid="uid://csmkukes5kv1m" path="res://UI Themes and Schemes/tileStyle.tres" id="1_nu70p"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nu70p"]
@@ -7,6 +8,10 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q3svo"]
 
 [resource]
+Button/colors/icon_focus_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+Button/icons/icon = ExtResource("1_87bg2")
 Button/styles/focus = SubResource("StyleBoxEmpty_nu70p")
 Button/styles/hover = ExtResource("1_nu70p")
 Button/styles/normal = SubResource("StyleBoxEmpty_q3svo")

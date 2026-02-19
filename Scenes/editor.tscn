@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cdpoq45eay2pk" path="res://Shaders and Scripts/editor.gd" id="1_wrb8p"]
 [ext_resource type="Script" uid="uid://wcmprtyrn02b" path="res://Shaders and Scripts/camera_2d.gd" id="4_q0a35"]
-[ext_resource type="Script" uid="uid://drbf5iuvjge7j" path="res://Shaders and Scripts/gridManagerNew.gd" id="5_wkuwf"]
+[ext_resource type="Script" uid="uid://drbf5iuvjge7j" path="res://Shaders and Scripts/gridManager.gd" id="5_wkuwf"]
 
 [node name="Editor" type="Node2D"]
 script = ExtResource("1_wrb8p")

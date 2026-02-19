@@ -6,15 +6,14 @@ var parent : Node
 var label : String
 var value := 0.0
 var mat : String
-var labelBox
-var valueBox
+@onready var labelBox =$propertyLabel
+@onready var valueBox = $SpinBox
 const units := {"temperature" : " (K)"}
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	labelBox = get_node("propertyLabel")
-	valueBox = get_node("SpinBox")
+
 	parent = get_node("../..")
 	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat

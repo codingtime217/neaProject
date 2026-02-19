@@ -1,105 +1,95 @@
 extends Node2D
-#note on sim, each cell is treated as a 0.001m^3 cube (0.1m by 0.1m by 0.1m)
+#tis will be a combo of the other methods, ie instnacing nodes + dict/array for storing
+#but use tilemap stuff to lock position to increments
+
+@export var tileDimensions = Vector2i(16,16)
+var tileScene = preload("res://Shaders and Scripts/tile.gd")
+var grid : Dictionary
+var selectedIndex
+@onready var canvas = $CanvasLayer
 
 
-@export var dimensions = Vector2(32,32) #dimensions of each cell
-@export var height = 10.0 #rectangle of cell dimesnon
-@export var width = 10.0
-@export var grid = {}
-var tile = load("res://Shaders and Scripts/tile.gd")
-var energy : float
+func _link_signals(): #fetches the UI nodes and links the signals
+	var UINode = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
+	UINode.item_selected.connect(selectedMat)
+	var saveButton = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
+	saveButton.pressed.connect(save)
+
+	
+
+
+func selectedMat(index : int):#updates which material is currently selected
+	selectedIndex = index
+	
+func selectToMat():
+	var matList = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
+	return matList.get_language(selectedIndex).lower()
+
+func _place_tile_(posMode : String, pos : Vector2, mat) -> void: #places a tile in the specified position
+	var tile
+	if posMode == "l": #if the coordinate is local do this
+		if grid.get(pos) != null: #checks if a tile is already there
+			grid[pos].free() #removes the tile if it is there
+		tile = tileScene.newTile(_local_to_global(pos),mat) #make the tile
+		grid[pos] = tile #put it in the dict
+	elif posMode == "g": #if the coord is global do this
+		var localPos = _global_to_local(pos)
+		if grid.get(pos) != null:
+			grid[pos].queue_free()
+		tile = tileScene.newTile(pos,mat)
+		grid[localPos] = tile
+	assert(tile != null,"no posMode Specified, no tile placed") #check we actually placed a tile
+	canvas.add_child(tile) #place the tile as a child
+	
+func _global_to_local(global : Vector2) -> Vector2: #converts global coords to coords on the grid
+	@warning_ignore("integer_division")
+	var local = Vector2i(int(global.x)/16,int(global.y)/16)
+	return local
+	
+func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid to global coords
+	@warning_ignore("integer_division")
+	var global = Vector2i(local.x * 16,local.y*16) + 1/2*tileDimensions
+	return global
+
 # Called when the node enters the scene tree for the first time.
-
-
-
-
-func _generateGrid() -> void:
-	var newcoord  #stores the key for each tile about to be made
-	var newtile #stores the tile breifly
-	grid["width"] = width
-	grid["height"] = height
-	for i in width:
-		for j in height:
-			newcoord = Vector2(i,j) #sets the key/coordinates
-			newtile = tile.new()
-			newtile.setup("water",newcoord*16)
-			add_child(newtile)
-			grid[newcoord] = newtile
-			 # instantiates a new water tile, and gives it its global position (the key * 32 as 32 by 32 sqaures)
-
 func _ready() -> void:
-	_generateGrid()
-	
 	pass # Replace with function body.
-
-
-func _getNeighbours(location = Vector2()):
-	var value
-	const fetchVectors = [Vector2(1,0),Vector2(-1,0),Vector2(0,1),Vector2(0,-1)]
-	var neighbours = []
-	var toFetch = Vector2(0,0)
-	#fetches the 4 tiles around the position given, in anticlockwise order from the left hand side
-	for i in fetchVectors:
-		toFetch = location + i
-		value = grid.get(toFetch,null)
-		if value != null:
-			neighbours.append(value) #if we got something append it
-		else:
-			neighbours.append(null) #if not make sure the list is still the right length and we have an indiator of a blank
-	return neighbours
-
-func _getHeatFlux(tile1,tile2):
-	#finding heat flux using equation q = -kdeltaT, finding flux from 1 to 2
-	#q is flux, k is conductivty, detlaT is differecne in temp/distance	
-	if (tile1 == null) or (tile2 == null) or tile1.compound == "void" or tile2.compound == "void":
-		return 0
-	var distance = 0.1 #o.1 m
-	if tile1.conductivity == tile2.conductivity:
-		#smae material, this simplifies things
-		#print("not coid")
-		var dT = (tile1.temp - tile2.temp)/distance # should find flux into tile1 (positive is tile1 going up)
-		return dT*-tile1.conductivity
-	elif tile1.conductivity == 0 or tile2.conductivity == 0:
-		return 0.0
-	else:
-		var dT = (tile1.temp - tile2.temp)/distance
-		return dT *-((tile1.conductivity+tile2.conductivity)/2) #just average the two conductivityies 
-		
-
-func _overallFlux(pos1= Vector2()): #define flux from left to right as positive and right to left as negative
-	#flux down is pos, flux up is negative
-	#thus aligns with screen coords
-	var neighbours = _getNeighbours(pos1)
-	var fluxes = []
-	var net  = 0.0
-	var flux = 0.0
-	for i in neighbours: #finds all the individual fluxes
-		flux =_getHeatFlux(grid[pos1],i) 
-		fluxes.append(flux) #stores in an array for vector drawing
-		net += flux #sums them for the overall cahnge
-	var vFlux = Vector2()
-	vFlux.x = fluxes[1] - fluxes[0]
-	vFlux.y = fluxes[2] - fluxes[3] #makes the vector by resolving opposite sides
-	return [net,vFlux]
-
-
-func _update():
-	var netFlux
-	var fluxes
-	var cell
-
-	for currentCell in grid.keys():
-		cell = grid[currentCell]
-		fluxes = _overallFlux(currentCell) 
-		netFlux = fluxes[0]#get the overall change
-		cell.temp += netFlux/(cell.specificHeatCap * cell.mass) #change the temp
-		cell.queue_redraw() #force a new draw for the cell to update its appearance
-	
-	
-
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	#_update()
+	var mousePos = get_local_mouse_position() #updates mouse position
+	if Input.is_action_pressed("left_click"): #left click events place tiles
+		var tilePos = _global_to_local(mousePos)
+		_place_tile_("l",tilePos,"water")
+	elif Input.is_action_pressed("right_click"): #right click removes
+		var tilePos = _global_to_local(mousePos)
+		if grid.get(tilePos) != null: #check theres actually a tile to remove
+			grid[tilePos].queue_free()
 	pass
+
+
+func save() -> void:
+	#use some stuff to turn the tileMap into a big string array
+	var fileNameNode = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/simName")
+	var fileName = fileNameNode.text + ".txt"
+	if fileName == "":
+		fileName = "sim.txt"
+	print(fileName)
+	writeToFile(fileName,metaData())
+	
+	
+func convertToData() -> String: #will convert the grid Dict to a string of data to write to a file
+	var cellData : String
+	var cell : TileData
+	return ""
+	
+func metaData() -> String: #encode the dimesnions of the grid + other info to be placed at the start of the file
+
+	
+	return "hello"
+	
+	
+func writeToFile(fileName,content): #write a string to a file
+	var file = FileAccess.open(fileName,FileAccess.WRITE)
+	file.store_string(content)

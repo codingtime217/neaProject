@@ -6,10 +6,11 @@ signal freeDisplays
 var buttonGroup = load("res://UI Themes and Schemes/editorTileGroup.tres")
 var propertyInput = load("res://Scenes/propertyInput.tscn")
 var propertyDisplay = load("res://Scenes/propertyDisplay.tscn")
-
 var displaysActive := false
 var selected : Node2D
 var mat : String
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	buttonGroup.pressed.connect(changeSelected)
@@ -23,7 +24,7 @@ func changeSelected(button : BaseButton):
 	var label = get_node("VBoxContainer/HBoxContainer/TileName")
 	label.text = mat.capitalize()
 	var display = get_node("VBoxContainer/HBoxContainer/Colour")
-	display.texture = selected.get_child(0).icon
+	display.texture = selected.get_child(0).texture_normal
 	var properties = selected.get_variable_list()
 	for i in properties[0].keys():
 		addDisplay(i,properties[0][i],true)
