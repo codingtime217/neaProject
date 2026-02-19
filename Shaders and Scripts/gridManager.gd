@@ -70,6 +70,9 @@ func _process(_delta: float) -> void:
 
 
 func save() -> void:
+	var tileKeyArray = dictToArrayOfKeys(grid)["array"]
+	var dataArray = keysToData(tileKeyArray)
+	
 	
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
@@ -77,7 +80,7 @@ func save() -> void:
 	if fileName == "":
 		fileName = "sim.txt"
 	print(fileName)
-	writeToFile(fileName,metaData())
+	writeToFile(fileName,metaData() + "\n" + str(dataArray))
 	
 func dictToArrayOfKeys(dict : Dictionary) -> Dictionary:
 	var array := [[]]
@@ -118,13 +121,15 @@ func _insertItemToArrayOfKeys(array : Array, item) -> Array:
 	print("couldn't insert", item) #let me know if it didn't work
 	return array	
 
-	
 
-	
+
+
 func keysToData(keys : Array) -> Array:
 	var arrayForm = []
 	for i in keys:
-		arrayForm.append(grid.get(i,null))
+		var rawData = grid.get(i,null)
+		var cleanData = [rawData.compound,rawData.get_variable_list()[1]] 
+		arrayForm.append(cleanData)
 	return arrayForm #does what is says on the tin
 	
 func convertToData() -> String: #will convert the grid Dict to a string of data to write to a file

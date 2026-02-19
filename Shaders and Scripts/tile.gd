@@ -110,7 +110,6 @@ func _process(_delta: float) -> void:
 
  # Replace with function body.
 
-
 func _on_button_toggled(toggled_on: bool) -> void:
 	overlay.visible = toggled_on
 	pass # Replace with function body.
