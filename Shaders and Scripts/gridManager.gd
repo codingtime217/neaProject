@@ -70,14 +70,63 @@ func _process(_delta: float) -> void:
 
 
 func save() -> void:
+	
+	print(dictToArrayOfKeys(grid))
 	#use some stuff to turn the tileMap into a big string array
-	var fileNameNode = get_node(^"/root/UIEditor/PanelContainer/VBoxContainer/HBoxContainer/simName")
+	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
 	if fileName == "":
 		fileName = "sim.txt"
 	print(fileName)
 	writeToFile(fileName,metaData())
 	
+func dictToArrayOfKeys(grid : Dictionary) -> Dictionary:
+	var array := [[]]
+	var maxX := 0
+	var minX := 10000000000000000000000
+	for i in grid.keys():
+		if i.x > maxX:
+			maxX = i.x
+		elif i.x <= minX:
+			minX = i.x
+		if array == [[]]:
+			array[0].append(i)
+		else:
+			array = _insertItemToArrayOfKeys(array,i)
+	var width = maxX-minX
+	var finalArray = []
+	for i in array:
+		finalArray = finalArray + i
+		
+	return {"width" : maxX-minX, "array" : finalArray}
+		
+func _insertItemToArrayOfKeys(array : Array, item) -> Array:
+	if item.y > array[-1][0].y:
+		array.append([item])
+		return array
+	for j in len(array):
+		if item.y == array[j][0].y:
+			for k in range(len(array[j])):
+				if item.x < array[j][k].x:
+							array[j].insert(k,item)
+							return array
+			array[j].append(item)
+			return array
+		elif item.y < array[j][0].y:
+			array.insert(j,[item])
+			return array
+	
+	print("couldn't insert", item)
+	return array	
+
+	
+
+	
+func keysToData(keys : Array) -> Array:
+	var arrayForm = []
+	for i in keys:
+		arrayForm.append(grid.get(i,null))
+	return arrayForm
 	
 func convertToData() -> String: #will convert the grid Dict to a string of data to write to a file
 	var cellData : String
