@@ -34,9 +34,3 @@ func cleanup(text : String) -> String:
 func changed(newValue : float):
 	value = newValue
 	ValueChanged.emit(label,newValue)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	#needs to both display current values and if changed overwrite them
-	pass

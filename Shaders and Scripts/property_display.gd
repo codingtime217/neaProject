@@ -26,8 +26,3 @@ func cleanup(text : String) -> String:
 		cleanedText = cleanedText + " " + i.capitalize()
 		cleanedText.strip_edges()
 	return cleanedText +units[text] +  ":"
-
-
-	# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass

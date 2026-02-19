@@ -71,7 +71,6 @@ func _process(_delta: float) -> void:
 
 func save() -> void:
 	
-	print(dictToArrayOfKeys(grid))
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
@@ -80,43 +79,43 @@ func save() -> void:
 	print(fileName)
 	writeToFile(fileName,metaData())
 	
-func dictToArrayOfKeys(grid : Dictionary) -> Dictionary:
+func dictToArrayOfKeys(dict : Dictionary) -> Dictionary:
 	var array := [[]]
-	var maxX := 0
-	var minX := 10000000000000000000000
-	for i in grid.keys():
-		if i.x > maxX:
+	var maxX := 0 #small number
+	var minX := 2**63 #largest singed 64 bit intger
+	for i in dict.keys(): #goes though all the keys in order
+		if i.x > maxX: #find max and mins to determine the width we need
 			maxX = i.x
 		elif i.x <= minX:
 			minX = i.x
 		if array == [[]]:
-			array[0].append(i)
+			array[0].append(i) #if its empty just slap it in
 		else:
-			array = _insertItemToArrayOfKeys(array,i)
+			array = _insertItemToArrayOfKeys(array,i) #otherwise find the appropriate place
 	var width = maxX-minX
 	var finalArray = []
 	for i in array:
-		finalArray = finalArray + i
+		finalArray = finalArray + i #convert it to a 1d array
 		
-	return {"width" : maxX-minX, "array" : finalArray}
+	return {"width" : width, "array" : finalArray} #return with metadata
 		
 func _insertItemToArrayOfKeys(array : Array, item) -> Array:
-	if item.y > array[-1][0].y:
+	if item.y > array[-1][0].y: #put at the end if appropriate
 		array.append([item])
 		return array
 	for j in len(array):
-		if item.y == array[j][0].y:
+		if item.y == array[j][0].y: #find row if it exists
 			for k in range(len(array[j])):
-				if item.x < array[j][k].x:
+				if item.x < array[j][k].x: #find the right spot
 							array[j].insert(k,item)
 							return array
-			array[j].append(item)
+			array[j].append(item) #or slap on the end
 			return array
-		elif item.y < array[j][0].y:
+		elif item.y < array[j][0].y: #insert the row if it doesnt
 			array.insert(j,[item])
 			return array
 	
-	print("couldn't insert", item)
+	print("couldn't insert", item) #let me know if it didn't work
 	return array	
 
 	
@@ -126,7 +125,7 @@ func keysToData(keys : Array) -> Array:
 	var arrayForm = []
 	for i in keys:
 		arrayForm.append(grid.get(i,null))
-	return arrayForm
+	return arrayForm #does what is says on the tin
 	
 func convertToData() -> String: #will convert the grid Dict to a string of data to write to a file
 	var cellData : String
