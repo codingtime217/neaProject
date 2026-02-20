@@ -70,37 +70,37 @@ func _process(_delta: float) -> void:
 
 
 func save() -> void:
-	var tileKeyArray = dictToArrayOfKeys(grid)["array"]
-	var dataArray = keysToData(tileKeyArray)
-	
-	
+	var tileKeyArray = dictToArrayOfKeys(grid)
+	var width = int(tileKeyArray["width"]) + 1
+	var dataArray = keysToData(cleanArray(tileKeyArray["minX"],width,tileKeyArray["array"]),tileKeyArray["minX"])
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
 	if fileName == "":
 		fileName = "sim.txt"
-	print(fileName)
-	writeToFile(fileName,metaData() + "\n" + str(dataArray))
+	var dataToWrite = ""
+	var meta = metaData(width,dataArray)
+	for i in dataArray:
+		dataToWrite = dataToWrite + str(i) + "\n"
+	
+	writeToFile(fileName, meta + "\n" + dataToWrite)
 	
 func dictToArrayOfKeys(dict : Dictionary) -> Dictionary:
 	var array := [[]]
 	var maxX := 0 #small number
-	var minX := 2**63 #largest singed 64 bit intger
+	var minX := 2**62 #largest singed 64 bit intger
 	for i in dict.keys(): #goes though all the keys in order
 		if i.x > maxX: #find max and mins to determine the width we need
-			maxX = i.x
-		elif i.x <= minX:
-			minX = i.x
+			maxX = int(i.x)
+		if i.x <= minX:
+			minX = int(i.x)
 		if array == [[]]:
 			array[0].append(i) #if its empty just slap it in
 		else:
 			array = _insertItemToArrayOfKeys(array,i) #otherwise find the appropriate place
 	var width = maxX-minX
-	var finalArray = []
-	for i in array:
-		finalArray = finalArray + i #convert it to a 1d array
-		
-	return {"width" : width, "array" : finalArray} #return with metadata
+
+	return {"minX" : minX,"width" : width, "array" : array} #return with metadata
 		
 func _insertItemToArrayOfKeys(array : Array, item) -> Array:
 	if item.y > array[-1][0].y: #put at the end if appropriate
@@ -123,25 +123,57 @@ func _insertItemToArrayOfKeys(array : Array, item) -> Array:
 
 
 
-
-func keysToData(keys : Array) -> Array:
+func keysToData(keys : Array,minX : int) -> Array:
 	var arrayForm = []
 	for i in keys:
-		var rawData = grid.get(i,null)
-		var cleanData = [rawData.compound,rawData.get_variable_list()[1]] 
+		if i == null: #ignore empty cells
+			arrayForm.append(null) #make sure we don't lose them though
+			continue
+		var rawData = grid.get(i + Vector2(minX,0),null) #has to undo early transform as grid is global coords not position in grid
+		var cleanData
+		if rawData != null:
+			cleanData = [rawData.compound,rawData.get_variable_list()[1]] 
 		arrayForm.append(cleanData)
 	return arrayForm #does what is says on the tin
 	
-func convertToData() -> String: #will convert the grid Dict to a string of data to write to a file
-	var cellData : String
-	var cell : TileData
-	return ""
+func cleanArray (minX : int,width : int,keyArray : Array) -> Array: #cleans up the array so every part covers the whole width
+	var cleanArray = []
+	for i in keyArray:
+		i.resize(width) #make all rows the same width
+		for j in range(1,width+1): #starrt from the back to avoid overwriting earlier changes
+			var element = i[width-j]
+			if element == null: #if its null skip
+				continue
+			else:
+				element.x -= minX #transfomr x position to relative to furthest left tile
+				var temp = element #temp variable for storage
+				i[width-j] = null #delete current position
+				i[temp.x] = temp #make index and x local line up
+		cleanArray = cleanArray + i #turn it into a 1d array
+	return cleanArray
 	
-func metaData() -> String: #encode the dimesnions of the grid + other info to be placed at the start of the file
-
+func metaData(width : int,arrayOfTiles : Array) -> String: #encode the dimesnions of the grid + other info to be placed at the start of the file
+	var metaData = {"width" : width}
+	var matDict = compressMaterials(arrayOfTiles) #get the compressed material form
 	
-	return "hello"
+	return str(metaData) + "\n" + str(matDict)
 	
+func compressMaterials(arrayOfTiles : Array) -> Dictionary: #creates a dictionary that maps a value to the material name
+	var matToIndex = {}
+	var indexToMat = {}
+	var j = 0
+	for i in arrayOfTiles:
+		if i == null:
+			continue
+		var matFetch = matToIndex.get(i[0],null)
+		if matFetch == null:
+			matToIndex[i[0]] = j
+			indexToMat[j] = i[0]
+			i[0] = j #change the material in the array to the key used to find it
+			j += 1
+		elif matFetch != null:
+			i[0] = matFetch
+	return indexToMat #return the dictionary to map back to properties
 	
 func writeToFile(fileName,content): #write a string to a file
 	var file = FileAccess.open(fileName,FileAccess.WRITE)
