@@ -50,7 +50,6 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
-	print(properties)
 	if properties.get("thermal_energy") != null:
 		thermal_energy = properties.get("thermal_energy")
 		temp = mass*specificHeatCap/thermal_energy

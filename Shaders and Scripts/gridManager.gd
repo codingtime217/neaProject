@@ -68,22 +68,24 @@ func _process(_delta: float) -> void:
 			grid[tilePos].queue_free()
 	pass
 
-
-func save() -> void:
-	var tileKeyArray = dictToArrayOfKeys(grid)
+func dataForm(arrayOfTiles : Dictionary) -> Array:
+	var tileKeyArray = dictToArrayOfKeys(arrayOfTiles)
 	var width = int(tileKeyArray["width"]) + 1
 	var dataArray = keysToData(cleanArray(tileKeyArray["minX"],width,tileKeyArray["array"]),tileKeyArray["minX"])
+	var meta = metaData(width,dataArray)
+	return [meta,dataArray]
+
+func save() -> void:
+	var dataArray = dataForm(grid)
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
 	if fileName == "":
 		fileName = "sim.txt"
 	var dataToWrite = ""
-	var meta = metaData(width,dataArray)
-	for i in dataArray:
+	for i in dataArray[1]:
 		dataToWrite = dataToWrite + str(i) + "\n"
-	
-	writeToFile(fileName, meta + "\n" + dataToWrite)
+	writeToFile(fileName,dataArray[0] + dataToWrite)
 	
 func dictToArrayOfKeys(dict : Dictionary) -> Dictionary:
 	var array := [[]]
@@ -121,8 +123,6 @@ func _insertItemToArrayOfKeys(array : Array, item) -> Array:
 	print("couldn't insert", item) #let me know if it didn't work
 	return array	
 
-
-
 func keysToData(keys : Array,minX : int) -> Array:
 	var arrayForm = []
 	for i in keys:
@@ -137,7 +137,7 @@ func keysToData(keys : Array,minX : int) -> Array:
 	return arrayForm #does what is says on the tin
 	
 func cleanArray (minX : int,width : int,keyArray : Array) -> Array: #cleans up the array so every part covers the whole width
-	var cleanArray = []
+	var cleanedArray = []
 	for i in keyArray:
 		i.resize(width) #make all rows the same width
 		for j in range(1,width+1): #starrt from the back to avoid overwriting earlier changes
@@ -149,14 +149,14 @@ func cleanArray (minX : int,width : int,keyArray : Array) -> Array: #cleans up t
 				var temp = element #temp variable for storage
 				i[width-j] = null #delete current position
 				i[temp.x] = temp #make index and x local line up
-		cleanArray = cleanArray + i #turn it into a 1d array
-	return cleanArray
+		cleanedArray = cleanedArray + i #turn it into a 1d array
+	return cleanedArray
 	
 func metaData(width : int,arrayOfTiles : Array) -> String: #encode the dimesnions of the grid + other info to be placed at the start of the file
-	var metaData = {"width" : width}
+	var metaD = {"width" : width}
 	var matDict = compressMaterials(arrayOfTiles) #get the compressed material form
 	
-	return str(metaData) + "\n" + str(matDict)
+	return str(metaD) + "\n" + str(matDict) + "\n"
 	
 func compressMaterials(arrayOfTiles : Array) -> Dictionary: #creates a dictionary that maps a value to the material name
 	var matToIndex = {}
