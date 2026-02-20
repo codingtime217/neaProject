@@ -60,18 +60,32 @@ func _update_properties(properties : Dictionary) -> void:
 
 
 
-const materialsDict = {
+const materialsDictThermal = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
 		"conductivity" : 0.6089,
 		"specificHeat" : 4184.0,
-		"density" : 1000.0},
+		"density" : 1000.0}, #
 		
 	"void" : {
 		"conductivity" : 0.0,
 		"specificHeat" : 0.0,
 		"density" : 0.0
-	}	
+	},
+	"uranium" : {
+		"conductivity" : 27.5,
+		"specificHeat" : 116.225,
+		"density" : 19050.0
+	}
 }
+
+const materialsDictNuclear = { #for nuclear properties
+	"void" : {},
+	"water" : {}
+	
+	
+	
+}
+
 
 
 
@@ -82,9 +96,9 @@ func _updateColour():#make colour chnage with temp, try and accurate blackbody
 
 
 func setup(mat = "void"):
-	var properties = materialsDict.get(mat,null)
+	var properties = materialsDictThermal.get(mat,null)
 	if properties == null:
-		properties = materialsDict["water"]
+		properties = materialsDictThermal["water"]
 	compound = mat
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
