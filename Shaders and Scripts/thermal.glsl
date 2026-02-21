@@ -3,6 +3,7 @@
 // setup stuff
 
 struct cell { // defining as a structure to simplify things
+ //used for bit count shenanigans
     int materialIndex;
     double temperature; 
 };
@@ -24,8 +25,9 @@ layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
 inBuffer;
 
 layout(binding = 2, std140) uniform constants {
+ //here for bit count shenanigans
     int distance;
-    int timeStep;    
+    int timeStep;  
     int gridx;
     material materialArray[256]; // used for finding where in the grid the cell is
     

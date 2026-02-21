@@ -58,9 +58,16 @@ func _update_properties(properties : Dictionary) -> void:
 		thermal_energy = temp*mass*specificHeatCap
 	pass
 
+func loadingJsonFile(path : String):
+	var file = FileAccess.open(path,FileAccess.READ)
+	var text = file.get_as_text()
+	var json_result = JSON.parse_string(text)
+	return json_result
 
 
-const materialsDictThermal = {
+var materialsDictThermal = loadingJsonFile("res://materials/materialsProperties.json")
+
+const materialsDictThermaltwo = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg
 		"conductivity" : 0.6089,
 		"specificHeat" : 4184.0,
@@ -96,13 +103,14 @@ func _updateColour():#make colour chnage with temp, try and accurate blackbody
 
 
 func setup(mat = "void"):
-	var properties = materialsDictThermal.get(mat,null)
-	if properties == null:
-		properties = materialsDictThermal["water"]
-	compound = mat
-	conductivity = properties["conductivity"]
-	specificHeatCap = properties["specificHeat"]
-	density = properties["density"]
+	print(materialsDictThermal)
+	#var properties = materialsDictThermal.get(mat,null)
+	#if properties == null:
+		#properties = materialsDictThermal["water"]
+	#compound = mat
+	#conductivity = properties["conductivity"]
+	#specificHeatCap = properties["specificHeat"]
+	#density = properties["density"]
 	mass = density / 1000.0 
 	thermal_energy = temp*mass*specificHeatCap
 

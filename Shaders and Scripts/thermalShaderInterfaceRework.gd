@@ -1,0 +1,112 @@
+extends Node2D
+@export_file var shaderPath : String
+
+var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
+@export var workGroups := Vector3i(1,1,1)
+var rd : RenderingDevice
+var shaderFile : Resource
+var shaderSpirv : RDShaderSPIRV
+var shaderRID : RID
+var input : PackedFloat64Array
+var inputBytes : PackedByteArray
+var constantInts : PackedInt64Array
+var constBytes : PackedByteArray
+var output : PackedFloat64Array
+var outputBytes : PackedByteArray
+var constRid : RID
+var inBufferRID : RID
+var outBufferRID : RID
+var inUniform : RDUniform
+var outUniform : RDUniform
+var constUniform : RDUniform
+var uniformSet : RID
+var pipeline : RID
+var run = 0
+var width : int
+var matDict : Dictionary
+# Called when the node enters the scene tree for the first time.
+
+func shaderSetup() -> void:
+	
+
+	rd = RenderingServer.create_local_rendering_device() #create rendering device, local so we choose when to call it
+	shaderFile = load(shaderPath)
+	shaderSpirv = rdManager.importShaderFromFile(shaderPath)
+	shaderRID = rd.shader_create_from_spirv(shaderSpirv) #setup the shader RID
+	pipeline = rd.compute_pipeline_create(shaderRID) #create the pipeline
+	
+	#making input data
+	
+	inputBytes = makeBufferArray(get_node("gridManager").grid)
+	outputBytes = inputBytes
+	constantInts = PackedInt64Array([10,3600,width])
+	
+	
+	#setting up uniforms and buffers
+	constRid = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)
+	inBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,inputBytes.size(),inputBytes)
+	outBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,outputBytes.size(),outputBytes)
+	inUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,0,inBufferRID)
+	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,1,outBufferRID)
+	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
+	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set	
+	
+func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
+	var outputAsBytes := rendering.buffer_get_data(buffer)
+	return outputAsBytes
+	
+func loadingJsonFile(path : String):
+	var file = FileAccess.open(path,FileAccess.READ)
+	var text = file.get_as_text()
+	var json_result = JSON.parse_string(text)
+	return json_result
+
+
+func makeBufferArray(data:Array) -> PackedByteArray:
+	width = data[0][0]
+	matDict = data[0][1]
+	var newData := PackedByteArray()
+	for i in data[1]:
+		var dataToAdd = PackedByteArray([PackedInt64Array([i[0]]).to_byte_array(),PackedFloat64Array([i[1]["temperature"]]).to_byte_array()])
+		newData = newData + dataToAdd
+	return newData
+	
+func outputGrid(buffer : PackedByteArray) -> void:
+	var bufferFloat = buffer.to_float64_array()
+	for i in range(0,len(bufferFloat)/(4*width)):
+		var toPrint = []
+		toPrint.append("Row: " + str(i))
+		for j in range(0,width):
+			toPrint.append(int(bufferFloat[4*(i*width+j)]))
+		print(toPrint)
+	
+func _ready() -> void:
+	shaderSetup()
+	
+func freeRIDS() -> void:
+	#assert(rd.uniform_set_is_valid(uniformSet))
+	rd.free_rid(inBufferRID)
+	rd.free_rid(outBufferRID)
+	rd.free_rid(constRid)
+	rd.free_rid(shaderRID)
+	#assert(rd.uniform_set_is_valid(uniformSet))
+
+
+func _runShader() -> void:
+	rd.submit()
+	rd.sync()
+	var outputValues = get_output(rd,outBufferRID)
+	rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},workGroups)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_dellta: float) -> void:
+	if run < 1000:
+		_runShader()
+		run += 1
+	elif run <= 1000:
+		outputGrid(get_output(rd,outBufferRID))
+		freeRIDS()
+		run +=1
+	else:
+		pass
