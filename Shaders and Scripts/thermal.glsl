@@ -3,12 +3,16 @@
 // setup stuff
 
 struct cell { // defining as a structure to simplify things
-     double thermalE;
-     double conductivity;
-     double specHeatCap;
-     double mass;
+    int materialIndex;
+    double temperature; 
 };
 
+
+struct material {
+    double conductivity;
+    double specHeatCap;
+    double mass;
+};
 
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
@@ -22,7 +26,8 @@ inBuffer;
 layout(binding = 2, std140) uniform constants {
     int distance;
     int timeStep;    
-    int gridx; // used for finding where in the grid the cell is
+    int gridx;
+    material materialArray[256]; // used for finding where in the grid the cell is
     
 };
 
@@ -33,25 +38,21 @@ layout(set = 0, binding = 1, std430) restrict buffer OutBuffer{
 outBuffer;
 
 
-double getFlux(in cell cell1, in cell cell2)
+double getDeltaTemp(in cell cell1, in cell cell2)
 {
-    if ((cell1.mass == 0) || (cell2.mass == 0)) {
+    if ((cell1.materialIndex == 0) || (cell2.materialIndex == 0)) { //index 0 will always be the void material
+        return 0;
+    };
+    if (cell1.temperature == cell2.temperature) {
         return 0;
     };
 
-    double temp1 = (cell1.thermalE/(cell1.specHeatCap*cell1.mass));
-    double temp2 = (cell2.thermalE/(cell2.specHeatCap*cell2.mass));
-    if (temp1 == temp2) {
-        return 0;
-    };
+    double conductivity = (materialArray[cell1.materialIndex].conductivity + materialArray[cell2.materialIndex].conductivity)/2; // average the conductivities
 
-    double flux = -cell1.conductivity*((temp1 - temp2)/distance) * timeStep;
-    //if (isnan(flux)) {
-     //   return 0;
-    // };
+    double flux = -conductivity*((cell1.temperature - cell2.temperature)/distance) * timeStep; // find the change in thermal energy
 
     
-    return flux;
+    return flux/(materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap); //return change in temperature
 }
 
 uint findIndex(in uint globalX, in uint globalY, in int gridX) {
@@ -60,9 +61,9 @@ uint findIndex(in uint globalX, in uint globalY, in int gridX) {
 
 cell tryGet(in int index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
-        return cell(0,0,0,0); }
+        return cell(0,0); }
     else if (index < 0) {
-        return cell(0,0,0,0); 
+        return cell(0,0); 
     } 
     return inBuffer.grid[index];
 }
@@ -72,15 +73,15 @@ cell[4] getNeighbours(in int index) {
     neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
 
     if ((index % gridx) == 0) { //accounts for cells on the right or left edges, top and bottom would create invalid indices already account for in tryGet()
-        neighbours[2] = cell(0,0,0,0);
+        neighbours[2] = cell(0,0);
     } else if ((index + 1) % gridx == 0) {
-        neighbours[0] = cell(0,0,0,0) ;
+        neighbours[0] = cell(0,0) ;
     };
     return neighbours;
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.thermalE,cellToCopy.conductivity,cellToCopy.specHeatCap,cellToCopy.mass); //used to copy a cell as structs get treated as memeory refs rather than data
+    return cell(cellToCopy.materialIndex,cellToCopy.temperature); //used to copy a cell as structs get treated as memeory refs rather than data
 }
 
 void main() { // for each invoke
@@ -93,20 +94,20 @@ void main() { // for each invoke
 
     neighbours = getNeighbours(int(currentIndex)); // get the neighbours
 
-    double flux;
-    double netFlux = 0;
+    double deltaT;
+    double netDeltaT = 0;
     double temp;
     for (int i = 0; i < 4; ++i) {
-        flux = getFlux(currentCell, neighbours[i]);
+        deltaT = getDeltaTemp(currentCell, neighbours[i]);
 
-        temp = netFlux;
-        netFlux = temp + flux; //find the net flux in/out
+        temp = netDeltaT;
+        netDeltaT = temp + deltaT; //find the net temperature in/out
     }; 
 
 
     cell newCell = copyCell(currentCell); //make a duplicate
     
-    newCell.thermalE = newCell.thermalE + netFlux; //update the duplicate
+    newCell.temperature = newCell.temperature + netDeltaT; //update the duplicate
     
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
