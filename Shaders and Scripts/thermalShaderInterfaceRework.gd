@@ -98,18 +98,18 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	width = data[0][0]
 	matDict = data[0][1]
 	var newData := PackedByteArray()
-	for i in data[1]:
-		var dataToAdd = PackedByteArray([PackedInt64Array([i[0]]).to_byte_array(),PackedFloat64Array([i[1]["temperature"]]).to_byte_array()])
-		newData = newData + dataToAdd
+	newData.resize(len(data[1]) * 2)
+	for i in len(data[1]):
+		newData.encode_u64(i*16,data[i][0])
+		newData.encode_double(i*16 + 8,data[i][1]["temperature"])
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:
-	var bufferFloat = buffer.to_float64_array()
-	for i in range(0,len(bufferFloat)/(4*width)):
+	for i in range(0,len(buffer)/(16*width)):
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(int(bufferFloat[4*(i*width+j)]))
+			toPrint.append(str(buffer.decode_u64(i*16)) + ", temp:" + str(buffer.decode_double(i*16+8)))
 		print(toPrint)
 	
 func _ready() -> void:

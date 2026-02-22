@@ -4,7 +4,7 @@
 
 struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
-    int materialIndex;
+    uint materialIndex;
     double temperature; 
 };
 
