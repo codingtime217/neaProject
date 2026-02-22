@@ -103,14 +103,13 @@ func _updateColour():#make colour chnage with temp, try and accurate blackbody
 
 
 func setup(mat = "void"):
-	print(materialsDictThermal)
-	#var properties = materialsDictThermal.get(mat,null)
-	#if properties == null:
-		#properties = materialsDictThermal["water"]
-	#compound = mat
-	#conductivity = properties["conductivity"]
-	#specificHeatCap = properties["specificHeat"]
-	#density = properties["density"]
+	var properties = materialsDictThermal.get(mat,null)
+	if properties == null:
+		properties = materialsDictThermal["water"]
+	compound = mat
+	conductivity = properties["conductivity"]
+	specificHeatCap = properties["specificHeat"]
+	density = properties["density"]
 	mass = density / 1000.0 
 	thermal_energy = temp*mass*specificHeatCap
 

@@ -5,25 +5,24 @@ extends Node2D
 @export var tileDimensions = Vector2i(16,16)
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var grid : Dictionary
-var selectedIndex
+var selectedMat := "water"
 @onready var canvas = $CanvasLayer
 
 
 func _link_signals(): #fetches the UI nodes and links the signals
 	var UINode = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
-	UINode.item_selected.connect(selectedMat)
+	UINode.item_selected.connect(changeSelected)
 	var saveButton = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
 
 	
 
 
-func selectedMat(index : int):#updates which material is currently selected
-	selectedIndex = index
+func changeSelected(index : int):#updates which material is currently selected
+	var list = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
+	selectedMat = list.get_item_text(index)
 	
-func selectToMat():
-	var matList = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
-	return matList.get_language(selectedIndex).lower()
+
 
 func _place_tile_(posMode : String, pos : Vector2, mat) -> void: #places a tile in the specified position
 	var tile
@@ -61,7 +60,7 @@ func _process(_delta: float) -> void:
 	var mousePos = get_local_mouse_position() #updates mouse position
 	if Input.is_action_pressed("left_click"): #left click events place tiles
 		var tilePos = _global_to_local(mousePos)
-		_place_tile_("l",tilePos,"water")
+		_place_tile_("l",tilePos,selectedMat.to_lower())
 	elif Input.is_action_pressed("right_click"): #right click removes
 		var tilePos = _global_to_local(mousePos)
 		if grid.get(tilePos) != null: #check theres actually a tile to remove
@@ -159,20 +158,21 @@ func metaData(width : int,arrayOfTiles : Array) -> String: #encode the dimesnion
 	return str(metaD) + "\n" + str(matDict) + "\n"
 	
 func compressMaterials(arrayOfTiles : Array) -> Dictionary: #creates a dictionary that maps a value to the material name
-	var matToIndex = {}
-	var indexToMat = {}
-	var j = 0
-	for i in arrayOfTiles:
-		if i == null:
+	var matToIndex = {null : 0}
+	var indexToMat = {0 : null}
+	var j = 1
+	for i in len(arrayOfTiles):
+		if arrayOfTiles[i]== null:
+			arrayOfTiles[i]= [0,null]
 			continue
-		var matFetch = matToIndex.get(i[0],null)
-		if matFetch == null:
-			matToIndex[i[0]] = j
-			indexToMat[j] = i[0]
-			i[0] = j #change the material in the array to the key used to find it
+		var matFetch = matToIndex.get(arrayOfTiles[i][0], -1) #using -1 instead of null 
+		if matFetch == -1:
+			matToIndex[arrayOfTiles[i][0]] = j
+			indexToMat[j] = arrayOfTiles[i][0]
+			arrayOfTiles[i][0] = j #change the material in the array to the key used to find it
 			j += 1
 		elif matFetch != null:
-			i[0] = matFetch
+			arrayOfTiles[i][0] = matFetch
 	return indexToMat #return the dictionary to map back to properties
 	
 func writeToFile(fileName,content): #write a string to a file

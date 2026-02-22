@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://ckjnpalw4k1dd"]
 
-[ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/uranium235.tres" id="1_87bg2"]
+[ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/uranium.tres" id="1_87bg2"]
 [ext_resource type="StyleBox" uid="uid://csmkukes5kv1m" path="res://UI Themes and Schemes/tileStyle.tres" id="1_nu70p"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nu70p"]
