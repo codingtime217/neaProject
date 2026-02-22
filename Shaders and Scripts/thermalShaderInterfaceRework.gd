@@ -105,6 +105,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:
+	@warning_ignore("integer_division")
 	for i in range(0,len(buffer)/(16*width)):
 		var toPrint = []
 		toPrint.append("Row: " + str(i))

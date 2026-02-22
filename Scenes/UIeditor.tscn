@@ -89,6 +89,7 @@ theme = ExtResource("5_pla2u")
 
 [node name="run" type="Button" parent="CanvasLayer/PanelContainer/VBoxContainer"]
 layout_mode = 2
+action_mode = 0
 text = "Run Sim"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PanelContainer/VBoxContainer"]

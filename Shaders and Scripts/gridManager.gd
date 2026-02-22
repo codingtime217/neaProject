@@ -67,15 +67,15 @@ func _process(_delta: float) -> void:
 			grid[tilePos].queue_free()
 	pass
 
-func dataForm(arrayOfTiles : Dictionary) -> Array:
-	var tileKeyArray = dictToArrayOfKeys(arrayOfTiles)
+func dataForm() -> Array:
+	var tileKeyArray = dictToArrayOfKeys(grid)
 	var width = int(tileKeyArray["width"]) + 1
 	var dataArray = keysToData(cleanArray(tileKeyArray["minX"],width,tileKeyArray["array"]),tileKeyArray["minX"])
 	var meta = metaData(width,dataArray)
 	return [meta,dataArray]
 
 func save() -> void:
-	var dataArray = dataForm(grid)
+	var dataArray = dataForm()
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
