@@ -24,17 +24,22 @@ layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
 }
 inBuffer;
 
-layout(binding = 2, std140) uniform constants {
+layout(binding = 1, std140) uniform constants {
  //here for bit count shenanigans
     int distance;
     int timeStep;  
     int gridx;
-    material materialArray[256]; // used for finding where in the grid the cell is
+
     
 };
 
+layout(binding = 2, std140 ) uniform matDict {
+    material materialArray[64]; // used for finding where in the grid the cell is
+};
 
-layout(set = 0, binding = 1, std430) restrict buffer OutBuffer{
+
+
+layout(set = 0, binding = 3, std430) restrict buffer OutBuffer{
     cell newGrid[]; //defines the outputbuffer
 }
 outBuffer;

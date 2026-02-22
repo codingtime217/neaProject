@@ -7,23 +7,35 @@ var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
+
 var input : PackedFloat64Array
 var inputBytes : PackedByteArray
+
+var width : int
 var constantInts : PackedInt64Array
 var constBytes : PackedByteArray
+
 var output : PackedFloat64Array
 var outputBytes : PackedByteArray
-var constRid : RID
+
+var matDict : Dictionary
+var matDictBytes : PackedByteArray
+
+var constRID : RID
+var matRID : RID
 var inBufferRID : RID
 var outBufferRID : RID
+
 var inUniform : RDUniform
-var outUniform : RDUniform
+var matUniform : RDUniform
 var constUniform : RDUniform
+var outUniform : RDUniform
+
 var uniformSet : RID
 var pipeline : RID
 var run = 0
-var width : int
-var matDict : Dictionary
+
+
 # Called when the node enters the scene tree for the first time.
 
 func shaderSetup() -> void:
@@ -40,16 +52,23 @@ func shaderSetup() -> void:
 	inputBytes = makeBufferArray(get_node("gridManager").grid)
 	outputBytes = inputBytes
 	constantInts = PackedInt64Array([10,3600,width])
+	constBytes = constantInts.to_byte_array()
+	matDictBytes = matDictToBytes(matDict)
 	
 	
 	#setting up uniforms and buffers
-	constRid = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)
+	constRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)
 	inBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,inputBytes.size(),inputBytes)
 	outBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,outputBytes.size(),outputBytes)
+	matRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,matDictBytes.size(),matDictBytes)
+	
+	
 	inUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,0,inBufferRID)
-	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,1,outBufferRID)
-	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,constRid)
-	uniformSet = rd.uniform_set_create([inUniform,outUniform,constUniform],shaderRID,0) #creates the set	
+	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,1,constRID)
+	matUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,matRID)
+	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,3,outBufferRID)
+	
+	uniformSet = rd.uniform_set_create([inUniform,constUniform,matUniform,outUniform],shaderRID,0) #creates the set	
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
@@ -61,6 +80,19 @@ func loadingJsonFile(path : String):
 	var json_result = JSON.parse_string(text)
 	return json_result
 
+func matDictToBytes(dict : Dictionary):
+	var propertiesDict = loadingJsonFile("res://materials/materialsProperties.json")
+	var arrayForm := PackedFloat64Array([])
+	arrayForm.resize(256)
+	for i in dict.keys():
+		if dict.get(i,null) != null:
+			var mat = dict[i]
+			var properties = propertiesDict[mat]
+			arrayForm[i*3] = properties["conductivity"]
+			arrayForm[i*3+1] = properties["specHeatCap"]
+			arrayForm[i*3+2] = properties["density"]/1000 #as getting mass
+			
+	return arrayForm.to_byte_array()
 
 func makeBufferArray(data:Array) -> PackedByteArray:
 	width = data[0][0]
@@ -87,7 +119,7 @@ func freeRIDS() -> void:
 	#assert(rd.uniform_set_is_valid(uniformSet))
 	rd.free_rid(inBufferRID)
 	rd.free_rid(outBufferRID)
-	rd.free_rid(constRid)
+	rd.free_rid(constRID)
 	rd.free_rid(shaderRID)
 	#assert(rd.uniform_set_is_valid(uniformSet))
 

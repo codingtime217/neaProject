@@ -159,7 +159,7 @@ func metaData(width : int,arrayOfTiles : Array) -> String: #encode the dimesnion
 	
 func compressMaterials(arrayOfTiles : Array) -> Dictionary: #creates a dictionary that maps a value to the material name
 	var matToIndex = {null : 0}
-	var indexToMat = {0 : null}
+	var indexToMat = {0 : "void"}
 	var j = 1
 	for i in len(arrayOfTiles):
 		if arrayOfTiles[i]== null:
