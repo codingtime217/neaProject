@@ -10,16 +10,16 @@ var selectedMat := "water"
 
 
 func _link_signals(): #fetches the UI nodes and links the signals
-	var UINode = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
+	var UINode = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/cont/ItemList")
 	UINode.item_selected.connect(changeSelected)
-	var saveButton = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
+	var saveButton = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
 
 	
 
 
 func changeSelected(index : int):#updates which material is currently selected
-	var list = get_node(^"/root/UIEditor/CanvasLayer/cont/ItemList")
+	var list = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/cont/ItemList")
 	selectedMat = list.get_item_text(index)
 	
 
@@ -77,7 +77,7 @@ func dataForm() -> Array:
 func save() -> void:
 	var dataArray = dataForm()
 	#use some stuff to turn the tileMap into a big string array
-	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
+	var fileNameNode = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
 	var metaInfo = str(dataArray[0][0]) + "\n" + str(dataArray[0][1]) + "\n"
 	if fileName == "":

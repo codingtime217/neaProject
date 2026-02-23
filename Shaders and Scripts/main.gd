@@ -1,12 +1,14 @@
 extends Node2D
 var editor = preload("res://Scenes/editor.tscn")
-var editorInstance
+var editorInstance : Node
 var sim = preload("res://Scenes/sim.tscn")
-var simInstance
+var simInstance : Node
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	editorInstance = editor.instantiate()
-	get_tree().root.call_deferred("add_child",editorInstance)
+	#get_tree().root.call_deferred("add_child",editorInstance)
+	call_deferred("add_child",editorInstance)
 	editorInstance.loaded.connect(linkRunButton)
 	# Replace with function body.
 
@@ -20,6 +22,7 @@ func swapToSim() -> void:
 	var data = grid.dataForm()
 	simInstance = sim.instantiate()
 	simInstance.get_node("thermal").initialData = data 
-	get_tree().root.add_child(simInstance)
+	add_child(simInstance)
+	remove_child(editorInstance)
 	
 	
