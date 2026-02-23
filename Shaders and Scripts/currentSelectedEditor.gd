@@ -1,5 +1,5 @@
 extends FoldableContainer
-
+#needs rewriting, maybe wait until after visualistion
 #this will instantiate propertyInput scenes in order to allow the properties of the tile to be modified
 
 signal freeDisplays

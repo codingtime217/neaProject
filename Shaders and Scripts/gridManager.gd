@@ -47,7 +47,7 @@ func _global_to_local(global : Vector2) -> Vector2: #converts global coords to c
 	
 func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid to global coords
 	@warning_ignore("integer_division")
-	var global = Vector2i(local.x * 16,local.y*16) + 1/2*tileDimensions
+	var global = Vector2i(local.x * 16,local.y * 16) + 1/2*tileDimensions
 	return global
 
 # Called when the node enters the scene tree for the first time.
@@ -65,6 +65,7 @@ func _process(_delta: float) -> void:
 		var tilePos = _global_to_local(mousePos)
 		if grid.get(tilePos) != null: #check theres actually a tile to remove
 			grid[tilePos].queue_free()
+			grid.erase(tilePos)
 	pass
 
 func dataForm() -> Array:

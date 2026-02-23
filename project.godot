@@ -23,6 +23,7 @@ window/size/viewport_height=920
 [global_group]
 
 editorTiles="all tiles currently in the editor"
+speedButtons=""
 
 [gui]
 

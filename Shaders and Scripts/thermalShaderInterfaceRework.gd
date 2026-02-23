@@ -2,21 +2,21 @@ extends Node2D
 @export_file var shaderPath : String
 
 var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
-@export var workGroups := Vector3i(1,1,1)
+@export var workGroups := Vector3i(2,2,1)
 var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
 var initialData : Array
-
+var timestep := 3600
 
 var input : PackedFloat64Array
 var inputBytes : PackedByteArray
 
 var width : int
-var constantInts : PackedInt64Array
-var constBytes : PackedByteArray
+var constantInts : Array
+var constBytes := PackedByteArray()
 
 var output : PackedFloat64Array
 var outputBytes : PackedByteArray
@@ -54,8 +54,13 @@ func shaderSetup() -> void:
 	
 	inputBytes = makeBufferArray(initialData)
 	outputBytes = inputBytes
-	constantInts = PackedInt64Array([10,3600,width])
-	constBytes = constantInts.to_byte_array()
+	constantInts = [10,timestep,width]
+	
+	constBytes.resize(24)
+	for i in range(len(constantInts)):
+		if constantInts[i] < 0:
+			constantInts[i] *= -1
+		constBytes.encode_u64(i*8,constantInts[i])
 	matDictBytes = matDictToBytes(matDict)
 	
 	
@@ -97,7 +102,6 @@ func matDictToBytes(dict : Dictionary):
 	return arrayForm.to_byte_array()
 
 func makeBufferArray(data:Array) -> PackedByteArray:
-
 	width = data[0][0]["width"]
 	matDict = data[0][1]
 	var newData := PackedByteArray()
@@ -113,11 +117,13 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(str(buffer.decode_u64(i*width*8 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*8 + j*16 + 8)))
+			toPrint.append(str(buffer.decode_u64(i*width*16 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*16 + j*16 + 8)))
 		print(toPrint)
 	
 func _ready() -> void:
 	shaderSetup()
+	var buttonGroup = load("res://UI Themes and Schemes/speedControlsGroup.tres")
+	buttonGroup.pressed.connect(changeTimeScale)
 	
 func freeRIDS() -> void:
 	#assert(rd.uniform_set_is_valid(uniformSet))
@@ -138,7 +144,9 @@ func _runShader() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
 	if run < 1:
+		outputGrid(get_output(rd,outBufferRID))
 		_runShader()
+		outputGrid(get_output(rd,outBufferRID))
 		run += 1
 	elif run <= 1:
 		outputGrid(get_output(rd,outBufferRID))
@@ -146,3 +154,15 @@ func _process(_dellta: float) -> void:
 		run +=1
 	else:
 		pass
+
+
+func changeTimeScale(button : Button) -> void:
+	print(button)
+	timestep = (button.get_index()-1) * 3600
+	print(timestep)
+	constantInts = PackedInt64Array([10,timestep,width])
+	for i in range(len(constantInts)):
+		if constantInts[i] < 0:
+			constantInts[i] *= -1
+		constBytes.encode_u64(i*8,constantInts[i])
+	rd.buffer_update(constRID,0,constBytes.size(),constBytes)

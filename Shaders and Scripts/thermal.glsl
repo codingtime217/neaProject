@@ -16,7 +16,7 @@ struct material {
 };
 
 
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 2, local_size_y = 2, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
 layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
@@ -26,9 +26,9 @@ inBuffer;
 
 layout(binding = 1, std140) uniform constants {
  //here for bit count shenanigans
-    int distance;
-    int timeStep;  
-    int gridx;
+    uint distance;
+    uint timeStep;  
+    uint gridx;
 
     
 };
@@ -47,6 +47,7 @@ outBuffer;
 
 double getDeltaTemp(in cell cell1, in cell cell2)
 {
+    //return 10;
     if ((cell1.materialIndex == 0) || (cell2.materialIndex == 0)) { //index 0 will always be the void material
         return 0;
     };
@@ -56,17 +57,17 @@ double getDeltaTemp(in cell cell1, in cell cell2)
 
     double conductivity = (materialArray[cell1.materialIndex].conductivity + materialArray[cell2.materialIndex].conductivity)/2; // average the conductivities
 
-    double flux = -conductivity*((cell1.temperature - cell2.temperature)/distance) * timeStep; // find the change in thermal energy
+    double flux = (-conductivity)*((cell1.temperature - cell2.temperature)/distance) * timeStep; // find the change in thermal energy
 
     
     return flux/(materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap); //return change in temperature
 }
 
-uint findIndex(in uint globalX, in uint globalY, in int gridX) {
+uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
  return globalX + globalY*gridX;  //finds the index in the 1d array given its invocation coordinates
 }
 
-cell tryGet(in int index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
+cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
         return cell(0,0); }
     else if (index < 0) {
@@ -75,7 +76,7 @@ cell tryGet(in int index) { // used to fetch cells from the grid, returning a va
     return inBuffer.grid[index];
 }
 
-cell[4] getNeighbours(in int index) {
+cell[4] getNeighbours(in uint index) {
     cell[4] neighbours;
     neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
 
