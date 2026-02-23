@@ -25,6 +25,7 @@ func swapToSim() -> void:
 		simInstance = sim.instantiate()
 	var grid = editorInstance.get_node("gridManager")
 	var data = grid.dataForm()
+
 	
 	simInstance.get_node("thermal").initialData = data 
 	add_child(simInstance)
