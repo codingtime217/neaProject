@@ -94,7 +94,6 @@ func matDictToBytes(dict : Dictionary):
 			arrayForm[i*3] = properties["conductivity"]
 			arrayForm[i*3+1] = properties["specificHeat"]
 			arrayForm[i*3+2] = properties["density"]/1000 #as getting mass
-			
 	return arrayForm.to_byte_array()
 
 func makeBufferArray(data:Array) -> PackedByteArray:
@@ -105,6 +104,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	for i in range(0,len(data[1])):
 		newData.encode_u64(i*16,data[1][i][0])
 		newData.encode_double(i*16 + 8,data[1][i][1].get("temperature",0))
+	outputGrid(newData)
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:
@@ -113,7 +113,7 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(str(buffer.decode_u64(i*16)) + ", temp:" + str(buffer.decode_double(i*16+8)))
+			toPrint.append(str(buffer.decode_u64(i*width*8)) + ", temp:" + str(buffer.decode_double(i*width*8 + 8)))
 		print(toPrint)
 	
 func _ready() -> void:
@@ -137,10 +137,10 @@ func _runShader() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
-	if run < 1000:
+	if run < 1:
 		_runShader()
 		run += 1
-	elif run <= 1000:
+	elif run <= 1:
 		outputGrid(get_output(rd,outBufferRID))
 		freeRIDS()
 		run +=1

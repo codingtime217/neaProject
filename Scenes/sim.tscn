@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://b2f76gsujk25n"]
+[gd_scene load_steps=3 format=3 uid="uid://b2f76gsujk25n"]
 
+[ext_resource type="Script" uid="uid://bkc3h1cx5vco" path="res://Scenes/sim.gd" id="1_5c76n"]
 [ext_resource type="Script" uid="uid://dpbee6tm1tf53" path="res://Shaders and Scripts/thermalShaderInterfaceRework.gd" id="1_oyp6w"]
 
 [node name="Sim" type="Node2D"]
+script = ExtResource("1_5c76n")
 
 [node name="thermal" type="Node2D" parent="."]
 script = ExtResource("1_oyp6w")

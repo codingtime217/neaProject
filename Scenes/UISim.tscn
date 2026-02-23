@@ -10,13 +10,13 @@
 [ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="8_2cg7b"]
 [ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_8fc3u"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
-
 [sub_resource type="Gradient" id="Gradient_2n5f6"]
 colors = PackedColorArray(0, 0.5686275, 0, 1, 0.08235294, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_27c8x"]
 gradient = SubResource("Gradient_2n5f6")
+
+[sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
 
 [node name="UISim" type="Control"]
 layout_mode = 3
@@ -27,21 +27,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_tu31e")
 
-[node name="SpeedOptions" type="FoldableContainer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="SpeedOptions" type="FoldableContainer" parent="CanvasLayer"]
 show_behind_parent = true
 z_index = 3
-layout_mode = 1
 offset_right = 378.0
 offset_bottom = 89.0
 theme = ExtResource("1_tu31e")
 title = "Speed Options"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SpeedOptions"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/SpeedOptions"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 alignment = 1
 
-[node name="Halt" type="Button" parent="SpeedOptions/HBoxContainer"]
+[node name="Halt" type="Button" parent="CanvasLayer/SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Halt Simulation"
@@ -50,7 +51,7 @@ icon = ExtResource("2_2cg7b")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Pause" type="Button" parent="SpeedOptions/HBoxContainer"]
+[node name="Pause" type="Button" parent="CanvasLayer/SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Pause Simulation"
@@ -61,7 +62,7 @@ icon = ExtResource("4_ar0f7")
 icon_alignment = 1
 expand_icon = true
 
-[node name="PlaySpeed1" type="Button" parent="SpeedOptions/HBoxContainer"]
+[node name="PlaySpeed1" type="Button" parent="CanvasLayer/SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Play Sim at speed 1"
@@ -72,7 +73,7 @@ icon = ExtResource("5_ajvhm")
 icon_alignment = 1
 expand_icon = true
 
-[node name="PlaySpeed2" type="Button" parent="SpeedOptions/HBoxContainer"]
+[node name="PlaySpeed2" type="Button" parent="CanvasLayer/SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Play Simulation at speed 2"
@@ -83,7 +84,7 @@ icon = ExtResource("6_bwhil")
 icon_alignment = 1
 expand_icon = true
 
-[node name="PlaySpeed3" type="Button" parent="SpeedOptions/HBoxContainer"]
+[node name="PlaySpeed3" type="Button" parent="CanvasLayer/SpeedOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Play Simulation at speed 3"
@@ -94,56 +95,49 @@ icon = ExtResource("7_8248f")
 icon_alignment = 1
 expand_icon = true
 
-[node name="DrawModes" type="FoldableContainer" parent="."]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -3.8093262
-offset_right = 330.0
-offset_bottom = 145.27515
-grow_horizontal = 0
-rotation = 1.5707964
-theme = ExtResource("1_tu31e")
+[node name="CurrentSelected" type="FoldableContainer" parent="CanvasLayer"]
+offset_left = 1.0
+offset_top = 671.0
+offset_right = 209.0
+offset_bottom = 920.0
+title_position = 1
+script = ExtResource("9_8fc3u")
 
-[node name="Control" type="Control" parent="DrawModes"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CurrentSelected"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/CurrentSelected/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TileName" type="Label" parent="CanvasLayer/CurrentSelected/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Uranium 235"
+
+[node name="Colour" type="TextureRect" parent="CanvasLayer/CurrentSelected/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme = ExtResource("1_tu31e")
+texture = ExtResource("8_2cg7b")
+expand_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/CurrentSelected/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DrawModes/Control"]
-layout_mode = 0
-offset_left = -2.999995
-offset_top = 115.0
-offset_right = 117.00001
-offset_bottom = 451.0
-rotation = -1.5707964
-theme = ExtResource("1_tu31e")
-
-[node name="Label" type="Label" parent="DrawModes/Control/VBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(20, 20)
+[node name="Temp" type="Label" parent="CanvasLayer/CurrentSelected/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_tu31e")
-text = "Colour Display Modes:"
-label_settings = SubResource("LabelSettings_2n5f6")
-autowrap_mode = 2
+text = "Temperature: 300K"
 
-[node name="ItemList" type="ItemList" parent="DrawModes/Control/VBoxContainer"]
-custom_minimum_size = Vector2(0, 250)
+[node name="Activity" type="Label" parent="CanvasLayer/CurrentSelected/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_tu31e")
-allow_search = false
-wraparound_items = false
-item_count = 5
-item_0/text = "Temperature"
-item_1/text = "Neutron Flux"
-item_2/text = "Density"
-item_3/text = "Composition"
-item_4/text = "Fission Events"
+text = "Activity: 2000/s"
 
-[node name="ColourKeys" type="FoldableContainer" parent="."]
+[node name="ColourKeys" type="FoldableContainer" parent="CanvasLayer"]
 z_index = 2
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -155,87 +149,91 @@ theme = ExtResource("1_tu31e")
 title = "Colour Key"
 title_alignment = 1
 
-[node name="Formatter" type="HBoxContainer" parent="ColourKeys"]
+[node name="Formatter" type="HBoxContainer" parent="CanvasLayer/ColourKeys"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 alignment = 1
 
-[node name="GradientKeys" type="HBoxContainer" parent="ColourKeys/Formatter"]
+[node name="GradientKeys" type="HBoxContainer" parent="CanvasLayer/ColourKeys/Formatter"]
 visible = false
 layout_mode = 2
 alignment = 1
 
-[node name="Min" type="Label" parent="ColourKeys/Formatter/GradientKeys"]
+[node name="Min" type="Label" parent="CanvasLayer/ColourKeys/Formatter/GradientKeys"]
 layout_mode = 2
 text = "Min"
 
-[node name="Gradeint" type="TextureRect" parent="ColourKeys/Formatter/GradientKeys"]
+[node name="Gradeint" type="TextureRect" parent="CanvasLayer/ColourKeys/Formatter/GradientKeys"]
 layout_mode = 2
 texture = SubResource("GradientTexture1D_27c8x")
 
-[node name="Max" type="Label" parent="ColourKeys/Formatter/GradientKeys"]
+[node name="Max" type="Label" parent="CanvasLayer/ColourKeys/Formatter/GradientKeys"]
 layout_mode = 2
 text = "Max"
 
-[node name="Grid Keys" type="GridContainer" parent="ColourKeys/Formatter"]
+[node name="Grid Keys" type="GridContainer" parent="CanvasLayer/ColourKeys/Formatter"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 columns = 4
 
-[node name="Key Colour Pair" type="HBoxContainer" parent="ColourKeys/Formatter/Grid Keys"]
+[node name="Key Colour Pair" type="HBoxContainer" parent="CanvasLayer/ColourKeys/Formatter/Grid Keys"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 
-[node name="Key" type="Label" parent="ColourKeys/Formatter/Grid Keys/Key Colour Pair"]
+[node name="Key" type="Label" parent="CanvasLayer/ColourKeys/Formatter/Grid Keys/Key Colour Pair"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 text = "Uranium 235"
 
-[node name="Colour" type="TextureRect" parent="ColourKeys/Formatter/Grid Keys/Key Colour Pair"]
+[node name="Colour" type="TextureRect" parent="CanvasLayer/ColourKeys/Formatter/Grid Keys/Key Colour Pair"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 texture = ExtResource("8_2cg7b")
 expand_mode = 3
 
-[node name="CurrentSelected" type="FoldableContainer" parent="."]
+[node name="DrawModes" type="FoldableContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -3.8093262
+offset_right = 330.0
+offset_bottom = 145.27515
+grow_horizontal = 0
+rotation = 1.5707964
+theme = ExtResource("1_tu31e")
+
+[node name="Control" type="Control" parent="CanvasLayer/DrawModes"]
+layout_mode = 2
+theme = ExtResource("1_tu31e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/DrawModes/Control"]
 layout_mode = 0
-offset_left = 1.0
-offset_top = 671.0
-offset_right = 209.0
-offset_bottom = 920.0
-title_position = 1
-script = ExtResource("9_8fc3u")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CurrentSelected"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_vertical = 0
-alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CurrentSelected/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="TileName" type="Label" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Uranium 235"
-
-[node name="Colour" type="TextureRect" parent="CurrentSelected/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme = ExtResource("1_tu31e")
-texture = ExtResource("8_2cg7b")
-expand_mode = 3
-
-[node name="HSeparator" type="HSeparator" parent="CurrentSelected/VBoxContainer"]
-layout_mode = 2
+offset_left = -2.999995
+offset_top = 115.0
+offset_right = 117.00001
+offset_bottom = 451.0
+rotation = -1.5707964
 theme = ExtResource("1_tu31e")
 
-[node name="Temp" type="Label" parent="CurrentSelected/VBoxContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/DrawModes/Control/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-text = "Temperature: 300K"
+theme = ExtResource("1_tu31e")
+text = "Colour Display Modes:"
+label_settings = SubResource("LabelSettings_2n5f6")
+autowrap_mode = 2
 
-[node name="Activity" type="Label" parent="CurrentSelected/VBoxContainer"]
+[node name="ItemList" type="ItemList" parent="CanvasLayer/DrawModes/Control/VBoxContainer"]
+custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
-text = "Activity: 2000/s"
+theme = ExtResource("1_tu31e")
+allow_search = false
+wraparound_items = false
+item_count = 5
+item_0/text = "Temperature"
+item_1/text = "Neutron Flux"
+item_2/text = "Density"
+item_3/text = "Composition"
+item_4/text = "Fission Events"
