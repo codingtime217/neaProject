@@ -8,6 +8,9 @@ var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
+var initialData : Array
+
+
 var input : PackedFloat64Array
 var inputBytes : PackedByteArray
 
@@ -49,7 +52,7 @@ func shaderSetup() -> void:
 	
 	#making input data
 	
-	inputBytes = makeBufferArray(get_node("gridManager").grid)
+	inputBytes = makeBufferArray(initialData)
 	outputBytes = inputBytes
 	constantInts = PackedInt64Array([10,3600,width])
 	constBytes = constantInts.to_byte_array()
