@@ -92,19 +92,19 @@ func matDictToBytes(dict : Dictionary):
 			var mat = dict[i]
 			var properties = propertiesDict[mat]
 			arrayForm[i*3] = properties["conductivity"]
-			arrayForm[i*3+1] = properties["specHeatCap"]
+			arrayForm[i*3+1] = properties["specificHeat"]
 			arrayForm[i*3+2] = properties["density"]/1000 #as getting mass
 			
 	return arrayForm.to_byte_array()
 
 func makeBufferArray(data:Array) -> PackedByteArray:
-	width = data[0][0]
+	width = data[0][0]["width"]
 	matDict = data[0][1]
 	var newData := PackedByteArray()
-	newData.resize(len(data[1]) * 2)
-	for i in len(data[1]):
-		newData.encode_u64(i*16,data[i][0])
-		newData.encode_double(i*16 + 8,data[i][1]["temperature"])
+	newData.resize(len(data[1]) * 16)
+	for i in range(0,len(data[1])):
+		newData.encode_u64(i*16,data[1][i][0])
+		newData.encode_double(i*16 + 8,data[1][i][1].get("temperature",0))
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:

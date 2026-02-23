@@ -79,12 +79,13 @@ func save() -> void:
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
+	var metaInfo = str(dataArray[0][0]) + "\n" + str(dataArray[0][1]) + "\n"
 	if fileName == "":
 		fileName = "sim.txt"
 	var dataToWrite = ""
 	for i in dataArray[1]:
 		dataToWrite = dataToWrite + str(i) + "\n"
-	writeToFile(fileName,dataArray[0] + dataToWrite)
+	writeToFile(fileName,metaInfo + dataToWrite)
 	
 func dictToArrayOfKeys(dict : Dictionary) -> Dictionary:
 	var array := [[]]
@@ -151,11 +152,11 @@ func cleanArray (minX : int,width : int,keyArray : Array) -> Array: #cleans up t
 		cleanedArray = cleanedArray + i #turn it into a 1d array
 	return cleanedArray
 	
-func metaData(width : int,arrayOfTiles : Array) -> String: #encode the dimesnions of the grid + other info to be placed at the start of the file
-	var metaD = {"width" : width}
+func metaData(width : int,arrayOfTiles : Array) -> Array: #encode the dimesnions of the grid + other info to be placed at the start of the file
+	var metInfo = {"width" : width}
 	var matDict = compressMaterials(arrayOfTiles) #get the compressed material form
 	
-	return str(metaD) + "\n" + str(matDict) + "\n"
+	return [metInfo,matDict]
 	
 func compressMaterials(arrayOfTiles : Array) -> Dictionary: #creates a dictionary that maps a value to the material name
 	var matToIndex = {null : 0}
@@ -163,7 +164,7 @@ func compressMaterials(arrayOfTiles : Array) -> Dictionary: #creates a dictionar
 	var j = 1
 	for i in len(arrayOfTiles):
 		if arrayOfTiles[i]== null:
-			arrayOfTiles[i]= [0,null]
+			arrayOfTiles[i]= [0,{"temperature" : 0}]
 			continue
 		var matFetch = matToIndex.get(arrayOfTiles[i][0], -1) #using -1 instead of null 
 		if matFetch == -1:

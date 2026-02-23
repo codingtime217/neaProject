@@ -8,7 +8,7 @@ func _ready() -> void:
 	editorInstance = editor.instantiate()
 	get_tree().root.call_deferred("add_child",editorInstance)
 	editorInstance.loaded.connect(linkRunButton)
-	pass # Replace with function body.
+	# Replace with function body.
 
 func linkRunButton(button) -> void:
 	button.pressed.connect(swapToSim)
@@ -22,5 +22,4 @@ func swapToSim() -> void:
 	simInstance.get_node("thermal").initialData = data 
 	get_tree().root.add_child(simInstance)
 	
-	pass
 	
