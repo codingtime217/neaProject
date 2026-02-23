@@ -70,9 +70,7 @@ uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
 cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
         return cell(0,0); }
-    else if (index < 0) {
-        return cell(0,0); 
-    } 
+
     return inBuffer.grid[index];
 }
 
@@ -84,6 +82,9 @@ cell[4] getNeighbours(in uint index) {
         neighbours[2] = cell(0,0);
     } else if ((index + 1) % gridx == 0) {
         neighbours[0] = cell(0,0) ;
+    } else if (index < gridx) {
+        neighbours[2] = cell(0,0);
+        neighbours[3] = cell(0,0);
     };
     return neighbours;
 }
@@ -107,7 +108,10 @@ void main() { // for each invoke
     double temp;
     for (int i = 0; i < 4; ++i) {
         deltaT = getDeltaTemp(currentCell, neighbours[i]);
-
+        if (isnan(deltaT)) {
+            netDeltaT = i;
+            break;
+        }
         temp = netDeltaT;
         netDeltaT = temp + deltaT; //find the net temperature in/out
     }; 
@@ -115,7 +119,7 @@ void main() { // for each invoke
 
     cell newCell = copyCell(currentCell); //make a duplicate
     
-    newCell.temperature = newCell.temperature + netDeltaT; //update the duplicate
+    newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
     
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
