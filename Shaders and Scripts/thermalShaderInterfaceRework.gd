@@ -118,7 +118,7 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(str(buffer.decode_u64(i*width*12 + j*12)) + ", temp:" + str(buffer.decode_double(i*width*12 + j*12 + 4 )))
+			toPrint.append(str(buffer.decode_u32(i*width*12 + j*12)) + ", temp:" + str(buffer.decode_double(i*width*12 + j*12 + 4 )))
 		print(toPrint)
 	
 func _ready() -> void:
@@ -149,7 +149,7 @@ func _process(_dellta: float) -> void:
 		print("output")
 		_runShader()
 		outputGrid(get_output(rd,outBufferRID))
-		print(get_output(rd,constRID).to_int64_array())
+		print(get_output(rd,constRID).to_int32_array())
 		run += 1
 	elif run <= 10:
 		freeRIDS()
