@@ -56,11 +56,11 @@ func shaderSetup() -> void:
 	outputBytes = inputBytes
 	constantInts = [10,width,timestep]
 	
-	constBytes.resize(32)
+	constBytes.resize(16)
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
-		constBytes.encode_u64(i*8,constantInts[i])
+		constBytes.encode_u32(i*4,constantInts[i])
 	matDictBytes = matDictToBytes(matDict)
 	
 	
@@ -108,8 +108,8 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	var newData := PackedByteArray()
 	newData.resize(len(data[1]) * 16)
 	for i in range(0,len(data[1])):
-		newData.encode_u64(i*16,data[1][i][0])
-		newData.encode_double(i*16 + 8,data[1][i][1].get("temperature",0))
+		newData.encode_u32(i*12,data[1][i][0])
+		newData.encode_double(i*12 + 4,data[1][i][1].get("temperature",0))
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:
@@ -118,7 +118,7 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(str(buffer.decode_u64(i*width*16 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*16 + j*16 + 8)))
+			toPrint.append(str(buffer.decode_u64(i*width*12 + j*12)) + ", temp:" + str(buffer.decode_double(i*width*12 + j*12 + 4 )))
 		print(toPrint)
 	
 func _ready() -> void:
@@ -162,9 +162,9 @@ func changeTimeScale(button : Button) -> void:
 	print(button)
 	timestep = (button.get_index()-1) * 7200
 	print(timestep)
-	constantInts = [0,10,timestep,width]
+	constantInts = [10,timestep,width]
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
-		constBytes.encode_u64(i*8,constantInts[i])
+		constBytes.encode_u32(i*4,constantInts[i])
 	rd.buffer_update(constRID,0,constBytes.size(),constBytes)

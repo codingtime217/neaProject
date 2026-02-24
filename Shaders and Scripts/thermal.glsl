@@ -114,7 +114,7 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell); //make a duplicate
     
     newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
-    newCell.temperature = timeStep;
+    //newCell.temperature = dis;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 
