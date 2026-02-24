@@ -10,8 +10,9 @@ struct cell { // defining as a structure to simplify things
 
 
 struct material {
-    double conductivity;
+    double dummy;
     double specHeatCap;
+    double conductivity;
     double mass;
 };
 
@@ -56,11 +57,13 @@ double getDeltaTemp(in cell cell1, in cell cell2)
     };
 
     double conductivity = (materialArray[cell1.materialIndex].conductivity + materialArray[cell2.materialIndex].conductivity)/2; // average the conductivities
-
+    return conductivity;
     double flux = (-conductivity)*((cell1.temperature - cell2.temperature)/distance) * timeStep; // find the change in thermal energy
 
-    
-    return flux/(materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap); //return change in temperature
+
+    double specHeat = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap;
+     
+    return flux/specHeat;
 }
 
 uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
@@ -108,10 +111,10 @@ void main() { // for each invoke
     double temp;
     for (int i = 0; i < 4; ++i) {
         deltaT = getDeltaTemp(currentCell, neighbours[i]);
-        if (isnan(deltaT)) {
-            netDeltaT = i;
-            break;
-        }
+        //if (isnan(deltaT)) {
+          //  deltaT = i;
+            //break;
+        //}
         temp = netDeltaT;
         netDeltaT = temp + deltaT; //find the net temperature in/out
     }; 
@@ -120,7 +123,7 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell); //make a duplicate
     
     newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
-    
+    newCell.temperature = materialArray[newCell.materialIndex].conductivity;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

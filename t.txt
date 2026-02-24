@@ -1,6 +1,0 @@
-{ "width": 2 }
-{ 0: "void", 1: "water" }
-[1, { &"temperature": 293.0 }]
-[0, { "temperature": 0 }]
-[0, { "temperature": 0 }]
-[1, { &"temperature": 1000.0 }]

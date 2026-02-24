@@ -90,16 +90,17 @@ func loadingJsonFile(path : String):
 
 func matDictToBytes(dict : Dictionary):
 	var propertiesDict = loadingJsonFile("res://materials/materialsProperties.json")
-	var arrayForm := PackedFloat64Array([])
-	arrayForm.resize(256)
+	var arrayForm := PackedByteArray([])
+	arrayForm.resize(2048)
 	for i in dict.keys():
 		if dict.get(i,null) != null:
 			var mat = dict[i]
 			var properties = propertiesDict[mat]
-			arrayForm[i*3] = properties["conductivity"]
-			arrayForm[i*3+1] = properties["specificHeat"]
-			arrayForm[i*3+2] = properties["density"]/1000 #as getting mass
-	return arrayForm.to_byte_array()
+			arrayForm.encode_double(i*24,properties["specificHeat"])
+			arrayForm.encode_double(i*24+8,properties["conductivity"])
+			arrayForm.encode_double(i*24+16,properties["density"]/1000)
+	print(arrayForm.to_float64_array())
+	return arrayForm
 
 func makeBufferArray(data:Array) -> PackedByteArray:
 	width = data[0][0]["width"]

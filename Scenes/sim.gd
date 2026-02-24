@@ -1,5 +1,5 @@
 extends Node2D
-var UI = preload("res://Scenes/UIsim.tscn")
+var UI = preload("res://Scenes/UISim.tscn")
 var UIinstance
 
 signal loaded(runButton)
