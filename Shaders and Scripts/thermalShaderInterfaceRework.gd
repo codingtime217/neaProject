@@ -91,14 +91,14 @@ func loadingJsonFile(path : String):
 func matDictToBytes(dict : Dictionary):
 	var propertiesDict = loadingJsonFile("res://materials/materialsProperties.json")
 	var arrayForm := PackedByteArray([])
-	arrayForm.resize(2048)
+	arrayForm.resize(1024)
 	for i in dict.keys():
 		if dict.get(i,null) != null:
 			var mat = dict[i]
 			var properties = propertiesDict[mat]
-			arrayForm.encode_double(i*32,properties["specificHeat"])
-			arrayForm.encode_double(i*32+8,properties["conductivity"])
-			arrayForm.encode_double(i*32+16,properties["density"]/1000)
+			arrayForm.encode_double(i*24,properties["specificHeat"])
+			arrayForm.encode_double(i*24+8,properties["conductivity"])
+			arrayForm.encode_double(i*24+16,properties["density"]/1000)
 			#the missing i*32+24 is blank data cuase its useless for stupid reasons
 	return arrayForm
 
@@ -106,7 +106,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	width = data[0][0]["width"]
 	matDict = data[0][1]
 	var newData := PackedByteArray()
-	newData.resize(len(data[1]) * 16)
+	newData.resize(len(data[1]) * 12)
 	for i in range(0,len(data[1])):
 		newData.encode_u32(i*12,data[1][i][0])
 		newData.encode_double(i*12 + 4,data[1][i][1].get("temperature",0))
@@ -114,7 +114,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	
 func outputGrid(buffer : PackedByteArray) -> void:
 	@warning_ignore("integer_division")
-	for i in range(0,len(buffer)/(16*width)):
+	for i in range(0,len(buffer)/(12*width)):
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
@@ -136,15 +136,16 @@ func freeRIDS() -> void:
 
 
 func _runShader() -> void:
+	rdManager.runShader(rd,pipeline,{0 : uniformSet},workGroups)
 	rd.submit()
 	rd.sync()
 	var outputValues = get_output(rd,outBufferRID)
 	rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
-	rdManager.runShader(rd,pipeline,{0 : uniformSet},workGroups)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
 	if run < 2:
+		var matDict = get_output(rd,matRID)
 		outputGrid(get_output(rd,inBufferRID))
 		print("output")
 		_runShader()

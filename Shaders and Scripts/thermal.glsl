@@ -33,7 +33,7 @@ layout(binding = 1, std140) uniform constants {
 };
 
 layout(binding = 2, std140 ) uniform matDict {
-    material materialArray[64]; // used for finding where in the grid the cell is
+    material materialArray[32]; // used for finding where in the grid the cell is
 };
 
 
@@ -69,7 +69,12 @@ uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
 
 cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
-        return cell(0,0); }
+        return cell(0,0); };
+    if ((index % gridx) == 0) { //accounts for cells on the left edges,
+        return cell(0,0);
+    } else if ((index - 1) % gridx == 0) {
+        return cell(0,0) ;
+    };
 
     return inBuffer.grid[index];
 }
@@ -78,13 +83,7 @@ cell[4] getNeighbours(in uint index) {
     cell[4] neighbours;
     neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in clockwise order, starting with the one to the right
 
-    if ((index % gridx) == 0) { //accounts for cells on the left edges,
-        neighbours[2] = cell(0,0);
-    } else if ((index + 1) % gridx == 0) {
-        neighbours[0] = cell(0,0) ;
-    } else if (index < gridx) {
-        neighbours[3] = cell(0,0);
-    };
+    
     return neighbours;
 }
 
@@ -118,9 +117,8 @@ void main() { // for each invoke
 
     cell newCell = copyCell(currentCell); //make a duplicate
     
-    //newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
+    newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
     
-    newCell.temperature = materialArray[newCell.materialIndex].conductivity;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 
