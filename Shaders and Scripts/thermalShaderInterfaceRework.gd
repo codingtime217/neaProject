@@ -145,11 +145,9 @@ func _runShader() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
 	if run < 2:
-		print(get_output(rd,inBufferRID))
 		outputGrid(get_output(rd,inBufferRID))
 		print("output")
 		_runShader()
-		print(get_output(rd,inBufferRID))
 		outputGrid(get_output(rd,inBufferRID))
 		run += 1
 	elif run <= 2:
@@ -160,7 +158,6 @@ func _process(_dellta: float) -> void:
 
 
 func changeTimeScale(button : Button) -> void:
-	print(button)
 	timestep = (button.get_index()-1) * 7200
 	print(timestep)
 	constantInts = [10,timestep,width]
