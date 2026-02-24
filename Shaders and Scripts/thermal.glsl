@@ -106,6 +106,11 @@ void main() { // for each invoke
     double temp;
     for (int i = 0; i < 4; ++i) {
         deltaT = getDeltaTemp(currentCell, neighbours[i]);
+        if (isnan(deltaT)) {
+            currentCell.temperature = i;
+            netDeltaT = 0;
+            break;
+        };
         temp = netDeltaT;
         netDeltaT = temp + deltaT; //find the net temperature in/out
     }; 
@@ -113,8 +118,9 @@ void main() { // for each invoke
 
     cell newCell = copyCell(currentCell); //make a duplicate
     
-    newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
-    //newCell.temperature = dis;
+    //newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
+    
+    newCell.temperature = materialArray[newCell.materialIndex].conductivity;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

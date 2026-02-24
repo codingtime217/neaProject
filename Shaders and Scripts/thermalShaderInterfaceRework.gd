@@ -144,14 +144,13 @@ func _runShader() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
-	if run < 10:
-		outputGrid(get_output(rd,outBufferRID))
+	if run < 2:
+		outputGrid(get_output(rd,inBufferRID))
 		print("output")
 		_runShader()
 		outputGrid(get_output(rd,outBufferRID))
-		print(get_output(rd,constRID).to_int32_array())
 		run += 1
-	elif run <= 10:
+	elif run <= 2:
 		freeRIDS()
 		run +=1
 	else:
