@@ -10,7 +10,6 @@ struct cell { // defining as a structure to simplify things
 
 
 struct material {
-    double dummy;
     double specHeatCap;
     double conductivity;
     double mass;
@@ -27,11 +26,10 @@ inBuffer;
 
 layout(binding = 1, std140) uniform constants {
  //here for bit count shenanigans
-    uint distance;
+    uint dis;
+    uint gridx;   
     uint timeStep;  
-    uint gridx;
-
-    
+ 
 };
 
 layout(binding = 2, std140 ) uniform matDict {
@@ -48,7 +46,6 @@ outBuffer;
 
 double getDeltaTemp(in cell cell1, in cell cell2)
 {
-    //return 10;
     if ((cell1.materialIndex == 0) || (cell2.materialIndex == 0)) { //index 0 will always be the void material
         return 0;
     };
@@ -57,11 +54,11 @@ double getDeltaTemp(in cell cell1, in cell cell2)
     };
 
     double conductivity = (materialArray[cell1.materialIndex].conductivity + materialArray[cell2.materialIndex].conductivity)/2; // average the conductivities
-    return conductivity;
-    double flux = (-conductivity)*((cell1.temperature - cell2.temperature)/distance) * timeStep; // find the change in thermal energy
+
+    double flux = (-conductivity)*((cell1.temperature - cell2.temperature)/dis) * timeStep; // find the change in thermal energy
 
 
-    double specHeat = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap;
+    double specHeat = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap; //find the specific heat
      
     return flux/specHeat;
 }
@@ -79,14 +76,13 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 
 cell[4] getNeighbours(in uint index) {
     cell[4] neighbours;
-    neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in anticlockwise order, starting with the one to the right
+    neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in clockwise order, starting with the one to the right
 
-    if ((index % gridx) == 0) { //accounts for cells on the right or left edges, top and bottom would create invalid indices already account for in tryGet()
+    if ((index % gridx) == 0) { //accounts for cells on the left edges,
         neighbours[2] = cell(0,0);
     } else if ((index + 1) % gridx == 0) {
         neighbours[0] = cell(0,0) ;
     } else if (index < gridx) {
-        neighbours[2] = cell(0,0);
         neighbours[3] = cell(0,0);
     };
     return neighbours;
@@ -103,18 +99,13 @@ void main() { // for each invoke
 
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
-
-    neighbours = getNeighbours(int(currentIndex)); // get the neighbours
+    neighbours = getNeighbours(currentIndex); // get the neighbours
 
     double deltaT;
     double netDeltaT = 0;
     double temp;
     for (int i = 0; i < 4; ++i) {
         deltaT = getDeltaTemp(currentCell, neighbours[i]);
-        //if (isnan(deltaT)) {
-          //  deltaT = i;
-            //break;
-        //}
         temp = netDeltaT;
         netDeltaT = temp + deltaT; //find the net temperature in/out
     }; 
@@ -123,7 +114,7 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell); //make a duplicate
     
     newCell.temperature = currentCell.temperature + netDeltaT; //update the duplicate
-    newCell.temperature = materialArray[newCell.materialIndex].conductivity;
+    newCell.temperature = timeStep;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

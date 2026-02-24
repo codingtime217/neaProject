@@ -9,7 +9,7 @@ var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
 var initialData : Array
-var timestep := 3600
+var timestep := 7200
 
 var input : PackedFloat64Array
 var inputBytes : PackedByteArray
@@ -54,9 +54,9 @@ func shaderSetup() -> void:
 	
 	inputBytes = makeBufferArray(initialData)
 	outputBytes = inputBytes
-	constantInts = [10,timestep,width]
+	constantInts = [10,width,timestep]
 	
-	constBytes.resize(24)
+	constBytes.resize(32)
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
@@ -96,10 +96,10 @@ func matDictToBytes(dict : Dictionary):
 		if dict.get(i,null) != null:
 			var mat = dict[i]
 			var properties = propertiesDict[mat]
-			arrayForm.encode_double(i*24,properties["specificHeat"])
-			arrayForm.encode_double(i*24+8,properties["conductivity"])
-			arrayForm.encode_double(i*24+16,properties["density"]/1000)
-	print(arrayForm.to_float64_array())
+			arrayForm.encode_double(i*32,properties["specificHeat"])
+			arrayForm.encode_double(i*32+8,properties["conductivity"])
+			arrayForm.encode_double(i*32+16,properties["density"]/1000)
+			#the missing i*32+24 is blank data cuase its useless for stupid reasons
 	return arrayForm
 
 func makeBufferArray(data:Array) -> PackedByteArray:
@@ -149,6 +149,7 @@ func _process(_dellta: float) -> void:
 		print("output")
 		_runShader()
 		outputGrid(get_output(rd,outBufferRID))
+		print(get_output(rd,constRID).to_int64_array())
 		run += 1
 	elif run <= 10:
 		freeRIDS()
@@ -159,9 +160,9 @@ func _process(_dellta: float) -> void:
 
 func changeTimeScale(button : Button) -> void:
 	print(button)
-	timestep = (button.get_index()-1) * 3600
+	timestep = (button.get_index()-1) * 7200
 	print(timestep)
-	constantInts = PackedInt64Array([10,timestep,width])
+	constantInts = [0,10,timestep,width]
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
