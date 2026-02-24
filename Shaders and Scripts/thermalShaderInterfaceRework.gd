@@ -106,19 +106,19 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	width = data[0][0]["width"]
 	matDict = data[0][1]
 	var newData := PackedByteArray()
-	newData.resize(len(data[1]) * 12)
+	newData.resize(len(data[1]) * 16)
 	for i in range(0,len(data[1])):
-		newData.encode_u32(i*12,data[1][i][0])
-		newData.encode_double(i*12 + 4,data[1][i][1].get("temperature",0))
+		newData.encode_u32(i*16,data[1][i][0])
+		newData.encode_double(i*16 + 4,data[1][i][1].get("temperature",0))
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:
 	@warning_ignore("integer_division")
-	for i in range(0,len(buffer)/(12*width)):
+	for i in range(0,len(buffer)/(16*width)):
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(str(buffer.decode_u32(i*width*12 + j*12)) + ", temp:" + str(buffer.decode_double(i*width*12 + j*12 + 4 )))
+			toPrint.append(str(buffer.decode_u32(i*width*16 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*16 + j*16 + 4 )))
 		print(toPrint)
 	
 func _ready() -> void:
@@ -145,11 +145,12 @@ func _runShader() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
 	if run < 2:
-		var matDict = get_output(rd,matRID)
+		print(get_output(rd,inBufferRID))
 		outputGrid(get_output(rd,inBufferRID))
 		print("output")
 		_runShader()
-		outputGrid(get_output(rd,outBufferRID))
+		print(get_output(rd,inBufferRID))
+		outputGrid(get_output(rd,inBufferRID))
 		run += 1
 	elif run <= 2:
 		freeRIDS()

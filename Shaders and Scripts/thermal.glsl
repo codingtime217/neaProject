@@ -19,7 +19,7 @@ struct material {
 layout(local_size_x = 2, local_size_y = 2, local_size_z = 1) in;
 // experiment with other values to find a more appropriate number
 
-layout(set = 0, binding = 0 , std430) restrict buffer InBuffer {
+layout(set = 0, binding = 0 , std140) restrict buffer InBuffer {
     cell grid[]; // array of the cells
 }
 inBuffer;
@@ -38,7 +38,7 @@ layout(binding = 2, std140 ) uniform matDict {
 
 
 
-layout(set = 0, binding = 3, std430) restrict buffer OutBuffer{
+layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
     cell newGrid[]; //defines the outputbuffer
 }
 outBuffer;
@@ -67,6 +67,11 @@ uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
  return globalX + globalY*gridX;  //finds the index in the 1d array given its invocation coordinates
 }
 
+cell copyCell(inout cell cellToCopy) {
+    return cell(cellToCopy.materialIndex,cellToCopy.temperature); //used to copy a cell as structs get treated as memeory refs rather than data
+}
+
+
 cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
         return cell(0,0); };
@@ -75,8 +80,8 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
     } else if ((index - 1) % gridx == 0) {
         return cell(0,0) ;
     };
-
-    return inBuffer.grid[index];
+    cell fetchedCell = inBuffer.grid[index];
+    return copyCell(fetchedCell);
 }
 
 cell[4] getNeighbours(in uint index) {
@@ -87,9 +92,7 @@ cell[4] getNeighbours(in uint index) {
     return neighbours;
 }
 
-cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.materialIndex,cellToCopy.temperature); //used to copy a cell as structs get treated as memeory refs rather than data
-}
+
 
 void main() { // for each invoke
     uint currentIndex;
