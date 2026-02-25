@@ -2,19 +2,20 @@ extends Node2D
 @export_file var shaderPath : String
 
 var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
-@export var workGroups := Vector3i(2,2,1)
+@export var workGroups := Vector3i(1,1,1)
 var rd : RenderingDevice
 var shaderFile : Resource
 var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
 var initialData : Array
-var timestep := 7200
+var timestep := 60
 
 var input : PackedFloat64Array
 var inputBytes : PackedByteArray
 
 var width : int
+var height : int
 var constantInts : Array
 var constBytes := PackedByteArray()
 
@@ -53,8 +54,9 @@ func shaderSetup() -> void:
 	#making input data
 	
 	inputBytes = makeBufferArray(initialData)
+	workGroups = Vector3(width,height,1)
 	outputBytes = inputBytes
-	constantInts = [10,width,timestep]
+	constantInts = [10,width,1]
 	
 	constBytes.resize(16)
 	for i in range(len(constantInts)):
@@ -96,9 +98,9 @@ func matDictToBytes(dict : Dictionary):
 		if dict.get(i,null) != null:
 			var mat = dict[i]
 			var properties = propertiesDict[mat]
-			arrayForm.encode_double(i*24,properties["specificHeat"])
-			arrayForm.encode_double(i*24+8,properties["conductivity"])
-			arrayForm.encode_double(i*24+16,properties["density"]/1000)
+			arrayForm.encode_double(i*32,properties["specificHeat"])
+			arrayForm.encode_double(i*32+8,properties["conductivity"])
+			arrayForm.encode_double(i*32+16,properties["density"]/1000)
 			#the missing i*32+24 is blank data cuase its useless for stupid reasons
 	return arrayForm
 
@@ -107,9 +109,10 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	matDict = data[0][1]
 	var newData := PackedByteArray()
 	newData.resize(len(data[1]) * 16)
+	height = len(data[1])
 	for i in range(0,len(data[1])):
 		newData.encode_u32(i*16,data[1][i][0])
-		newData.encode_double(i*16 + 4,data[1][i][1].get("temperature",0))
+		newData.encode_double(i*16 + 8,data[1][i][1].get("temperature",0))
 	return newData
 	
 func outputGrid(buffer : PackedByteArray) -> void:
@@ -118,7 +121,7 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		var toPrint = []
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
-			toPrint.append(str(buffer.decode_u32(i*width*16 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*16 + j*16 + 4 )))
+			toPrint.append(str(buffer.decode_u32(i*width*16 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*16 + j*16 + 8 )))
 		print(toPrint)
 	
 func _ready() -> void:
@@ -144,13 +147,11 @@ func _runShader() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_dellta: float) -> void:
-	if run < 2:
-		outputGrid(get_output(rd,inBufferRID))
-		print("output")
-		_runShader()
-		outputGrid(get_output(rd,inBufferRID))
+	if run < 10000:
+		for i in timestep:
+			_runShader()
 		run += 1
-	elif run <= 2:
+	elif run <= 10000:
 		freeRIDS()
 		run +=1
 	else:
@@ -158,9 +159,9 @@ func _process(_dellta: float) -> void:
 
 
 func changeTimeScale(button : Button) -> void:
-	timestep = (button.get_index()-1) * 7200
+	timestep = (button.get_index()-1) * 60
 	print(timestep)
-	constantInts = [10,timestep,width]
+	constantInts = [10,width,1]
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
