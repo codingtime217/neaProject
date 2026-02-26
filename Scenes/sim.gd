@@ -26,14 +26,20 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	var currentData = thermShader.returnOutput()
 	thermShader.updateInput(currentData)
 	var dictData = toDictForm(currentData)
-	print(dictData)
 	#updateGrid(currentData)
 	
 	
 	
 func updateGrid(data : Dictionary) -> void:
-	pass
+	for i in data.keys():
+		var tile = dataGrid.get(i,null)
+		if tile == null:
+			dataGrid[i] = newTile(data[i])
+		else:
+			dataGrid[i]._update_properties(data[i])
 
+func newTile(values):
+	pass
 
 func toDictForm(data : PackedByteArray, _type = "therm") -> Dictionary:
 	var currentCord = Vector2(0,0)
