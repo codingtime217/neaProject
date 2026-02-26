@@ -23,6 +23,8 @@ var decayDistribution #lists what % is what type of decy
 var absorbChance : float
 var fissionChance : float
 var atomicMass
+var drawMode
+
 
 var screen_size := Vector2(32,32)
 
@@ -30,16 +32,18 @@ var screen_size := Vector2(32,32)
 @onready var button = $Button
 @onready var overlay = $overlay
 
-static func newTile(pos : Vector2, mat : String, _args : Dictionary = {}):
+static func newTile(pos : Vector2, mat : String, drawModeIN = "static"):
 	var tileInstance := selfScene.instantiate()
 	var tileData = tileInstance.get_node(".")
 	tileData.compound = mat
 	tileData.position = pos
+	tileData.drawMode = drawModeIN
 	tileData.setup(mat)
 	return tileInstance
 
 func _ready():
-	button.texture_normal = load("res://materials/" + compound + ".tres")
+	if drawMode == "static":
+		button.texture_normal = load("res://materials/" + compound + ".tres")
 	button.size = Vector2(16,16)
 
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
@@ -50,13 +54,15 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
+	for i in properties.keys():
+		if get(i) != null:
+			set(i,properties[i])
 	if properties.get("thermal_energy") != null:
 		thermal_energy = properties.get("thermal_energy")
 		temp = mass*specificHeatCap/thermal_energy
 	elif properties.get("temperature") != null:
 		temp = properties.get("temperature")
 		thermal_energy = temp*mass*specificHeatCap
-	pass
 
 func loadingJsonFile(path : String):
 	var file = FileAccess.open(path,FileAccess.READ)
@@ -88,12 +94,12 @@ const materialsDictThermaltwo = {
 const materialsDictNuclear = { #for nuclear properties
 	"void" : {},
 	"water" : {}
-	
-	
-	
 }
 
 
+func _draw():
+	if drawMode != "static":
+		draw_rect(Rect2(position,Vector2(16,16)),colour)
 
 
 func _updateColour():#make colour chnage with temp, try and accurate blackbody
@@ -113,13 +119,6 @@ func setup(mat = "void"):
 	mass = density / 1000.0 
 	thermal_energy = temp*mass*specificHeatCap
 
-
-
-#func _draw() -> void:
-	
-	#colour = Color(0,temp/150,0) #updates colour
-	#draw_rect(Rect2(position, screen_size), colour) #draws cell
-	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:

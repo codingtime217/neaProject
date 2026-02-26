@@ -23,11 +23,12 @@ func linkExitButton(button) -> void:
 func swapToSim() -> void:
 	if simInstance == null:
 		simInstance = sim.instantiate()
+	
 	var grid = editorInstance.get_node("gridManager")
 	var data = grid.dataForm()
-	simInstance.width = data[0][0]["width"]
+	simInstance.simData = data
+	simInstance.simDataSetup()
 	simInstance.tileDimensions = grid.tileDimensions
-	simInstance.get_node("thermal").initialData = data 
 	add_child(simInstance)
 	remove_child(editorInstance)
 	

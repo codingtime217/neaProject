@@ -5,41 +5,83 @@ var dataGrid : Dictionary
 var tileDimensions = Vector2(16,16)
 var width : int
 var matDict : Dictionary
-@onready var thermShader = $thermal
+var keyToMat : Dictionary
+var thermShader
+var simData
+var tileScene = preload("res://Shaders and Scripts/tile.gd")
 
 signal loaded(runButton)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	
 	UIinstance = UI.instantiate()
 	add_child(UIinstance)
 	loaded.emit(UIinstance.get_node("CanvasLayer/SpeedOptions/HBoxContainer/Halt"))
 	pass # Replace with function body.
 
+
+func simDataSetup():
+	thermShader = $thermal
+	width = simData[0][0]["width"]
+	keyToMat = simData[0][1]
+	thermShader.width = width
+	thermShader.matDictBytes = matDictToBytes(matDict)
+	thermShader.initialData = simData[1]
+	thermShader.shaderSetup()
+	
+
+
 func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid to global coords
 	@warning_ignore("integer_division")
 	var global = Vector2i(local.x * 16,local.y * 16) + 1/2*tileDimensions
 	return global
-
+	
+	
 func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	thermShader._runShader()
 	var currentData = thermShader.returnOutput()
 	thermShader.updateInput(currentData)
 	var dictData = toDictForm(currentData)
-	#updateGrid(currentData)
+	updateGrid(dictData)
 	
 	
+func loadingJsonFile(path : String):
+	var file = FileAccess.open(path,FileAccess.READ)
+	var text = file.get_as_text()
+	var json_result = JSON.parse_string(text)
+	return json_result
+	
+func matDictToBytes(dict : Dictionary):
+	matDict = loadingJsonFile("res://materials/materialsProperties.json")
+	var arrayForm := PackedByteArray([])
+	arrayForm.resize(1024)
+	for i in dict.keys():
+		if dict.get(i,null) != null:
+			var mat = dict[i]
+			var properties = matDict[mat]
+			arrayForm.encode_double(i*32,properties["specificHeat"])
+			arrayForm.encode_double(i*32+8,properties["conductivity"])
+			arrayForm.encode_double(i*32+16,properties["density"]/1000)
+			#the missing i*32+24 is blank data cuase its useless for stupid reasons
+	return arrayForm
+
 	
 func updateGrid(data : Dictionary) -> void:
 	for i in data.keys():
 		var tile = dataGrid.get(i,null)
 		if tile == null:
-			dataGrid[i] = newTile(data[i])
+			dataGrid[i] = newTile(data[i],i)
+			add_child(dataGrid[i])
 		else:
 			dataGrid[i]._update_properties(data[i])
 
-func newTile(values):
-	pass
+func newTile(values,pos):
+	var tilePosition = _local_to_global(pos)
+	var dynamic = ""
+	var new_tile = tileScene.newTile(tilePosition,keyToMat[values["mat"]],dynamic)
+	new_tile._update_properties(values)
+	return new_tile
 
 func toDictForm(data : PackedByteArray, _type = "therm") -> Dictionary:
 	var currentCord = Vector2(0,0)

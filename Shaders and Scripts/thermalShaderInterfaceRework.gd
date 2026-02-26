@@ -22,7 +22,6 @@ var constBytes := PackedByteArray()
 var output : PackedFloat64Array
 var outputBytes : PackedByteArray
 
-var matDict : Dictionary
 var matDictBytes : PackedByteArray
 
 var constRID : RID
@@ -63,7 +62,6 @@ func shaderSetup() -> void:
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
 		constBytes.encode_u32(i*4,constantInts[i])
-	matDictBytes = matDictToBytes(matDict)
 	
 	
 	#setting up uniforms and buffers
@@ -84,44 +82,18 @@ func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
 	return outputAsBytes
 	
-func loadingJsonFile(path : String):
-	var file = FileAccess.open(path,FileAccess.READ)
-	var text = file.get_as_text()
-	var json_result = JSON.parse_string(text)
-	return json_result
 
-func matDictToBytes(dict : Dictionary):
-	var propertiesDict = loadingJsonFile("res://materials/materialsProperties.json")
-	var arrayForm := PackedByteArray([])
-	arrayForm.resize(1024)
-	for i in dict.keys():
-		if dict.get(i,null) != null:
-			var mat = dict[i]
-			var properties = propertiesDict[mat]
-			arrayForm.encode_double(i*32,properties["specificHeat"])
-			arrayForm.encode_double(i*32+8,properties["conductivity"])
-			arrayForm.encode_double(i*32+16,properties["density"]/1000)
-			#the missing i*32+24 is blank data cuase its useless for stupid reasons
-	return arrayForm
 
-func makeBufferArray(data:Array, justData = false) -> PackedByteArray:
-	if justData:
-		var newData := PackedByteArray()
-		newData.resize(len(data) * 16)
-		height = len(data)
-		for i in range(0,len(data)):
-			newData.encode_u32(i*16,data[i][0])
-			newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
-		return newData
-	width = data[0][0]["width"]
-	matDict = data[0][1]
+func makeBufferArray(data:Array) -> PackedByteArray:
 	var newData := PackedByteArray()
-	newData.resize(len(data[1]) * 16)
-	height = len(data[1])
-	for i in range(0,len(data[1])):
-		newData.encode_u32(i*16,data[1][i][0])
-		newData.encode_double(i*16 + 8,data[1][i][1].get("temperature",0))
+	newData.resize(len(data) * 16)
+	@warning_ignore("integer_division")
+	height = len(data)/ width
+	for i in range(0,len(data)):
+		newData.encode_u32(i*16,data[i][0])
+		newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
 	return newData
+
 	
 func outputGrid(buffer : PackedByteArray) -> void:
 	@warning_ignore("integer_division")
