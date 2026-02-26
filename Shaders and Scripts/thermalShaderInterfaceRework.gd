@@ -104,7 +104,15 @@ func matDictToBytes(dict : Dictionary):
 			#the missing i*32+24 is blank data cuase its useless for stupid reasons
 	return arrayForm
 
-func makeBufferArray(data:Array) -> PackedByteArray:
+func makeBufferArray(data:Array, justData = false) -> PackedByteArray:
+	if justData:
+		var newData := PackedByteArray()
+		newData.resize(len(data) * 16)
+		height = len(data)
+		for i in range(0,len(data)):
+			newData.encode_u32(i*16,data[i][0])
+			newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
+		return newData
 	width = data[0][0]["width"]
 	matDict = data[0][1]
 	var newData := PackedByteArray()
@@ -146,18 +154,16 @@ func _runShader() -> void:
 	rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_dellta: float) -> void:
-	if run < 10000:
-		for i in timestep:
-			_runShader()
-		run += 1
-	elif run <= 10000:
-		freeRIDS()
-		run +=1
-	else:
-		pass
+		
+		
+func returnOutput() -> PackedByteArray:
+	return get_output(rd,outBufferRID)
 
-
+func updateInput(newInputData) -> void:
+	inputBytes = newInputData
+	#inputBytes = makeBufferArray(newInputData)
+	rd.buffer_update(inBufferRID,0,inputBytes.size(),inputBytes)
+	
 func changeTimeScale(button : Button) -> void:
 	timestep = (button.get_index()-1) * 60
 	print(timestep)

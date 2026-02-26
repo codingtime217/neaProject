@@ -10,3 +10,5 @@ script = ExtResource("1_5c76n")
 script = ExtResource("1_oyp6w")
 shaderPath = "uid://c423cv5tcej76"
 workGroups = Vector3i(10, 10, 1)
+
+[connection signal="tree_exiting" from="thermal" to="thermal" method="freeRIDS"]
