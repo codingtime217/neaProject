@@ -122,7 +122,9 @@ func _runShader() -> void:
 	rdManager.runShader(rd,pipeline,{0 : uniformSet},workGroups)
 	rd.submit()
 	rd.sync()
+	
 	var outputValues = get_output(rd,outBufferRID)
+	outputGrid(outputValues)
 	rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

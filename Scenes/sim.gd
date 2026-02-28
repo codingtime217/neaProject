@@ -11,6 +11,7 @@ var simData
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
 
 signal loaded(runButton)
+signal updatedGrid
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -44,7 +45,7 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	thermShader.updateInput(currentData)
 	var dictData = toDictForm(currentData)
 	updateGrid(dictData)
-	
+	updatedGrid.emit()
 	
 func loadingJsonFile(path : String):
 	var file = FileAccess.open(path,FileAccess.READ)

@@ -8,7 +8,7 @@ var mat : String
 @onready var labelBox = $propertyLabel
 @onready var valueBox = $propertyData
 
-const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)"}
+const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)", "temperature" : "K"}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -25,4 +25,4 @@ func cleanup(text : String) -> String:
 	for i in text2:
 		cleanedText = cleanedText + " " + i.capitalize()
 		cleanedText.strip_edges()
-	return cleanedText +units[text] +  ":"
+	return cleanedText + units[text] +  ":"
