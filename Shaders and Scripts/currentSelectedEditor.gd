@@ -36,7 +36,7 @@ func addDisplay(property,value,constant := false):
 	if constant:
 		display = propertyDisplay.instantiate()
 		display.label = property
-		display.value = value
+		display.value = roundf(value)
 	else:
 		display = propertyInput.instantiate()
 		display.label = property

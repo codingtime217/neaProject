@@ -40,7 +40,7 @@ func addDisplay(property,value):
 	var display
 	display = propertyDisplay.instantiate()
 	display.label = property
-	display.value = value
+	display.value = round(value*100)/100
 	get_node("VBoxContainer").add_child(display)
 
 	

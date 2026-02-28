@@ -105,7 +105,6 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		print(toPrint)
 	
 func _ready() -> void:
-	shaderSetup()
 	var buttonGroup = load("res://UI Themes and Schemes/speedControlsGroup.tres")
 	buttonGroup.pressed.connect(changeTimeScale)
 	
@@ -122,9 +121,7 @@ func _runShader() -> void:
 	rdManager.runShader(rd,pipeline,{0 : uniformSet},workGroups)
 	rd.submit()
 	rd.sync()
-	
 	var outputValues = get_output(rd,outBufferRID)
-	outputGrid(outputValues)
 	rd.buffer_update(inBufferRID,0,outputValues.size(),outputValues)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -140,7 +137,6 @@ func updateInput(newInputData) -> void:
 	
 func changeTimeScale(button : Button) -> void:
 	timestep = (button.get_index()-1) * 60
-	print(timestep)
 	constantInts = [10,width,1]
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:

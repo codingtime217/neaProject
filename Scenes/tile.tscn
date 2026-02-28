@@ -6,6 +6,7 @@
 
 [node name="tile" type="Node2D"]
 script = ExtResource("1_n3f48")
+temp = null
 
 [node name="Button" type="TextureButton" parent="." groups=["editorTiles"]]
 custom_minimum_size = Vector2(16, 16)

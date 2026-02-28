@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bk47kvhaeoo48"]
+[gd_scene load_steps=17 format=3 uid="uid://bk47kvhaeoo48"]
 
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="1_tu31e"]
 [ext_resource type="Texture2D" uid="uid://co4mtoujwtmca" path="res://Icons/halt.svg" id="2_2cg7b"]
@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://Icons/play2.svg" id="6_bwhil"]
 [ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://Icons/play3.svg" id="7_8248f"]
 [ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="8_2cg7b"]
+[ext_resource type="Script" uid="uid://cnpve2n868g3m" path="res://Scenes/colour_keys.gd" id="8_3k808"]
+[ext_resource type="Script" uid="uid://do7lswmbe4y8o" path="res://Scenes/draw_modes.gd" id="9_0p5x0"]
 [ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_k7ktk"]
 
 [sub_resource type="Gradient" id="Gradient_2n5f6"]
@@ -119,6 +121,7 @@ grow_horizontal = 0
 theme = ExtResource("1_tu31e")
 title = "Colour Key"
 title_alignment = 1
+script = ExtResource("8_3k808")
 
 [node name="Formatter" type="HBoxContainer" parent="CanvasLayer/ColourKeys"]
 layout_mode = 2
@@ -126,7 +129,6 @@ theme = ExtResource("1_tu31e")
 alignment = 1
 
 [node name="GradientKeys" type="HBoxContainer" parent="CanvasLayer/ColourKeys/Formatter"]
-visible = false
 layout_mode = 2
 alignment = 1
 
@@ -135,6 +137,7 @@ layout_mode = 2
 text = "Min"
 
 [node name="Gradeint" type="TextureRect" parent="CanvasLayer/ColourKeys/Formatter/GradientKeys"]
+custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 texture = SubResource("GradientTexture1D_27c8x")
 
@@ -143,6 +146,7 @@ layout_mode = 2
 text = "Max"
 
 [node name="Grid Keys" type="GridContainer" parent="CanvasLayer/ColourKeys/Formatter"]
+visible = false
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 columns = 4
@@ -173,6 +177,7 @@ offset_bottom = 145.27515
 grow_horizontal = 0
 rotation = 1.5707964
 theme = ExtResource("1_tu31e")
+script = ExtResource("9_0p5x0")
 
 [node name="Control" type="Control" parent="CanvasLayer/DrawModes"]
 layout_mode = 2
@@ -246,3 +251,5 @@ layout_mode = 2
 theme = ExtResource("1_tu31e")
 
 [connection signal="pressed" from="CanvasLayer/SpeedOptions/HBoxContainer/Pause" to="CanvasLayer/SpeedOptions/HBoxContainer/Pause" method="_on_pressed"]
+[connection signal="colourMode" from="CanvasLayer/DrawModes" to="CanvasLayer/ColourKeys" method="colourModeChanged"]
+[connection signal="item_selected" from="CanvasLayer/DrawModes/Control/VBoxContainer/ItemList" to="CanvasLayer/DrawModes" method="changeColourMode"]

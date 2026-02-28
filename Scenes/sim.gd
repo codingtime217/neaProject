@@ -9,13 +9,14 @@ var keyToMat : Dictionary
 var thermShader
 var simData
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
+var tempRange = Range.new()
 
 signal loaded(runButton)
 signal updatedGrid
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
+	tempRange.min_value = 231
 	UIinstance = UI.instantiate()
 	add_child(UIinstance)
 	loaded.emit(UIinstance.get_node("CanvasLayer/SpeedOptions/HBoxContainer/Halt"))
@@ -27,7 +28,7 @@ func simDataSetup():
 	width = simData[0][0]["width"]
 	keyToMat = simData[0][1]
 	thermShader.width = width
-	thermShader.matDictBytes = matDictToBytes(matDict)
+	thermShader.matDictBytes = matDictToBytes(simData[0][1])
 	thermShader.initialData = simData[1]
 	thermShader.shaderSetup()
 	
@@ -73,6 +74,10 @@ func updateGrid(data : Dictionary) -> void:
 		var tile = dataGrid.get(i,null)
 		if data[i]["mat"] == 0:
 			continue
+		if data[i]["temperature"] > tempRange.max_value:
+			tempRange.max_value = data[i]["temperature"]
+		elif data[i]["temperature"] < tempRange.max_value:
+			tempRange.min_value = data[i]["temperature"]
 		if tile == null:
 			dataGrid[i] = newTile(data[i],i)
 			add_child(dataGrid[i])

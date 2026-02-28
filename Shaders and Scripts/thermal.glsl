@@ -86,9 +86,6 @@ cell[4] getNeighbours(in uint index) {
     cell[4] neighbours;
 
     neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in clockwise order, starting with the one to the right
-    if (neighbours[3].temperature == 0) {
-        neighbours[3].temperature = 10000;
-    };
     if ((index % gridx) == 0) { //accounts for cells on the left edges,
         neighbours[2] = cell(0,0,0);
     } else if ((index + 1) % gridx == 0) {

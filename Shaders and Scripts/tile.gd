@@ -2,7 +2,7 @@ extends Node2D
 
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
-@export var temp = 293.15 #in kelvin
+var temp = 293.15 #in kelvin
 var thermal_energy = 10.0
 var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
 var specificHeatCap = 100.0 #in KJ^-1kg^-1
@@ -10,7 +10,7 @@ var colour = Color(0,0,0)
 var density = 1000.0 #kgm^-3
 var mass = 0.0
 const selfScene = preload("res://Scenes/tile.tscn")
-
+var colourKeySetter
 #neyuron implementation plan, each tile has neutron cross section, asbrob chance and atomic mass in neutrons
 #neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision
 #if a neutron is absorbed, use fission chance to determine if it results in fission
@@ -38,6 +38,7 @@ static func newTile(pos : Vector2, mat : String, drawModeIN = "static"):
 	tileData.compound = mat
 	tileData.position = pos
 	tileData.drawMode = drawModeIN
+	tileData.temp = 235.15
 	tileData.setup(mat)
 	return tileInstance
 
@@ -45,6 +46,12 @@ func _ready():
 	if drawMode == "static":
 		button.texture_normal = load("res://materials/" + compound + ".tres")
 	button.size = Vector2(16,16)
+	call_deferred("connectColour")
+	
+func connectColour():
+	colourKeySetter = $"^/root/mainNode/Sim/UISim/CanvasLayer/DrawModes" 
+	if colourKeySetter != null:
+		colourKeySetter.colourMode.connect(_updateColour)
 
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary
@@ -103,8 +110,14 @@ func _draw():
 		draw_rect(Rect2(Vector2(0,0),Vector2(16,16)),colour)
 
 
-func _updateColour():#make colour chnage with temp, try and accurate blackbody
-	pass
+func _updateColour(colours : Dictionary):#make colour chnage with temp, try and accurate blackbody
+	drawMode = ""
+	button.texture_normal = null
+	if colours.get("temperature", null) != null:
+		colour = colours["gradient"].get_color(int(temp))
+	elif colours.get("material", null) != null:
+		drawMode = "static"
+		button.texture_normal = load("res://materials/" + compound + ".tres")
 
 
 
@@ -116,6 +129,7 @@ func setup(mat = "void"):
 	compound = mat
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
+	print(temp)
 	density = properties["density"]
 	mass = density / 1000.0 
 	thermal_energy = temp*mass*specificHeatCap
