@@ -70,6 +70,8 @@ func matDictToBytes(dict : Dictionary):
 func updateGrid(data : Dictionary) -> void:
 	for i in data.keys():
 		var tile = dataGrid.get(i,null)
+		if data[i]["mat"] == 0:
+			continue
 		if tile == null:
 			dataGrid[i] = newTile(data[i],i)
 			add_child(dataGrid[i])
@@ -78,8 +80,7 @@ func updateGrid(data : Dictionary) -> void:
 
 func newTile(values,pos):
 	var tilePosition = _local_to_global(pos)
-	var dynamic = ""
-	var new_tile = tileScene.newTile(tilePosition,keyToMat[values["mat"]],dynamic)
+	var new_tile = tileScene.newTile(tilePosition,keyToMat[values["mat"]],"dynamic")
 	new_tile._update_properties(values)
 	return new_tile
 
@@ -93,7 +94,7 @@ func toDictForm(data : PackedByteArray, _type = "therm") -> Dictionary:
 		var temperature = data.decode_double(i*16 + 8)
 		newDict[currentCord] = {"mat" : materialIndex, "temperature" : temperature}
 		i +=1
-		if (i + 1) % width:
+		if i % width == 0:
 			currentCord.y += 1
 			currentCord.x = 0
 		else:

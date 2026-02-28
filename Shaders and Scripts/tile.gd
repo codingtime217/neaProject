@@ -23,7 +23,7 @@ var decayDistribution #lists what % is what type of decy
 var absorbChance : float
 var fissionChance : float
 var atomicMass
-var drawMode
+var drawMode = "static"
 
 
 var screen_size := Vector2(32,32)
@@ -99,7 +99,8 @@ const materialsDictNuclear = { #for nuclear properties
 
 func _draw():
 	if drawMode != "static":
-		draw_rect(Rect2(position,Vector2(16,16)),colour)
+		print(position)
+		draw_rect(Rect2(Vector2(0,0),Vector2(16,16)),colour)
 
 
 func _updateColour():#make colour chnage with temp, try and accurate blackbody
