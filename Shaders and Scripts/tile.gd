@@ -46,12 +46,11 @@ func _ready():
 	if drawMode == "static":
 		button.texture_normal = load("res://materials/" + compound + ".tres")
 	button.size = Vector2(16,16)
-	call_deferred("connectColour")
+	var sim = get_node(^"/root/mainNode/Sim")
+	if sim != null:
+		print("success")
+		sim.updatedGrid.connect(_updateColour)
 	
-func connectColour():
-	colourKeySetter = $"^/root/mainNode/Sim/UISim/CanvasLayer/DrawModes" 
-	if colourKeySetter != null:
-		colourKeySetter.colourMode.connect(_updateColour)
 
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary
@@ -106,7 +105,6 @@ const materialsDictNuclear = { #for nuclear properties
 
 func _draw():
 	if drawMode != "static":
-		print(position)
 		draw_rect(Rect2(Vector2(0,0),Vector2(16,16)),colour)
 
 
@@ -114,10 +112,12 @@ func _updateColour(colours : Dictionary):#make colour chnage with temp, try and 
 	drawMode = ""
 	button.texture_normal = null
 	if colours.get("temperature", null) != null:
-		colour = colours["gradient"].get_color(int(temp))
+		var grad = colours["gradient"]
+		colour = grad.sample((temp - colours["min"])/(colours["max"] - colours["min"]))
 	elif colours.get("material", null) != null:
 		drawMode = "static"
 		button.texture_normal = load("res://materials/" + compound + ".tres")
+	queue_redraw()
 
 
 

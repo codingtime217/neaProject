@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bk47kvhaeoo48"]
+[gd_scene load_steps=15 format=3 uid="uid://bk47kvhaeoo48"]
 
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="1_tu31e"]
 [ext_resource type="Texture2D" uid="uid://co4mtoujwtmca" path="res://Icons/halt.svg" id="2_2cg7b"]
@@ -11,12 +11,6 @@
 [ext_resource type="Script" uid="uid://cnpve2n868g3m" path="res://Scenes/colour_keys.gd" id="8_3k808"]
 [ext_resource type="Script" uid="uid://do7lswmbe4y8o" path="res://Scenes/draw_modes.gd" id="9_0p5x0"]
 [ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_k7ktk"]
-
-[sub_resource type="Gradient" id="Gradient_2n5f6"]
-colors = PackedColorArray(0, 0.5686275, 0, 1, 0.08235294, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_27c8x"]
-gradient = SubResource("Gradient_2n5f6")
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
 
@@ -139,7 +133,6 @@ text = "Min"
 [node name="Gradeint" type="TextureRect" parent="CanvasLayer/ColourKeys/Formatter/GradientKeys"]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
-texture = SubResource("GradientTexture1D_27c8x")
 
 [node name="Max" type="Label" parent="CanvasLayer/ColourKeys/Formatter/GradientKeys"]
 layout_mode = 2
@@ -211,7 +204,7 @@ item_count = 5
 item_0/text = "Temperature"
 item_1/text = "Neutron Flux"
 item_2/text = "Density"
-item_3/text = "Composition"
+item_3/text = "Material"
 item_4/text = "Fission Events"
 
 [node name="CurrentSelected" type="FoldableContainer" parent="CanvasLayer"]

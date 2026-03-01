@@ -15,5 +15,5 @@ func colourModeChanged(colourModes: Dictionary) -> void:
 		var gradient = colourModes["gradient"]
 		gradientText.texture = GradientTexture1D.new()
 		gradientText.texture.gradient = gradient
-		minLabel.text = "0K"
+		minLabel.text =  str(colourModes["min"]) + "K"
 		maxLabel.text = str(colourModes["max"]) + "K"

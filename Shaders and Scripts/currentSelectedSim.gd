@@ -44,7 +44,7 @@ func addDisplay(property,value):
 	get_node("VBoxContainer").add_child(display)
 
 	
-func refresh() -> void:
+func refresh(_data) -> void:
 	if selected != null:
 		changeSelected(selected.get_child(0))
 

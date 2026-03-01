@@ -10,15 +10,18 @@ var thermShader
 var simData
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var tempRange = Range.new()
-
+var colourKeys :Dictionary
+var colourKeySource
 signal loaded(runButton)
-signal updatedGrid
+signal updatedGrid(colourData : Dictionary)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	tempRange.min_value = 231
 	UIinstance = UI.instantiate()
 	add_child(UIinstance)
+	colourKeySource = get_node("UISim/CanvasLayer/DrawModes")
+	colourKeySource.colourMode.connect(drawUpdate)
 	loaded.emit(UIinstance.get_node("CanvasLayer/SpeedOptions/HBoxContainer/Halt"))
 	pass # Replace with function body.
 
@@ -46,7 +49,11 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	thermShader.updateInput(currentData)
 	var dictData = toDictForm(currentData)
 	updateGrid(dictData)
-	updatedGrid.emit()
+	updatedGrid.emit(colourKeys)
+	
+func drawUpdate(data : Dictionary) -> void:
+	colourKeys = data
+	updatedGrid.emit(colourKeys)
 	
 func loadingJsonFile(path : String):
 	var file = FileAccess.open(path,FileAccess.READ)
@@ -76,7 +83,7 @@ func updateGrid(data : Dictionary) -> void:
 			continue
 		if data[i]["temperature"] > tempRange.max_value:
 			tempRange.max_value = data[i]["temperature"]
-		elif data[i]["temperature"] < tempRange.max_value:
+		elif data[i]["temperature"] < tempRange.min_value:
 			tempRange.min_value = data[i]["temperature"]
 		if tile == null:
 			dataGrid[i] = newTile(data[i],i)
