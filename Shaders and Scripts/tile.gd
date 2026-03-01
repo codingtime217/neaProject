@@ -2,7 +2,7 @@ extends Node2D
 
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
-var temp = 293.15 #in kelvin
+var temperature = 293.15 #in kelvin
 var thermal_energy = 10.0
 var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
 var specificHeatCap = 100.0 #in KJ^-1kg^-1
@@ -38,7 +38,7 @@ static func newTile(pos : Vector2, mat : String, drawModeIN = "static"):
 	tileData.compound = mat
 	tileData.position = pos
 	tileData.drawMode = drawModeIN
-	tileData.temp = 235.15
+	tileData.temperature = 235.15
 	tileData.setup(mat)
 	return tileInstance
 
@@ -48,7 +48,6 @@ func _ready():
 	button.size = Vector2(16,16)
 	var sim = get_node(^"/root/mainNode/Sim")
 	if sim != null:
-		print("success")
 		sim.updatedGrid.connect(_updateColour)
 	
 
@@ -56,7 +55,7 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
-	variables = {"temperature" = temp}
+	variables = {"temperature" = temperature}
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
@@ -65,10 +64,10 @@ func _update_properties(properties : Dictionary) -> void:
 			set(i,properties[i])
 	if properties.get("thermal_energy") != null:
 		thermal_energy = properties.get("thermal_energy")
-		temp = mass*specificHeatCap/thermal_energy
+		temperature = mass*specificHeatCap/thermal_energy
 	elif properties.get("temperature") != null:
-		temp = properties.get("temperature")
-		thermal_energy = temp*mass*specificHeatCap
+		temperature = properties.get("temperature")
+		thermal_energy = temperature*mass*specificHeatCap
 
 func loadingJsonFile(path : String):
 	var file = FileAccess.open(path,FileAccess.READ)
@@ -108,15 +107,21 @@ func _draw():
 		draw_rect(Rect2(Vector2(0,0),Vector2(16,16)),colour)
 
 
-func _updateColour(colours : Dictionary):#make colour chnage with temp, try and accurate blackbody
+func _updateColour(colours : Dictionary):#make colour chnage with temperature, try and accurate blackbody
+	colours = colours.duplicate()
 	drawMode = ""
 	button.texture_normal = null
-	if colours.get("temperature", null) != null:
-		var grad = colours["gradient"]
-		colour = grad.sample((temp - colours["min"])/(colours["max"] - colours["min"]))
-	elif colours.get("material", null) != null:
+	if colours.get("mode", null) == "material":
 		drawMode = "static"
 		button.texture_normal = load("res://materials/" + compound + ".tres")
+	elif colours.get("gradient", null) != null:
+		var grad = colours["gradient"]
+		var max = colours["max"]
+		var min = colours["min"]
+		var key = colours["mode"]
+		if key == "thermal energy":
+			key = "thermal_energy"
+		colour = grad.sample((get(key)-min)/(max-min))	
 	queue_redraw()
 
 
@@ -129,10 +134,9 @@ func setup(mat = "void"):
 	compound = mat
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]
-	print(temp)
 	density = properties["density"]
 	mass = density / 1000.0 
-	thermal_energy = temp*mass*specificHeatCap
+	thermal_energy = temperature*mass*specificHeatCap
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

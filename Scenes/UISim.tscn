@@ -7,9 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://boy66lgfhdfus" path="res://Icons/play.svg" id="5_ajvhm"]
 [ext_resource type="Texture2D" uid="uid://ibixidxnq0kg" path="res://Icons/play2.svg" id="6_bwhil"]
 [ext_resource type="Texture2D" uid="uid://bllpgn1knwrqb" path="res://Icons/play3.svg" id="7_8248f"]
-[ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="8_2cg7b"]
 [ext_resource type="Script" uid="uid://cnpve2n868g3m" path="res://Scenes/colour_keys.gd" id="8_3k808"]
 [ext_resource type="Script" uid="uid://do7lswmbe4y8o" path="res://Scenes/draw_modes.gd" id="9_0p5x0"]
+[ext_resource type="Script" uid="uid://brbpatql1g87i" path="res://Scenes/grid_keys.gd" id="9_3k808"]
 [ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_k7ktk"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
@@ -123,6 +123,7 @@ theme = ExtResource("1_tu31e")
 alignment = 1
 
 [node name="GradientKeys" type="HBoxContainer" parent="CanvasLayer/ColourKeys/Formatter"]
+visible = false
 layout_mode = 2
 alignment = 1
 
@@ -138,27 +139,11 @@ layout_mode = 2
 layout_mode = 2
 text = "Max"
 
-[node name="Grid Keys" type="GridContainer" parent="CanvasLayer/ColourKeys/Formatter"]
-visible = false
+[node name="GridKeys" type="GridContainer" parent="CanvasLayer/ColourKeys/Formatter"]
 layout_mode = 2
 theme = ExtResource("1_tu31e")
-columns = 4
-
-[node name="Key Colour Pair" type="HBoxContainer" parent="CanvasLayer/ColourKeys/Formatter/Grid Keys"]
-layout_mode = 2
-theme = ExtResource("1_tu31e")
-
-[node name="Key" type="Label" parent="CanvasLayer/ColourKeys/Formatter/Grid Keys/Key Colour Pair"]
-layout_mode = 2
-theme = ExtResource("1_tu31e")
-text = "Uranium 235"
-
-[node name="Colour" type="TextureRect" parent="CanvasLayer/ColourKeys/Formatter/Grid Keys/Key Colour Pair"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme = ExtResource("1_tu31e")
-texture = ExtResource("8_2cg7b")
-expand_mode = 3
+columns = 3
+script = ExtResource("9_3k808")
 
 [node name="DrawModes" type="FoldableContainer" parent="CanvasLayer"]
 anchors_preset = 1
@@ -203,7 +188,7 @@ wraparound_items = false
 item_count = 5
 item_0/text = "Temperature"
 item_1/text = "Neutron Flux"
-item_2/text = "Density"
+item_2/text = "Thermal Energy"
 item_3/text = "Material"
 item_4/text = "Fission Events"
 
