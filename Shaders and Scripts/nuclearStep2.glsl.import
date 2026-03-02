@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cfkppbmd3m0o1"
+path="res://.godot/imported/nuclearStep2.glsl-56070e5e2051f180d52fa1d3abb55c88.res"
+
+[deps]
+
+source_file="res://Shaders and Scripts/nuclearStep2.glsl"
+dest_files=["res://.godot/imported/nuclearStep2.glsl-56070e5e2051f180d52fa1d3abb55c88.res"]
+
+[params]
+
