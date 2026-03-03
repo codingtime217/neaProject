@@ -56,8 +56,11 @@ outBuffer;
 
 
 uint getNoFissions(in cell cell1) {
+    material celMat = materialArray[cell1.materialIndex];
     uint noFissions = 0;
-    double macroCrossSection = cell.fissileDensity * cell.fissionCrossSection;
+    double neutronFlux = 0;
+    double macroCrossSection = celMat.fissileDensity * celMat.fissionCrossSection;
+    noFissions =int(macroCrossSection * neutronFlux);
     return noFissions;
 }
 
