@@ -17,13 +17,17 @@ struct cell { // defining as a structure to simplify things
 };
 
 
+
 struct material {
     double fissileDensity; //this is density of fissile nuclei in a cell
     double fissionCrossSection;  //fission cross section of each nuclei
     double averageNoNeutrons; //average no. of neutrons emitted per fission
+    double neutronDist; //distrtibution of neutrons as fast or thermal expressed as proportion that are fast
     double deltaE; //energy emitted per fission
+    // other properties needed for moderators
     double mass;
 };
+
 
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
@@ -54,10 +58,17 @@ layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
 outBuffer;
 
 
-uint getNoFissions(in cell cell1, in cell[4] neightbour) {
+uint getNoFissions(inout cell cell1, in cell[4] neightbours) {
+    material celMat = materialArray[cell1.materialIndex];
     uint noFissions = 0;
-
-    return noFissions
+    double macroCrossSection = celMat.fissileDensity * celMat.fissionCrossSection;
+    for i in neighbours:
+        double neutronFlux = 0;
+        //find the neutron flux from that neighbour
+        noFissions +=int(macroCrossSection * neutronFlux);
+        cell2.thermalNeutrons += neighbours.thermalNeutrons/4 - noFissions; //update to include neutrons from neighbours
+        cell2.thermalNeutrons += neighbours.fastNeutrons/4 - noFissions;
+    return noFissions;
 }
 
 
@@ -109,6 +120,9 @@ void main() { // for each invoke
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
     neighbours = getNeighbours(currentIndex); // get the neighbours
+    newCell = copyCell(currentCell);
+
+    noFissions = getNoFissions(newCell,neighbours);
 
 
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer

@@ -11,7 +11,6 @@ struct cell { // defining as a structure to simplify things
 
     uint fastNeutrons; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges
     uint thermalNeutrons;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
-
     double thermalEnergy; 
     
 };
@@ -21,6 +20,7 @@ struct material {
     double fissileDensity; //this is density of fissile nuclei in a cell
     double fissionCrossSection;  //fission cross section of each nuclei
     double averageNoNeutrons; //average no. of neutrons emitted per fission
+    double neutronDist; //distrtibution of neutrons as fast or thermal expressed as proportion that are fast
     double deltaE; //energy emitted per fission
     // other properties needed for moderators
     double mass;
@@ -55,12 +55,13 @@ layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
 outBuffer;
 
 
-uint getNoFissions(in cell cell1) {
+uint getNoFissions(inout cell cell1) {
     material celMat = materialArray[cell1.materialIndex];
     uint noFissions = 0;
     double neutronFlux = 0;
     double macroCrossSection = celMat.fissileDensity * celMat.fissionCrossSection;
     noFissions =int(macroCrossSection * neutronFlux);
+    cell1.thermalNeutrons -= noFissions;
     return noFissions;
 }
 
@@ -79,43 +80,26 @@ cell copyCell(in cell cellToCopy) {
 cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
         return cell(0,0,0); };
-    
     cell fetchedCell = inBuffer.grid[index];
     return copyCell(fetchedCell);
 }
-
-cell[4] getNeighbours(in uint index) {
-    cell[4] neighbours;
-
-    neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in clockwise order, starting with the one to the right
-    if ((index % gridx) == 0) { //accounts for cells on the left edges,
-        neighbours[2] = cell(0,0,0);
-    } else if ((index + 1) % gridx == 0) {
-        neighbours[0] = cell(0,0,0) ;
-    };
-    if (index == 0) {
-        neighbours[2] = cell(0,0,0);
-        neighbours[3] = cell(0,0,0);
-    } else if (index < gridx) {
-        neighbours[3] = cell(0,0,0);
-    };
-    
-    return neighbours;
-}
-
-
 
 void main() { // for each invoke
     const float PI = 3.14159265358;
     const double cellVolume = 4/3 * PI * gridx**3
     uint currentIndex;
+    uint noFissions;
     cell currentCell;
-    cell[4] neighbours; 
-
+    
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
-    neighbours = getNeighbours(currentIndex); // get the neighbours
+    currentMaterial = materialArray[currentCell.materialIndex] 
+    noFissions = getNoFissions(currentCell);
 
+    newCell = copyCell(newCell);
+    newCell.fastNeutrons += int(noFissions*currentMaterial.neutronDist);
+    newCell.thermalNeutrons -= int(noFissions*(1-currentMaterial.neutronDist));
+    newCell.thermalEnergy += currentMaterial.deltaE*noFissions;
 
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
