@@ -9,13 +9,11 @@ struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
     uint materialIndex;
 
-    uint fastNeutrons; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges
-    uint thermalNeutrons;
-
-    double temperature; 
+    uint fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges The flux is the product of density and velocity so contains info about neutron avverage eneryg
+    uint thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
+    double thermalEnergy; 
     
 };
-
 
 
 struct material {
@@ -27,7 +25,6 @@ struct material {
     // other properties needed for moderators
     double mass;
 };
-
 
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
@@ -58,16 +55,9 @@ layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
 outBuffer;
 
 
-uint getNoFissions(inout cell cell1, in cell[4] neightbours) {
-    material celMat = materialArray[cell1.materialIndex];
+uint getNoFissions(in cell cell1, in cell[4] neightbour) {
     uint noFissions = 0;
-    double macroCrossSection = celMat.fissileDensity * celMat.fissionCrossSection;
-    for i in neighbours:
-        double neutronFlux = 0;
-        //find the neutron flux from that neighbour
-        noFissions +=int(macroCrossSection * neutronFlux);
-        cell2.thermalNeutrons += neighbours.thermalNeutrons/4 - noFissions; //update to include neutrons from neighbours
-        cell2.thermalNeutrons += neighbours.fastNeutrons/4 - noFissions;
+
     return noFissions;
 }
 
@@ -79,7 +69,7 @@ uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.materialIndex,0,cellToCopy.temperature); //used to copy a cell as structs get treated as memeory refs rather than data
+    return cellToCopy; //used to copy a cell as structs get treated as memeory refs rather than data
 }
 
 

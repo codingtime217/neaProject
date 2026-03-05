@@ -9,8 +9,8 @@ struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
     uint materialIndex;
 
-    uint fastNeutrons; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges
-    uint thermalNeutrons;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
+    uint fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
+    uint thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
     double thermalEnergy; 
     
 };
@@ -18,7 +18,7 @@ struct cell { // defining as a structure to simplify things
 
 struct material {
     double fissileDensity; //this is density of fissile nuclei in a cell
-    double fissionCrossSection;  //fission cross section of each nuclei
+    double[2] fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
     double averageNoNeutrons; //average no. of neutrons emitted per fission
     double neutronDist; //distrtibution of neutrons as fast or thermal expressed as proportion that are fast
     double deltaE; //energy emitted per fission
@@ -57,12 +57,13 @@ outBuffer;
 
 uint getNoFissions(inout cell cell1) {
     material celMat = materialArray[cell1.materialIndex];
-    uint noFissions = 0;
-    double neutronFlux = 0;
-    double macroCrossSection = celMat.fissileDensity * celMat.fissionCrossSection;
-    noFissions =int(macroCrossSection * neutronFlux);
-    cell1.thermalNeutrons -= noFissions;
-    return noFissions;
+    
+    uint thermalFissions = int(celMat.fissileDensity * celMat.fissionCrossSection[0] * cell.thermalNeutronFlux);
+    uint fastFissions = int(celMat.fissileDensity * celMat.fissionCrossSection[1] * cell.fastNeutronFlux);
+
+    cell1.thermalNeutronFlux -= thermalFissions/(dis**3); //these don't account for neutron energy levels but should
+    cell1.fastNeutronFlux -= fastFissions/(dis**3);
+    return fastFissions + thermalFissions;
 }
 
 
