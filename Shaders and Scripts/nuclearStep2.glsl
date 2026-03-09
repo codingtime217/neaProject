@@ -8,8 +8,8 @@
 struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
     uint materialIndex;
-    uint fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
-    uint thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
+    double fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
+    double thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
     double thermalEnergy; 
     double fissileDensity; //this is density of fissile nuclei in a cell
 };
@@ -25,7 +25,8 @@ struct material {
    
    
     // other properties needed for moderators
-    double mass;
+    double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
+    double moderationCrossSection;
 };
 
 
@@ -57,10 +58,26 @@ layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
 outBuffer;
 
 
-uint getNoFissions(in cell cell1, in cell[4] neightbour) {
+cell updateCell(in cell cell1, in cell[4] neightbour) {
     uint noFissions = 0;
-
-    return noFissions;
+    for(int i = 0; i < 4; i++) {
+        cell consideringNeighbour = neightbour[i];
+        if (consideringNeighbour.thermalNeutronFlux == 0 || consideringNeighbour.fastNeutronFlux == 0) {
+            continue;
+        };
+        cell1.thermalNeutronFlux += int(consideringNeighbour.thermalNeutronFlux / 4);
+        cell1.fastNeutronFlux += int(consideringNeighbour.fastNeutronFlux / 4);
+    };  
+    
+    material celMat = materialArray[cell1.materialIndex];
+    
+    double temp = cell1.fastNeutronFlux;
+    double moderatedFlux = cell1.fastNeutronFlux * cell1.fissileDensity * celMat.moderationFactor * celMat.moderationCrossSection;
+    
+    cell1.fastNeutronFlux -= moderatedFlux;
+    cell1.thermalNeutronFlux += moderatedFlux;
+    
+    return cell1;
 }
 
 
@@ -77,7 +94,7 @@ cell copyCell(in cell cellToCopy) {
 
 cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
-        return cell(0,0,0); };
+        return cell(0,0,0,0,0); };
     
     cell fetchedCell = inBuffer.grid[index];
     return copyCell(fetchedCell);
@@ -88,15 +105,15 @@ cell[4] getNeighbours(in uint index) {
 
     neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in clockwise order, starting with the one to the right
     if ((index % gridx) == 0) { //accounts for cells on the left edges,
-        neighbours[2] = cell(0,0,0);
+        neighbours[2] = cell(0,0,0,0,0);
     } else if ((index + 1) % gridx == 0) {
-        neighbours[0] = cell(0,0,0) ;
+        neighbours[0] = cell(0,0,0,0,0) ;
     };
     if (index == 0) {
-        neighbours[2] = cell(0,0,0);
-        neighbours[3] = cell(0,0,0);
+        neighbours[2] = cell(0,0,0,0,0);
+        neighbours[3] = cell(0,0,0,0,0);
     } else if (index < gridx) {
-        neighbours[3] = cell(0,0,0);
+        neighbours[3] = cell(0,0,0,0,0);
     };
     
     return neighbours;
@@ -112,9 +129,9 @@ void main() { // for each invoke
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
     neighbours = getNeighbours(currentIndex); // get the neighbours
-    newCell = copyCell(currentCell);
+    cell newCell = copyCell(currentCell);
 
-    noFissions = getNoFissions(newCell,neighbours);
+    newCell = updateCell(newCell,neighbours);
 
 
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
