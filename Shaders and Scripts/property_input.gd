@@ -8,7 +8,7 @@ var value := 0.0
 var mat : String
 @onready var labelBox =$propertyLabel
 @onready var valueBox = $SpinBox
-const units := {"temperature" : " (K)"}
+const units := {"temperature" : " (K)", "enrichment" : ""}
 
 
 # Called when the node enters the scene tree for the first time.
@@ -27,7 +27,7 @@ func cleanup(text : String) -> String:
 	for i in text2:
 		cleanedText = cleanedText + " " + i.capitalize()
 		cleanedText.strip_edges()
-	return cleanedText +units[text] +  ":"
+	return cleanedText + units[text] +  ":"
 
 
 

@@ -15,6 +15,8 @@ var colourKeySetter
 #neutron crosssection is used to etermine if a collision occurs and the absorb chance and atomic mass are used to detemine the outcome of the collision
 #if a neutron is absorbed, use fission chance to determine if it results in fission
 #The actual neutron flux in each direaction is stored as average energy (eV), no. of neutrons and a flow direction
+
+var fissile = false
 var neutronFlux = {"energy": 0.0, "no": 0.0}
 var neutronFluxList  = {"up": neutronFlux.duplicate(),"down":neutronFlux.duplicate(),"left":neutronFlux.duplicate(),"right":neutronFlux.duplicate()}
 var neutronCrossSection 
@@ -57,7 +59,10 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
-	variables = {"temperature" = temperature,"enrichment" = enrichment,"fissileDensity" = fissileDensity}
+	variables = {"temperature" = temperature}
+	if fissile == true:
+		var nuclearData = {"enrichment" = enrichment}
+		variables.merge(nuclearData)
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
@@ -70,6 +75,9 @@ func _update_properties(properties : Dictionary) -> void:
 	elif properties.get("temperature") != null:
 		temperature = properties.get("temperature")
 		thermal_energy = temperature*mass*specificHeatCap
+	if properties.get("enrichment") != null:
+		#needs to change value of fissile density
+		pass
 
 func loadingJsonFile(path : String):
 	var file = FileAccess.open(path,FileAccess.READ)
@@ -138,6 +146,7 @@ func setup(mat = "void"):
 	specificHeatCap = properties["specificHeat"]
 	density = properties["density"]
 	mass = density / 1000.0 
+	fissile = properties["fissile"]
 	thermal_energy = temperature*mass*specificHeatCap
 
 

@@ -1,13 +1,16 @@
 {
 	"water" : {
+		"fissile" : false,
 		"conductivity" : 0.6089,
 		"specificHeat" : 4184.0,
 		"density" : 1000.0},
 	"void" : {
+		"fissile" : false,
 		"conductivity" : 0.0,
 		"specificHeat" : 0.0,
 		"density" : 0.0},
 	"uranium" : {
+		"fissile" : true,
 		"conductivity" : 27.5,
 		"specificHeat" : 116.225,
 		"density" : 19050.0,
