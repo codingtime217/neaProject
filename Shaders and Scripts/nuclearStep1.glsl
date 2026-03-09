@@ -8,7 +8,6 @@
 struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
     uint materialIndex;
-
     uint fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
     uint thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
     double thermalEnergy; 
@@ -19,9 +18,10 @@ struct cell { // defining as a structure to simplify things
 struct material {
     double fissileDensity; //this is density of fissile nuclei in a cell
     double[2] fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
-    double averageNoNeutrons; //average no. of neutrons emitted per fission
+    double averageNoNeutrons;
+    doulbe neutronEnergy; //average no. of neutrons emitted per fission
     double neutronDist; //distrtibution of neutrons as fast or thermal expressed as proportion that are fast
-    double deltaE; //energy emitted per fission
+    double deltaE; //energy emitted per fission as thermal fragments and such
     // other properties needed for moderators
     double mass;
 };
@@ -55,7 +55,7 @@ layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
 outBuffer;
 
 
-uint getNoFissions(inout cell cell1) {
+uint getNoFissions(out cell cell1) {
     material celMat = materialArray[cell1.materialIndex];
     
     uint thermalFissions = int(celMat.fissileDensity * celMat.fissionCrossSection[0] * cell.thermalNeutronFlux);
@@ -65,6 +65,16 @@ uint getNoFissions(inout cell cell1) {
     cell1.fastNeutronFlux -= fastFissions/(dis**3);
     return fastFissions + thermalFissions;
 }
+
+
+cell updateCell(out cell cell1, uint noFissions) {
+    material celMat = materialArray[cell1.materialIndex];
+    cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
+    cell1.thermalEnergy += noFissions * celMat.deltaE;
+    cell1.fissileDensity -= noFissions/(dis**3);
+    return cell1;
+}
+
 
 
 
@@ -95,12 +105,11 @@ void main() { // for each invoke
     currentIndex = findIndex(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y,gridx); //find our associated index
     currentCell = inBuffer.grid[currentIndex]; //grab te cell
     currentMaterial = materialArray[currentCell.materialIndex] 
-    noFissions = getNoFissions(currentCell);
+    cell newCell = copyCell*currentCell;
+    noFissions = getNoFissions(newCell);
+    newCell = updateCell(newCell,noFissions);
 
-    newCell = copyCell(newCell);
-    newCell.fastNeutrons += int(noFissions*currentMaterial.neutronDist);
-    newCell.thermalNeutrons -= int(noFissions*(1-currentMaterial.neutronDist));
-    newCell.thermalEnergy += currentMaterial.deltaE*noFissions;
+
 
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
