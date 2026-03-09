@@ -72,7 +72,7 @@ cell updateCell(in cell cell1, in cell[4] neightbour) {
     material celMat = materialArray[cell1.materialIndex];
     
     double temp = cell1.fastNeutronFlux;
-    double moderatedFlux = cell1.fastNeutronFlux * cell1.fissileDensity * celMat.moderationFactor * celMat.moderationCrossSection;
+    double moderatedFlux = cell1.fastNeutronFlux * cell1.fissileDensity * celMat.moderationFactor * celMat.moderationCrossSection * pow(10,-28); //* pow(10,-28) is to convert form barns to m^2
     
     cell1.fastNeutronFlux -= moderatedFlux;
     cell1.thermalNeutronFlux += moderatedFlux;

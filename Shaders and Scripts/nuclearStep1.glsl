@@ -65,8 +65,8 @@ uint getNoFissions(out cell cell1) {
         return 0;
     }
     double[2] neutronFluxes = double[2](cell1.thermalNeutronFlux,cell1.fastNeutronFlux);
-    uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection[0] * neutronFluxes[0]);
-    uint fastFissions = int( cell1.fissileDensity * fissionCrossSection[1] * neutronFluxes[1]);
+    uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection[0] * pow(10,-28) * neutronFluxes[0]); //* pow(10,-28) is to convert form barns to m^2
+    uint fastFissions = int( cell1.fissileDensity * fissionCrossSection[1] * pow(10,-28) * neutronFluxes[1]);
 
     cell1.thermalNeutronFlux -= thermalFissions/pow(dis,3); //these don't account for neutron energy levels but should
     cell1.fastNeutronFlux -= fastFissions/pow(dis,3);
