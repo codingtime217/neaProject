@@ -18,6 +18,8 @@ var colourKeySetter
 var neutronFlux = {"energy": 0.0, "no": 0.0}
 var neutronFluxList  = {"up": neutronFlux.duplicate(),"down":neutronFlux.duplicate(),"left":neutronFlux.duplicate(),"right":neutronFlux.duplicate()}
 var neutronCrossSection 
+var fissileDensity = 0.0
+var enrichment = 0.0
 var specificActivity #decays per unit mass
 var decayDistribution #lists what % is what type of decy
 var absorbChance : float
@@ -55,7 +57,7 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
-	variables = {"temperature" = temperature}
+	variables = {"temperature" = temperature,"enrichment" = enrichment,"fissileDensity" = fissileDensity}
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:

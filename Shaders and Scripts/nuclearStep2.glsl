@@ -20,7 +20,6 @@ struct material {
     double[2] fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
     double averageNoNeutrons;
     double neutronEnergy; //average no. of neutrons emitted per fission
-    double neutronDist; //distrtibution of neutrons as fast or thermal expressed as proportion that are fast
     double deltaE; //energy emitted per fission as thermal fragments and such
    
    
