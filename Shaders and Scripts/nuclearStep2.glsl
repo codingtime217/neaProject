@@ -8,20 +8,22 @@
 struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
     uint materialIndex;
-
-    uint fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges The flux is the product of density and velocity so contains info about neutron avverage eneryg
+    uint fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
     uint thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
     double thermalEnergy; 
-    
+    double fissileDensity; //this is density of fissile nuclei in a cell
 };
 
 
 struct material {
-    double fissileDensity; //this is density of fissile nuclei in a cell
-    double fissionCrossSection;  //fission cross section of each nuclei
-    double averageNoNeutrons; //average no. of neutrons emitted per fission
+    
+    double[2] fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
+    double averageNoNeutrons;
+    double neutronEnergy; //average no. of neutrons emitted per fission
     double neutronDist; //distrtibution of neutrons as fast or thermal expressed as proportion that are fast
-    double deltaE; //energy emitted per fission
+    double deltaE; //energy emitted per fission as thermal fragments and such
+   
+   
     // other properties needed for moderators
     double mass;
 };
