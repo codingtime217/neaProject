@@ -16,3 +16,4 @@ workGroups = Vector3i(10, 10, 1)
 script = ExtResource("3_oyp6w")
 
 [connection signal="tree_exiting" from="thermal" to="thermal" method="freeRIDS"]
+[connection signal="tree_exiting" from="nuclear" to="nuclear" method="free_RIDS"]

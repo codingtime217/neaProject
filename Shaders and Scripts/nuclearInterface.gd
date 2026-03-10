@@ -2,9 +2,16 @@ extends Node2D
 var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
 @export var workGroups := Vector3i(1,1,1)
 var rd : RenderingDevice
-var shaderFile : Resource
-var shaderSpirv : RDShaderSPIRV
-var shaderRID : RID
+var shaderRID1 : RID
+var pipeline1 : RID
+
+@export var shaderPath1 : String
+@export var shaderPath2	: String
+
+
+var rdStage2 : RenderingDevice
+var shaderRID2 : RID
+var pipeline2 : RID
 
 var initialData : Array
 var timestep := 60
@@ -32,15 +39,80 @@ var matUniform : RDUniform
 var constUniform : RDUniform
 var outUniform : RDUniform
 
-var uniformSet : RID
-var pipeline : RID
+var uniformSet1 : RID
+var uniformSet2: RID
 var run = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	var buttonGroup = load("res://UI Themes and Schemes/speedControlsGroup.tres")
+	buttonGroup.pressed.connect(changeTimeScale)
+
+func dataSetup() -> void:
+	constantInts = [10,width,1]
+	constBytes.resize(16)
+	for i in range(len(constantInts)):
+		if constantInts[i] < 0:
+			constantInts[i] *= -1
+		constBytes.encode_u32(i*4,constantInts[i])
+		
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func setup():
+	rd = RenderingServer.create_local_rendering_device()
+	
+	dataSetup()
+	
+	
+	constRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)
+	inBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,inputBytes.size(),inputBytes)
+	outBufferRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,outputBytes.size(),outputBytes)
+	matRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,matDictBytes.size(),matDictBytes)
+	
+	inUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,0,inBufferRID)
+	constUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,1,constRID)
+	matUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,2,matRID)
+	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,3,outBufferRID)
+	
+	
+	pipeline1 = pipelineSetup(rd,shaderPath1,uniformSet1)
+	pipeline2 = pipelineSetup(rd,shaderPath2,uniformSet2)
+	
+	
+	
+func pipelineSetup(renderDevice : RenderingDevice,shaderPath : String,uniformSet : RID) ->  RID:
+	var spirv = rdManager.importShaderFromFile(shaderPath)
+	var shaderRID = renderDevice.shader_create_from_spirv(spirv)
+	var pipeline = renderDevice.compute_pipeline_create(shaderRID)
+	uniformSet = renderDevice.uniform_set_create([inUniform,constUniform,matUniform,outUniform],shaderRID,0)
+	return pipeline
+
+func runShader() -> void:
+	rdManager.runShader(rd,pipeline1,{0: uniformSet1},workGroups)
+	rd.submit()
+	rd.sync()
+	var output = rd.buffer_get_data(outBufferRID)
+	rd.buffer_update(inBufferRID,0,output.size(),output)
+	rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
+	rd.submit()
+	rd.sync()
+
+
+
+func free_RIDS() ->void:
+	rd.free_rid(inBufferRID)
+	rd.free_rid(outBufferRID)
+	rd.free_rid(constRID)
+	rd.free_rid(pipeline1)
+	rd.free_rid(pipeline2)
+
+
+
+func changeTimeScale(button : Button) -> void:
+	timestep = (button.get_index()-1) * 60
+	constantInts = [10,width,1]
+	for i in range(len(constantInts)):
+		if constantInts[i] < 0:
+			constantInts[i] *= -1
+		constBytes.encode_u32(i*4,constantInts[i])
+	rd.buffer_update(constRID,0,constBytes.size(),constBytes)

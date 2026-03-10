@@ -7,6 +7,7 @@ var width : int
 var matDict : Dictionary
 var keyToMat : Dictionary
 var thermShader
+var nukeShader
 var simData
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var tempRange = Range.new()
@@ -28,10 +29,11 @@ func _ready() -> void:
 
 func simDataSetup():
 	thermShader = $thermal
+	nukeShader = $nuclear
 	width = simData[0][0]["width"]
 	keyToMat = simData[0][1]
 	thermShader.width = width
-	thermShader.matDictBytes = matDictToBytes(simData[0][1])
+	thermShader.matDictBytes = matDictToBytes(simData[0][1]) #this will need updating
 	thermShader.initialData = simData[1]
 	thermShader.shaderSetup()
 	

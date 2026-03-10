@@ -4,8 +4,6 @@ extends Node2D
 var rdManager = load("res://Shaders and Scripts/shaderManager.gd").new()
 @export var workGroups := Vector3i(1,1,1)
 var rd : RenderingDevice
-var shaderFile : Resource
-var shaderSpirv : RDShaderSPIRV
 var shaderRID : RID
 
 var initialData : Array
@@ -45,8 +43,7 @@ func shaderSetup() -> void:
 	
 
 	rd = RenderingServer.create_local_rendering_device() #create rendering device, local so we choose when to call it
-	shaderFile = load(shaderPath)
-	shaderSpirv = rdManager.importShaderFromFile(shaderPath)
+	var shaderSpirv = rdManager.importShaderFromFile(shaderPath)
 	shaderRID = rd.shader_create_from_spirv(shaderSpirv) #setup the shader RID
 	pipeline = rd.compute_pipeline_create(shaderRID) #create the pipeline
 	
