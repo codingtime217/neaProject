@@ -11,7 +11,7 @@ struct cell { // defining as a structure to simplify things
     double fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
     double thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
     double thermalEnergy; 
-    double fissileDensity; //this is density of fissile nuclei in a cell
+    float fissileDensity; //this is density of fissile nuclei in a cell
 };
 
 

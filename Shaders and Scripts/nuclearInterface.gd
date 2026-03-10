@@ -54,7 +54,6 @@ func dataSetup(initalData) -> void:
 	var matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
 	
-	
 	constantInts = [10,width,1]
 	constBytes.resize(16)
 	for i in range(len(constantInts)):
@@ -65,12 +64,15 @@ func dataSetup(initalData) -> void:
 
 func makeBufferArray(data:Array) -> PackedByteArray:
 	var newData := PackedByteArray()
-	newData.resize(len(data) * 16)
+	newData.resize(len(data) * 32)
 	@warning_ignore("integer_division")
 	height = len(data)/ width
 	for i in range(0,len(data)):
-		newData.encode_u32(i*16,data[i][0])
-		newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
+		newData.encode_u32(i*32,data[i][0])
+		newData.encode_double(i*32 + 4,data[i][1].get("fastNeutronFlux",0))
+		newData.encode_double(i*32 + 12,data[i][1].get("thermalNeutronFlux",0))
+		newData.encode_double(i*32 + 20,data[i][1].get("thermalEnergy",0))
+		newData.encode_float(i*32 + 28,data[i][1].get("fissileDensity",0))
 	return newData
 	
 	
