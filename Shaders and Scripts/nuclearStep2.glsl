@@ -17,9 +17,8 @@ struct cell { // defining as a structure to simplify things
 
 struct material {
     
-    double[2] fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
+    double fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
     double averageNoNeutrons;
-    double neutronEnergy; //average no. of neutrons emitted per fission
     double deltaE; //energy emitted per fission as thermal fragments and such
    
    
@@ -121,6 +120,7 @@ cell[4] getNeighbours(in uint index) {
 
 
 void main() { // for each invoke
+    const double thermalNeutronVelocity = 2190;
     uint currentIndex;
     cell currentCell;
     cell[4] neighbours; 

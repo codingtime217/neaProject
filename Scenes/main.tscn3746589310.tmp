@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqlxjiyh3qfhd"]
+
+[ext_resource type="Script" uid="uid://co8dit1gs2fwn" path="res://Shaders and Scripts/main.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://wcmprtyrn02b" path="res://Shaders and Scripts/camera_2d.gd" id="2_bo1nx"]
+
+[node name="mainNode" type="Node2D"]
+script = ExtResource("1_ig7tw")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 460)
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+script = ExtResource("2_bo1nx")

@@ -48,20 +48,56 @@ func _ready() -> void:
 	var buttonGroup = load("res://UI Themes and Schemes/speedControlsGroup.tres")
 	buttonGroup.pressed.connect(changeTimeScale)
 
-func dataSetup() -> void:
+func dataSetup(initalData) -> void:
+	inputBytes = makeBufferArray(initalData[1])
+	width = initalData[0][0]["width"]
+	var matDict = initalData[0][1]
+	matDictBytes = matDictToBytes(matDict)
+	
+	
 	constantInts = [10,width,1]
 	constBytes.resize(16)
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:
 			constantInts[i] *= -1
 		constBytes.encode_u32(i*4,constantInts[i])
-		
+	matDictBytes = matDictToBytes(matDict)
+
+func makeBufferArray(data:Array) -> PackedByteArray:
+	var newData := PackedByteArray()
+	newData.resize(len(data) * 16)
+	@warning_ignore("integer_division")
+	height = len(data)/ width
+	for i in range(0,len(data)):
+		newData.encode_u32(i*16,data[i][0])
+		newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
+	return newData
+	
+	
+func matDictToBytes(dict : Dictionary):
+	var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
+	var materialDict = jsonLoader.loadingJsonFile("res://materials/materialsProperties.json")
+	var arrayForm := PackedByteArray([])
+	arrayForm.resize(2048)
+	for i in dict.keys():
+		if i == "void":
+			continue
+		elif dict.get(i,null) != null:
+			var mat = dict[i]
+			var properties = materialDict[mat]
+			if properties["fissile"] == true:
+				arrayForm.encode_double(i*32,properties["thermalCrossSection"])
+				arrayForm.encode_double(i*32+8,properties["averageNeutrons"])
+				arrayForm.encode_float(i*32+16,properties["neutronEnergy"])
+				arrayForm.encode_double(i*32+20,properties["deltaE"])
+			arrayForm.encode_float(i*32 + 28,properties["moderationFactor"])
+			arrayForm.encode_double(i*32 + 32,properties["moderationCrossSection"])
+	return arrayForm
+
 
 
 func setup():
 	rd = RenderingServer.create_local_rendering_device()
-	
-	dataSetup()
 	
 	
 	constRID = rdManager.createBufferRID(rd,RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER,constBytes.size(),constBytes)

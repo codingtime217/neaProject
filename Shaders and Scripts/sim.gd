@@ -32,9 +32,7 @@ func simDataSetup():
 	nukeShader = $nuclear
 	width = simData[0][0]["width"]
 	keyToMat = simData[0][1]
-	thermShader.width = width
-	thermShader.matDictBytes = matDictToBytes(simData[0][1]) #this will need updating
-	thermShader.initialData = simData[1]
+	thermShader.dataSetup(simData)
 	thermShader.shaderSetup()
 	
 
@@ -57,25 +55,9 @@ func drawUpdate(data : Dictionary) -> void:
 	colourKeys = data
 	updatedGrid.emit(colourKeys)
 	
-func loadingJsonFile(path : String):
-	var file = FileAccess.open(path,FileAccess.READ)
-	var text = file.get_as_text()
-	var json_result = JSON.parse_string(text)
-	return json_result
+
 	
-func matDictToBytes(dict : Dictionary):
-	matDict = loadingJsonFile("res://materials/materialsProperties.json")
-	var arrayForm := PackedByteArray([])
-	arrayForm.resize(1024)
-	for i in dict.keys():
-		if dict.get(i,null) != null:
-			var mat = dict[i]
-			var properties = matDict[mat]
-			arrayForm.encode_double(i*32,properties["specificHeat"])
-			arrayForm.encode_double(i*32+8,properties["conductivity"])
-			arrayForm.encode_double(i*32+16,properties["density"]/1000)
-			#the missing i*32+24 is blank data cuase its useless for stupid reasons
-	return arrayForm
+
 
 	
 func updateGrid(data : Dictionary) -> void:

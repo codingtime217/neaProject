@@ -39,6 +39,40 @@ var run = 0
 
 # Called when the node enters the scene tree for the first time.
 
+
+func matDictToBytes(dict : Dictionary):
+	var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
+	var materialDict = jsonLoader.loadingJsonFile("res://materials/materialsProperties.json")
+	var arrayForm := PackedByteArray([])
+	arrayForm.resize(1024)
+	for i in dict.keys():
+		if dict.get(i,null) != null:
+			var mat = dict[i]
+			var properties = materialDict[mat]
+			arrayForm.encode_double(i*32,properties["specificHeat"])
+			arrayForm.encode_double(i*32+8,properties["conductivity"])
+			arrayForm.encode_double(i*32+16,properties["density"]/1000)
+			#the missing i*32+24 is blank data cuase its useless for stupid reasons
+	return arrayForm
+
+
+func dataSetup(initalData) -> void: #both shaders have this as the intial data setup function
+	inputBytes = makeBufferArray(initalData[1])
+	outputBytes = inputBytes
+	width = initalData[0][0]["width"]
+	var matDict = initalData[0][1]
+	matDictBytes = matDictToBytes(matDict)
+	
+	workGroups = Vector3(width,height,1)
+	
+	
+	constantInts = [10,width,1] #converting constants to a byte array
+	constBytes.resize(16)
+	for i in range(len(constantInts)):
+		if constantInts[i] < 0:
+			constantInts[i] *= -1
+		constBytes.encode_u32(i*4,constantInts[i])
+
 func shaderSetup() -> void:
 	
 
@@ -46,19 +80,6 @@ func shaderSetup() -> void:
 	var shaderSpirv = rdManager.importShaderFromFile(shaderPath)
 	shaderRID = rd.shader_create_from_spirv(shaderSpirv) #setup the shader RID
 	pipeline = rd.compute_pipeline_create(shaderRID) #create the pipeline
-	
-	#making input data
-	
-	inputBytes = makeBufferArray(initialData)
-	workGroups = Vector3(width,height,1)
-	outputBytes = inputBytes
-	constantInts = [10,width,1]
-	
-	constBytes.resize(16)
-	for i in range(len(constantInts)):
-		if constantInts[i] < 0:
-			constantInts[i] *= -1
-		constBytes.encode_u32(i*4,constantInts[i])
 	
 	
 	#setting up uniforms and buffers

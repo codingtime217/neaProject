@@ -79,14 +79,8 @@ func _update_properties(properties : Dictionary) -> void:
 		#needs to change value of fissile density
 		pass
 
-func loadingJsonFile(path : String):
-	var file = FileAccess.open(path,FileAccess.READ)
-	var text = file.get_as_text()
-	var json_result = JSON.parse_string(text)
-	return json_result
 
-
-var materialsDictThermal = loadingJsonFile("res://materials/materialsProperties.json")
+var materialsDictThermal = load("res://Shaders and Scripts/jsonLoader.gd").loadingJsonFile("res://materials/materialsProperties.json")
 
 const materialsDictThermaltwo = {
 	"water" : { #numbers from wikipidia, using numbers for 0*C, all units are per kg

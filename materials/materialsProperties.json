@@ -15,7 +15,6 @@
 		"specificHeat" : 116.225,
 		"density" : 19050.0,
 		"thermalCrossSection" : 585.1 ,
-		"fastCrossSection" : 2.053,
 		"averageNeutrons" : 2.42,
 		"deltaE" : 3.24E-11,
 	}

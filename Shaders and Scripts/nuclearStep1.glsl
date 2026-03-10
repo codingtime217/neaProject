@@ -1,7 +1,7 @@
 #[compute]
 #version 450
 // setup stuff
-
+#define thermalNeutronVelocity = 2190;
 
 // this shader will find consider what neutrons in the cell will do inside the cell and adjust the no. of neutrons to be only the no. leaving the cell
 
@@ -17,12 +17,10 @@ struct cell { // defining as a structure to simplify things
 
 struct material {
     
-    double[2] fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
+    double fissionCrossSection;  //thermal fission cross Section
     double averageNoNeutrons;
-    double neutronEnergy; //average no. of neutrons emitted per fission
+    double neutronEnergy; //average no. of neutrons emitted per fission * t
     double deltaE; //energy emitted per fission as thermal fragments and such
-   
-   
     // other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
     double moderationCrossSection;
@@ -59,17 +57,15 @@ outBuffer;
 
 uint getNoFissions(out cell cell1) {
     material cellMat = materialArray[cell1.materialIndex];
-    double[2] fissionCrossSection = cellMat.fissionCrossSection;
-    if (fissionCrossSection[0] == 0 && fissionCrossSection[1] == 0) {
+    double fissionCrossSection = cellMat.fissionCrossSection;
+    if (fissionCrossSection== 0) {
         return 0;
     }
-    double[2] neutronFluxes = double[2](cell1.thermalNeutronFlux,cell1.fastNeutronFlux);
-    uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection[0] * pow(10,-28) * neutronFluxes[0]); //* pow(10,-28) is to convert form barns to m^2
-    uint fastFissions = int( cell1.fissileDensity * fissionCrossSection[1] * pow(10,-28) * neutronFluxes[1]);
+    double neutronFluxes = cell1.thermalNeutronFlux;
+    uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
 
-    cell1.thermalNeutronFlux -= thermalFissions/pow(dis,3); //these don't account for neutron energy levels but should
-    cell1.fastNeutronFlux -= fastFissions/pow(dis,3);
-    return fastFissions + thermalFissions;
+    cell1.thermalNeutronFlux = cell1.thermalNeutronFlux -(thermalFissions * thermalNeutronVelocity)/pow(dis,3); //these don't account for neutron energy levels but should
+    return thermalFissions;
 }
 
 
@@ -102,6 +98,7 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 }
 
 void main() { // for each invoke
+    const double thermalNeutronVelocity = 2190;
     const float PI = 3.14159265358;
     const double cellVolume = 4/3 * PI * pow(dis/2,3);
     uint currentIndex;
