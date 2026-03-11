@@ -1,7 +1,7 @@
 extends Node
 
 
-func loadingJsonFile(path : String):
+static func loadingJsonFile(path : String):
 	var file = FileAccess.open(path,FileAccess.READ)
 	var text = file.get_as_text()
 	var json_result = JSON.parse_string(text)

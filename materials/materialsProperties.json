@@ -14,6 +14,7 @@
 		"conductivity" : 27.5,
 		"specificHeat" : 116.225,
 		"density" : 19050.0,
+		"atomDensity" : 4.8185E24,
 		"thermalCrossSection" : 585.1 ,
 		"averageNeutrons" : 2.42,
 		"deltaE" : 3.24E-11,

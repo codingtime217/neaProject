@@ -17,9 +17,9 @@ var colourKeySetter
 #The actual neutron flux in each direaction is stored as average energy (eV), no. of neutrons and a flow direction
 
 var fissile = false
-var neutronFlux = {"energy": 0.0, "no": 0.0}
-var neutronFluxList  = {"up": neutronFlux.duplicate(),"down":neutronFlux.duplicate(),"left":neutronFlux.duplicate(),"right":neutronFlux.duplicate()}
-var neutronCrossSection 
+var thermalNeutronFlux : float
+var fastNeutronFlux : float
+var thermalCrossSection  : float # in barns
 var fissileDensity = 0.0
 var enrichment = 0.0
 var specificActivity #decays per unit mass
@@ -28,7 +28,7 @@ var absorbChance : float
 var fissionChance : float
 var atomicMass
 var drawMode = "static"
-
+var atomDensity
 
 var screen_size := Vector2(32,32)
 
@@ -63,6 +63,8 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	if fissile == true:
 		var nuclearData = {"enrichment" = enrichment}
 		variables.merge(nuclearData)
+		var nuclearConst = {"thermalCrossSection" = thermalCrossSection}
+		constants.merge(nuclearConst)
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
@@ -76,7 +78,7 @@ func _update_properties(properties : Dictionary) -> void:
 		temperature = properties.get("temperature")
 		thermal_energy = temperature*mass*specificHeatCap
 	if properties.get("enrichment") != null:
-		#needs to change value of fissile density
+		fissileDensity = atomDensity * enrichment/100
 		pass
 
 
@@ -141,6 +143,9 @@ func setup(mat = "void"):
 	density = properties["density"]
 	mass = density / 1000.0 
 	fissile = properties["fissile"]
+	atomDensity = properties.get("atomDensity",0)
+	thermalCrossSection = properties.get("thermalCrossSection",0)
+	
 	thermal_energy = temperature*mass*specificHeatCap
 
 
