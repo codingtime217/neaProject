@@ -19,6 +19,6 @@
 		"atomDensity" : 4.8185E24,
 		"thermalCrossSection" : 585.1 ,
 		"averageNeutrons" : 2.42,
-		"deltaE" : 3.24E-11,
-	}
+		"neutronEnergy" : 4.5E6,
+		"deltaE" : 3.24E-11 }
 }

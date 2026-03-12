@@ -156,8 +156,8 @@ func _runShader() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 		
 		
-func returnOutput() -> PackedByteArray:
-	return get_output(rd,outBufferRID)
+func returnOutput() -> Array:
+	return makeItBackIntoTheArray(get_output(rd,outBufferRID))
 
 func updateInput(newInputData) -> void:
 	inputBytes = newInputData

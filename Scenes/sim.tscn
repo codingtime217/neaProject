@@ -14,6 +14,8 @@ workGroups = Vector3i(10, 10, 1)
 
 [node name="nuclear" type="Node2D" parent="."]
 script = ExtResource("3_oyp6w")
+shaderPath1 = "res://Shaders and Scripts/nuclearStep1.glsl"
+shaderPath2 = "res://Shaders and Scripts/nuclearStep2.glsl"
 
 [connection signal="tree_exiting" from="thermal" to="thermal" method="freeRIDS"]
 [connection signal="tree_exiting" from="nuclear" to="nuclear" method="free_RIDS"]

@@ -37,7 +37,7 @@ func simDataSetup():
 	thermShader.dataSetup(simData)
 	thermShader.shaderSetup()
 	nukeShader.dataSetup(simData)
-	
+	nukeShader.setup()
 
 
 func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid to global coords
@@ -46,9 +46,9 @@ func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid
 	return global
 	
 func updateDataArray(newDataArray : Array): #this will follow the data format of simData
-	for i in range(0,newDataArray):
-		for j in newDataArray[i].keys():
-			dataArray[i][j] = newDataArray[i][j]
+	for i in range(0,len(newDataArray)):
+		for j in newDataArray[i][1].keys():
+			dataArray[i][1][j] = newDataArray[i][1][j]
 	
 	
 	
@@ -58,10 +58,12 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	thermShader._runShader() #this won't work, i need a universal to change them back into the universal format for this to work
 	var currentData = thermShader.returnOutput()
 	updateDataArray(currentData)
+	print(dataArray)
 	nukeShader.updateInput(dataArray)
 	currentData = nukeShader._runShader() 
+	print(currentData)
 	thermShader.updateInput(currentData)
-	
+	print(dataArray)
 	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)
 	updatedGrid.emit(colourKeys)
@@ -69,11 +71,6 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 func drawUpdate(data : Dictionary) -> void:
 	colourKeys = data
 	updatedGrid.emit(colourKeys)
-	
-
-	
-
-
 	
 func updateGrid(data : Dictionary) -> void:
 	for i in data.keys():

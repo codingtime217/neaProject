@@ -49,8 +49,8 @@ func _ready() -> void:
 	buttonGroup.pressed.connect(changeTimeScale)
 
 func dataSetup(initalData) -> void:
-	inputBytes = makeBufferArray(initalData[1])
 	width = initalData[0][0]["width"]
+	inputBytes = makeBufferArray(initalData[1])
 	var matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
 	
@@ -61,7 +61,9 @@ func dataSetup(initalData) -> void:
 			constantInts[i] *= -1
 		constBytes.encode_u32(i*4,constantInts[i])
 	matDictBytes = matDictToBytes(matDict)
-
+	outputBytes = inputBytes
+	
+	
 func makeBufferArray(data:Array) -> PackedByteArray:
 	var newData := PackedByteArray()
 	newData.resize(len(data) * 32)
@@ -82,7 +84,7 @@ func matDictToBytes(dict : Dictionary):
 	var arrayForm := PackedByteArray([])
 	arrayForm.resize(2048)
 	for i in dict.keys():
-		if i == "void":
+		if i == 0:
 			continue
 		elif dict.get(i,null) != null:
 			var mat = dict[i]
@@ -92,8 +94,8 @@ func matDictToBytes(dict : Dictionary):
 				arrayForm.encode_double(i*32+8,properties["averageNeutrons"])
 				arrayForm.encode_float(i*32+16,properties["neutronEnergy"])
 				arrayForm.encode_double(i*32+20,properties["deltaE"])
-			arrayForm.encode_float(i*32 + 28,properties["moderationFactor"])
-			arrayForm.encode_double(i*32 + 32,properties["moderationCrossSection"])
+			arrayForm.encode_float(i*32 + 28,properties.get("moderationFactor",0))
+			arrayForm.encode_double(i*32 + 32,properties.get("moderationCrossSection",0))
 	return arrayForm
 
 
@@ -116,6 +118,9 @@ func setup():
 	pipeline1 = pipelineSetup(rd,shaderPath1,uniformSet1)
 	pipeline2 = pipelineSetup(rd,shaderPath2,uniformSet2)
 	
+func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
+	var outputAsBytes := rendering.buffer_get_data(buffer)
+	return outputAsBytes
 	
 	
 func pipelineSetup(renderDevice : RenderingDevice,shaderPath : String,uniformSet : RID) ->  RID:
@@ -123,6 +128,7 @@ func pipelineSetup(renderDevice : RenderingDevice,shaderPath : String,uniformSet
 	var shaderRID = renderDevice.shader_create_from_spirv(spirv)
 	var pipeline = renderDevice.compute_pipeline_create(shaderRID)
 	uniformSet = renderDevice.uniform_set_create([inUniform,constUniform,matUniform,outUniform],shaderRID,0)
+	assert(pipeline != null)
 	return pipeline
 
 func _runShader() -> void:
@@ -135,6 +141,24 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 
+func returnOutput() -> PackedByteArray:
+	return makeItBackIntoTheArray(get_output(rd,outBufferRID))
+
+func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
+	var returnArray = []
+	for i in range(0,len(data)/32):
+		var matIndex = data.decode_u32(i*32)
+		var fastNFlux = data.decode_double(i*32 + 4)
+		var thermalNFlux = data.decode_double(i*32 + 12)
+		var thermalE =  data.decode_double(i*32 + 20)
+		var fissileD =  data.decode_float(i*32 + 28)
+		returnArray.append([matIndex,{"thermalEnergy" : thermalE,"fastNeutronFlux" : fastNFlux, "thermalNeutronFlux" : thermalNFlux,"fissileDensity" : fissileD}])
+	return returnArray
+
+func updateInput(newInputData) -> void:
+	inputBytes = newInputData
+	inputBytes = makeBufferArray(newInputData) #this does not work, the two datas are not the same
+	rd.buffer_update(inBufferRID,0,inputBytes.size(),inputBytes)
 
 
 func free_RIDS() ->void:
