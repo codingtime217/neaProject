@@ -81,8 +81,8 @@ func _update_properties(properties : Dictionary) -> void:
 		fissileDensity = atomDensity * enrichment/100
 		pass
 
-
-var materialsDictThermal = load("res://Shaders and Scripts/jsonLoader.gd").loadingJsonFile("res://materials/materialsProperties.json")
+var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
+var materialsDictThermal = jsonLoader.loadingJsonFile("res://materials/materialsProperties.json")
 
 
 const materialsDictNuclear = { #for nuclear properties

@@ -57,9 +57,11 @@ func matDictToBytes(dict : Dictionary):
 
 
 func dataSetup(initalData) -> void: #both shaders have this as the intial data setup function
+	width = initalData[0][0]["width"]
 	inputBytes = makeBufferArray(initalData[1])
 	outputBytes = inputBytes
-	width = initalData[0][0]["width"]
+	
+	
 	var matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
 	
@@ -111,6 +113,15 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 		newData.encode_u32(i*16,data[i][0])
 		newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
 	return newData
+	
+	
+func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
+	var returnArray = []
+	for i in range(0,len(data)/16):
+		var matIndex = data.decode_u32(i*16)
+		var temperature = data.decode_double(i*16 + 8)
+		returnArray.append([matIndex,{"temperature" : temperature}])
+	return returnArray
 
 	
 func outputGrid(buffer : PackedByteArray) -> void:
@@ -150,7 +161,7 @@ func returnOutput() -> PackedByteArray:
 
 func updateInput(newInputData) -> void:
 	inputBytes = newInputData
-	#inputBytes = makeBufferArray(newInputData)
+	inputBytes = makeBufferArray(newInputData) #this does not work, the two datas are not the same
 	rd.buffer_update(inBufferRID,0,inputBytes.size(),inputBytes)
 	
 func changeTimeScale(button : Button) -> void:

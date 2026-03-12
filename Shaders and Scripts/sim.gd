@@ -2,6 +2,7 @@ extends Node2D
 var UI = preload("res://Scenes/UISim.tscn")
 var UIinstance
 var dataGrid : Dictionary
+var dataArray : Array
 var tileDimensions = Vector2(16,16)
 var width : int
 var matDict : Dictionary
@@ -28,12 +29,14 @@ func _ready() -> void:
 
 
 func simDataSetup():
+	dataArray = simData[1]
 	thermShader = $thermal
 	nukeShader = $nuclear
 	width = simData[0][0]["width"]
 	keyToMat = simData[0][1]
 	thermShader.dataSetup(simData)
 	thermShader.shaderSetup()
+	nukeShader.dataSetup(simData)
 	
 
 
@@ -42,12 +45,24 @@ func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid
 	var global = Vector2i(local.x * 16,local.y * 16) + 1/2*tileDimensions
 	return global
 	
+func updateDataArray(newDataArray : Array): #this will follow the data format of simData
+	for i in range(0,newDataArray):
+		for j in newDataArray[i].keys():
+			dataArray[i][j] = newDataArray[i][j]
+	
+	
+	
 	
 func _process(_delta: float) -> void: #call the two shaders in sequence then idk
-	thermShader._runShader()
+	
+	thermShader._runShader() #this won't work, i need a universal to change them back into the universal format for this to work
 	var currentData = thermShader.returnOutput()
+	updateDataArray(currentData)
+	nukeShader.updateInput(dataArray)
+	currentData = nukeShader._runShader() 
 	thermShader.updateInput(currentData)
-	var dictData = toDictForm(currentData)
+	
+	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)
 	updatedGrid.emit(colourKeys)
 	
@@ -81,15 +96,15 @@ func newTile(values,pos):
 	new_tile._update_properties(values)
 	return new_tile
 
-func toDictForm(data : PackedByteArray, _type = "therm") -> Dictionary:
+func toDictForm(data : Array, _type = "therm") -> Dictionary:
 	var currentCord = Vector2(0,0)
 	var i = 0
 	var newDict = {}
 	@warning_ignore("integer_division")
-	while i < len(data)/16:
-		var materialIndex = data.decode_u32(i*16)
-		var temperature = data.decode_double(i*16 + 8)
-		newDict[currentCord] = {"mat" : materialIndex, "temperature" : temperature}
+	while i < len(data):
+		var currentCellDict = {"mat" : data[i][0]}
+		currentCellDict.merge(data[i][1])
+		newDict[currentCord] = currentCellDict
 		i +=1
 		if i % width == 0:
 			currentCord.y += 1

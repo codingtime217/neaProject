@@ -4,7 +4,7 @@
 		"conductivity" : 0.6089,
 		"specificHeat" : 4184.0,
 		"density" : 1000.0,
-		"moderationCrossSection" : ,
+		"moderationCrossSection" : 4.5,
 		"moderationFactor" : 0.84},
 	"void" : {
 		"fissile" : false,

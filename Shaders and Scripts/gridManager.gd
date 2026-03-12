@@ -50,18 +50,13 @@ func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid
 	var global = Vector2i(local.x * 16,local.y * 16) + 1/2*tileDimensions
 	return global
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	var mousePos = get_local_mouse_position() #updates mouse position
-	if Input.is_action_pressed("left_click"): #left click events place tiles
+	if Input.is_action_just_pressed("left_click"): #left click events place tiles
 		var tilePos = _global_to_local(mousePos)
 		_place_tile_("l",tilePos,selectedMat.to_lower())
-	elif Input.is_action_pressed("right_click"): #right click removes
+	elif Input.is_action_just_pressed("right_click"): #right click removes
 		var tilePos = _global_to_local(mousePos)
 		if grid.get(tilePos) != null: #check theres actually a tile to remove
 			grid[tilePos].queue_free()

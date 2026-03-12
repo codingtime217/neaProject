@@ -125,7 +125,7 @@ func pipelineSetup(renderDevice : RenderingDevice,shaderPath : String,uniformSet
 	uniformSet = renderDevice.uniform_set_create([inUniform,constUniform,matUniform,outUniform],shaderRID,0)
 	return pipeline
 
-func runShader() -> void:
+func _runShader() -> void:
 	rdManager.runShader(rd,pipeline1,{0: uniformSet1},workGroups)
 	rd.submit()
 	rd.sync()
