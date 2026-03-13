@@ -1,7 +1,7 @@
 #[compute]
 #version 450
 // setup stuff
-#define thermalNeutronVelocity = 2190;
+//#define thermalNeutronVelocity = 2190;
 
 // this shader will find consider what neutrons in the cell will do inside the cell and adjust the no. of neutrons to be only the no. leaving the cell
 
@@ -55,7 +55,7 @@ layout(set = 0, binding = 3, std140) restrict buffer OutBuffer{
 outBuffer;
 
 
-uint getNoFissions(out cell cell1) {
+uint getNoFissions(in cell cell1) {
     material cellMat = materialArray[cell1.materialIndex];
     double fissionCrossSection = cellMat.fissionCrossSection;
     if (fissionCrossSection== 0) {
@@ -63,14 +63,17 @@ uint getNoFissions(out cell cell1) {
     }
     double neutronFluxes = cell1.thermalNeutronFlux;
     uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
-    cell1.thermalNeutronFlux -= (thermalFissions*thermalNeutronVelocity)/pow(dis,3);
     return thermalFissions;
 }
 
 
-cell updateCell(out cell cell1, uint noFissions) {
+cell updateCell(out cell cell1,in uint noFissions) {
     material celMat = materialArray[cell1.materialIndex];
     cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
+    double deltaFlux;
+    deltaFlux = noFissions*2190.0*(1/pow(dis,3));
+    double temp = cell1.thermalNeutronFlux;
+    cell1.thermalNeutronFlux = temp - deltaFlux;
     cell1.thermalEnergy += noFissions * celMat.deltaE;
     cell1.fissileDensity -= noFissions/pow(dis,3);
     return cell1;
@@ -97,9 +100,7 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 }
 
 void main() { // for each invoke
-    const double thermalNeutronVelocity = 2190;
-    const float PI = 3.14159265358;
-    const double cellVolume = 4/3 * PI * pow(dis/2,3);
+    float PI = 3.14159265358;
     uint currentIndex;
     uint noFissions;
     cell currentCell;
