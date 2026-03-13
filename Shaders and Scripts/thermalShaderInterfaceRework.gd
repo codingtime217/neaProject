@@ -111,7 +111,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	height = len(data)/ width
 	for i in range(0,len(data)):
 		newData.encode_u32(i*16,data[i][0])
-		newData.encode_double(i*16 + 8,data[i][1].get("temperature",0))
+		newData.encode_double(i*16 + 8,data[i][1].get("thermalEnergy",0))
 	return newData
 	
 	
@@ -121,8 +121,8 @@ func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
 	@warning_ignore("integer_division")
 	for i in range(0,len(data)/16):
 		var matIndex = data.decode_u32(i*16)
-		var temperature = data.decode_double(i*16 + 8)
-		returnArray.append([matIndex,{"temperature" : temperature}])
+		var thermalEnergy = data.decode_double(i*16 + 8)
+		returnArray.append([matIndex,{"thermalEnergy" : thermalEnergy}])
 	return returnArray
 
 	

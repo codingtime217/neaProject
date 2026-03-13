@@ -6,7 +6,7 @@ struct cell { // defining as a structure to simplify things
  //used for bit count shenanigans
     uint materialIndex;
     uint pointsless;
-    double temperature; 
+    double thermalEnergy; 
     
 };
 
@@ -51,18 +51,24 @@ double getDeltaTemp(in cell cell1, in cell cell2)
     if ((cell1.materialIndex == 0) || (cell2.materialIndex == 0)) { //index 0 will always be the void material
         return 0;
     };
-    if (cell1.temperature == cell2.temperature) {
+    if (cell1.thermalEnergy == cell2.thermalEnergy) {
         return 0;
     };
 
     double conduction = (materialArray[cell1.materialIndex].conductivity + materialArray[cell2.materialIndex].conductivity)/2; // average the conductivities
 
-    double flux = (-conduction)*((cell1.temperature - cell2.temperature)/dis) * timeStep; // find the change in thermal energy
+    double specHeat1 = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap;
+    double specHeat2 = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap;
+
+    double temp1 = cell1.thermalEnergy/specHeat1;
+    double temp2 = cell2.thermalEnergy/specHeat2;
+
+    double flux = (-conduction)*((temp1 - temp2)/dis) * timeStep; // find the change in thermal energy
 
 
-    double specHeat = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap; //find the specific heat
+     //find the specific heat
      
-    return flux/specHeat;
+    return flux;
 }
 
 uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
@@ -70,7 +76,7 @@ uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cell(cellToCopy.materialIndex,0,cellToCopy.temperature); //used to copy a cell as structs get treated as memeory refs rather than data
+    return cell(cellToCopy.materialIndex,0,cellToCopy.thermalEnergy); //used to copy a cell as structs get treated as memeory refs rather than data
 }
 
 
@@ -118,12 +124,12 @@ void main() { // for each invoke
     for (int i = 0; i < 4; ++i) {
         deltaT = getDeltaTemp(currentCell, neighbours[i]);
         temp = netDeltaT;
-        netDeltaT = temp + deltaT; //find the net temperature in/out
+        netDeltaT = temp + deltaT; //find the net thermalEnergy in/out
     }; 
 
 
     cell newCell = copyCell(currentCell); //make a duplicate
-    newCell.temperature = netDeltaT + currentCell.temperature; //update the duplicate
+    newCell.thermalEnergy = netDeltaT + currentCell.thermalEnergy; //update the duplicate
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

@@ -59,13 +59,11 @@ func _ready():
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary
 	var variables : Dictionary
-	constants = {"conductivity" = conductivity,"specificHeatCap"  = specificHeatCap, "density" = density}
+	constants = materialsDict[compound]
 	variables = {"temperature" = temperature}
 	if fissile == true:
-		var nuclearData = {"enrichment" = enrichment}
+		var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = 10000, "fastNeutronFlux" = 10000}
 		variables.merge(nuclearData)
-		var nuclearConst = {"thermalCrossSection" = thermalCrossSection}
-		constants.merge(nuclearConst)
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
@@ -83,13 +81,10 @@ func _update_properties(properties : Dictionary) -> void:
 		pass
 
 var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
-var materialsDictThermal = jsonLoader.loadingJsonFile("res://materials/materialsProperties.json")
+var materialsDict = jsonLoader.loadingJsonFile("res://materials/materialsProperties.json")
 
 
-const materialsDictNuclear = { #for nuclear properties
-	"void" : {},
-	"water" : {}
-}
+
 
 
 func _draw():
@@ -118,9 +113,9 @@ func _updateColour(colours : Dictionary):#make colour chnage with temperature, t
 
 
 func setup(mat = "void"):
-	var properties = materialsDictThermal.get(mat,null)
+	var properties = materialsDict.get(mat,null)
 	if properties == null:
-		properties = materialsDictThermal["water"]
+		properties = materialsDict["water"]
 	compound = mat
 	conductivity = properties["conductivity"]
 	specificHeatCap = properties["specificHeat"]

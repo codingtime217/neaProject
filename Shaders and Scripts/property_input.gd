@@ -19,12 +19,12 @@ func _ready() -> void:
 	mat = parent.mat
 	if units.get(label,null) == null:
 		queue_free()#ths will allow some ineffeceint but easy stuff
+		return
 	labelBox.text = cleanup(label)
 	valueBox.value = value
 	valueBox.max_value = units[label][2]
 	valueBox.min_value = units[label][1]
 	valueBox.step = units[label][3]
-	pass # Replace with function body.
 
 func cleanup(text : String) -> String:
 	var cleanedText = ""
