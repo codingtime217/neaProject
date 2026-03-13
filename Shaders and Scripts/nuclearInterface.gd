@@ -71,10 +71,10 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	height = len(data)/ width
 	for i in range(0,len(data)):
 		newData.encode_u32(i*32,data[i][0])
-		newData.encode_double(i*32 + 4,data[i][1].get("fastNeutronFlux",0))
-		newData.encode_double(i*32 + 12,data[i][1].get("thermalNeutronFlux",0))
-		newData.encode_double(i*32 + 20,data[i][1].get("thermalEnergy",0))
-		newData.encode_float(i*32 + 28,data[i][1].get("fissileDensity",0))
+		newData.encode_float(i*32 + 4,data[i][1].get("fissileDensity",0))
+		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))
+		newData.encode_double(i*32 + 16,data[i][1].get("thermalNeutronFlux",0))
+		newData.encode_double(i*32 + 24,data[i][1].get("thermalEnergy",0))
 	return newData
 	
 	
@@ -115,21 +115,28 @@ func setup():
 	outUniform = rdManager.createUniform(RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER,3,outBufferRID)
 	
 	
-	pipeline1 = pipelineSetup(rd,shaderPath1,uniformSet1)
-	pipeline2 = pipelineSetup(rd,shaderPath2,uniformSet2)
+	var temp = pipelineSetup(rd,shaderPath1)
+	pipeline1 = temp[0]
+	uniformSet1 = temp[1]
+	shaderRID1 = temp[2]
+	temp = pipelineSetup(rd,shaderPath2)
+	pipeline2 = temp[0]
+	uniformSet2 = temp[1]
+	shaderRID2 = temp[2]
+	
 	
 func get_output(rendering : RenderingDevice, buffer : RID) -> PackedByteArray:
 	var outputAsBytes := rendering.buffer_get_data(buffer)
 	return outputAsBytes
 	
 	
-func pipelineSetup(renderDevice : RenderingDevice,shaderPath : String,uniformSet : RID) ->  RID:
+func pipelineSetup(renderDevice : RenderingDevice,shaderPath : String) ->  Array:
 	var spirv = rdManager.importShaderFromFile(shaderPath)
 	var shaderRID = renderDevice.shader_create_from_spirv(spirv)
 	var pipeline = renderDevice.compute_pipeline_create(shaderRID)
-	uniformSet = renderDevice.uniform_set_create([inUniform,constUniform,matUniform,outUniform],shaderRID,0)
+	var uniformSet = renderDevice.uniform_set_create([inUniform,constUniform,matUniform,outUniform],shaderRID,0)
 	assert(pipeline != null)
-	return pipeline
+	return [pipeline,uniformSet,shaderRID]
 
 func _runShader() -> void:
 	rdManager.runShader(rd,pipeline1,{0: uniformSet1},workGroups)
@@ -141,19 +148,22 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 
-func returnOutput() -> PackedByteArray:
-	return makeItBackIntoTheArray(get_output(rd,outBufferRID))
+func returnOutput() -> Array:
+	var temp = makeItBackIntoTheArray(get_output(rd,outBufferRID))
+	return temp
 
 func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
 	var returnArray = []
+	@warning_ignore("integer_division")
 	for i in range(0,len(data)/32):
 		var matIndex = data.decode_u32(i*32)
-		var fastNFlux = data.decode_double(i*32 + 4)
-		var thermalNFlux = data.decode_double(i*32 + 12)
-		var thermalE =  data.decode_double(i*32 + 20)
-		var fissileD =  data.decode_float(i*32 + 28)
+		var fissileD =  data.decode_float(i*32 + 4)
+		var fastNFlux = data.decode_double(i*32 + 8)
+		var thermalNFlux = data.decode_double(i*32 + 16)
+		var thermalE =  data.decode_double(i*32 + 24)
 		returnArray.append([matIndex,{"thermalEnergy" : thermalE,"fastNeutronFlux" : fastNFlux, "thermalNeutronFlux" : thermalNFlux,"fissileDensity" : fissileD}])
 	return returnArray
+
 
 func updateInput(newInputData) -> void:
 	inputBytes = newInputData

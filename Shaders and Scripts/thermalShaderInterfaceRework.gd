@@ -117,6 +117,8 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	
 func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
 	var returnArray = []
+	
+	
 	for i in range(0,len(data)/16):
 		var matIndex = data.decode_u32(i*16)
 		var temperature = data.decode_double(i*16 + 8)
@@ -160,7 +162,6 @@ func returnOutput() -> Array:
 	return makeItBackIntoTheArray(get_output(rd,outBufferRID))
 
 func updateInput(newInputData) -> void:
-	inputBytes = newInputData
 	inputBytes = makeBufferArray(newInputData) #this does not work, the two datas are not the same
 	rd.buffer_update(inBufferRID,0,inputBytes.size(),inputBytes)
 	

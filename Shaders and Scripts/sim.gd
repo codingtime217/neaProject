@@ -54,16 +54,14 @@ func updateDataArray(newDataArray : Array): #this will follow the data format of
 	
 	
 func _process(_delta: float) -> void: #call the two shaders in sequence then idk
-	
 	thermShader._runShader() #this won't work, i need a universal to change them back into the universal format for this to work
 	var currentData = thermShader.returnOutput()
 	updateDataArray(currentData)
-	print(dataArray)
 	nukeShader.updateInput(dataArray)
-	currentData = nukeShader._runShader() 
-	print(currentData)
-	thermShader.updateInput(currentData)
-	print(dataArray)
+	nukeShader._runShader() 
+	currentData = nukeShader.returnOutput()
+	updateDataArray(currentData)
+	thermShader.updateInput(dataArray)
 	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)
 	updatedGrid.emit(colourKeys)
