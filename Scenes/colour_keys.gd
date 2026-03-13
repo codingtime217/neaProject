@@ -32,7 +32,6 @@ func toExponentialNotation(number : String):
 		decimal = number.split(".")
 	if len(whole) >= 1:
 		whole = str(roundf(int(whole)*100)/(10**(len(whole)+1))) + "*10^" + str(len(whole) -1)
-		print(whole)
 		return whole
 	elif len(decimal) > 1:
 		var noZeros = decimal.count("0",0,-1)

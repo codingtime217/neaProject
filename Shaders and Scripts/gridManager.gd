@@ -6,6 +6,7 @@ extends Node2D
 var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var grid : Dictionary
 var selectedMat := "water"
+var pastMousePose : Vector2
 @onready var canvas = $CanvasLayer
 
 
@@ -53,15 +54,14 @@ func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	var mousePos = get_local_mouse_position() #updates mouse position
-	if Input.is_action_just_pressed("left_click"): #left click events place tiles
+	if Input.is_action_pressed("left_click"): #left click events place tiles
 		var tilePos = _global_to_local(mousePos)
 		_place_tile_("l",tilePos,selectedMat.to_lower())
-	elif Input.is_action_just_pressed("right_click"): #right click removes
+	elif Input.is_action_pressed("right_click"): #right click removes
 		var tilePos = _global_to_local(mousePos)
 		if grid.get(tilePos) != null: #check theres actually a tile to remove
 			grid[tilePos].queue_free()
 			grid.erase(tilePos)
-	pass
 
 func dataForm() -> Array:
 	var tileKeyArray = dictToArrayOfKeys(grid)

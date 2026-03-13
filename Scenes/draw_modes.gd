@@ -15,7 +15,6 @@ func changeColourMode(indexOfMode : int):
 	var newMode = listOfModes.get_item_text(indexOfMode).to_lower()
 	var toEmit = {}
 	toEmit["mode"] = newMode
-	print(toEmit)
 	if newMode == "material":
 		pass
 	elif newMode == "temperature":
@@ -31,7 +30,3 @@ func changeColourMode(indexOfMode : int):
 		toEmit["max"] = tempR.max_value * 2000
 		toEmit["gradient"] = gradient
 	colourMode.emit(toEmit)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass

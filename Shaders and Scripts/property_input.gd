@@ -8,7 +8,7 @@ var value := 0.0
 var mat : String
 @onready var labelBox =$propertyLabel
 @onready var valueBox = $SpinBox
-const units := {"temperature" : [" (K)",0,2,147,483,647,1], "enrichment" : ["",0,100,0.5]}
+const units := {"temperature" : [" (K)",0,2147483647,1], "enrichment" : ["",0,100,0.5]}
 
 
 # Called when the node enters the scene tree for the first time.
@@ -17,6 +17,8 @@ func _ready() -> void:
 	parent = get_node("../..")
 	parent.connect("freeDisplays",queue_free)
 	mat = parent.mat
+	if units.get(label,null) == null:
+		queue_free()#ths will allow some ineffeceint but easy stuff
 	labelBox.text = cleanup(label)
 	valueBox.value = value
 	valueBox.max_value = units[label][2]

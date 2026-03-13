@@ -50,6 +50,7 @@ func _ready():
 	if drawMode == "static":
 		button.texture_normal = load("res://materials/" + compound + ".tres")
 	button.size = Vector2(16,16)
+
 	var sim = get_node(^"/root/mainNode/Sim")
 	if sim != null:
 		sim.updatedGrid.connect(_updateColour)
@@ -105,12 +106,12 @@ func _updateColour(colours : Dictionary):#make colour chnage with temperature, t
 		button.texture_normal = load("res://materials/" + compound + ".tres")
 	elif colours.get("gradient", null) != null:
 		var grad = colours["gradient"]
-		var max = colours["max"]
-		var min = colours["min"]
+		var maxV = colours["max"]
+		var minV = colours["min"]
 		var key = colours["mode"]
 		if key == "thermal energy":
 			key = "thermal_energy"
-		colour = grad.sample((get(key)-min)/(max-min))	
+		colour = grad.sample((get(key)-minV)/(maxV-minV))	
 	queue_redraw()
 
 

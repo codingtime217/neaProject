@@ -118,7 +118,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
 	var returnArray = []
 	
-	
+	@warning_ignore("integer_division")
 	for i in range(0,len(data)/16):
 		var matIndex = data.decode_u32(i*16)
 		var temperature = data.decode_double(i*16 + 8)

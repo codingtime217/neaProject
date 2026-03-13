@@ -11,7 +11,7 @@ var texture : Texture2D
 @onready var valueBox = $propertyData
 @onready var textureBox = $TextureRect
 
-const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)", "temperature" : "K"}
+const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)", "temperature" : "(K)","thermalCrossSection" : "(barns)"}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -19,6 +19,8 @@ func _ready() -> void:
 		parent = get_node("../..")
 		parent.connect("freeDisplays",queue_free)
 		mat = parent.mat
+		if units.get(label,null) == null:
+			queue_free()#ths will allow some ineffeceint but easy stuff
 		labelBox.text = cleanup(label)
 		valueBox.text = str(value)
 	else:
@@ -35,6 +37,7 @@ func toExponentialNotation(number : String):
 	if len(number.split(".")) > 1:
 		decimal = number.split(".")
 	if len(whole) >= 1:
+		@warning_ignore("integer_division")
 		whole = str(roundi(int(whole)*100)/100) + "10^" + str(len(whole) -1)
 		return whole
 	elif len(decimal) > 1:
