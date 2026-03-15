@@ -58,7 +58,7 @@ double getDeltaTemp(in cell cell1, in cell cell2)
     double conduction = (materialArray[cell1.materialIndex].conductivity + materialArray[cell2.materialIndex].conductivity)/2; // average the conductivities
 
     double specHeat1 = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap;
-    double specHeat2 = materialArray[cell1.materialIndex].mass * materialArray[cell1.materialIndex].specHeatCap;
+    double specHeat2 = materialArray[cell2.materialIndex].mass * materialArray[cell2.materialIndex].specHeatCap;
 
     double temp1 = cell1.thermalEnergy/specHeat1;
     double temp2 = cell2.thermalEnergy/specHeat2;

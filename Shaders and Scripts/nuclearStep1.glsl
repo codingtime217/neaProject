@@ -21,8 +21,7 @@ struct material {
     double fissionCrossSection;  //thermal fission cross Section
     double averageNoNeutrons;
     double neutronEnergy; //average no. of neutrons emitted per fission * t
-    double deltaE; //energy emitted per fission as thermal fragments and such
-    // other properties needed for moderators
+    double deltaE; //energy emitted per fission as thermal fragments and such// other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
     double moderationCrossSection;
 };
@@ -64,13 +63,19 @@ uint getNoFissions(in cell cell1) {
     }
     double neutronFluxes = cell1.thermalNeutronFlux;
     uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
+
     return thermalFissions;
 }
 
 
 cell updateCell(out cell cell1,in uint noFissions) {
+ 
+
     material celMat = materialArray[cell1.materialIndex];
     cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
+    if (isnan(cell1.fastNeutronFlux)) {
+        return cell(0,float(celMat.averageNoNeutrons),celMat.neutronEnergy,celMat.deltaE,celMat.moderationCrossSection);
+    }
     double deltaFlux;
     deltaFlux = noFissions*2190.0*(1/pow(dis,3));
     double temp = cell1.thermalNeutronFlux;
@@ -113,7 +118,9 @@ void main() { // for each invoke
     noFissions = getNoFissions(newCell);
     newCell = updateCell(newCell,noFissions);
 
+    //newCell.thermalEnergy = noFissions;  
 
+   // newCell = cell(1,float(materialArray[currentCell.materialIndex].averageNoNeutrons),materialArray[currentCell.materialIndex].neutronEnergy,materialArray[currentCell.materialIndex].deltaE,materialArray[currentCell.materialIndex].averageNoNeutrons);
 
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }

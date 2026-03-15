@@ -133,7 +133,9 @@ void main() { // for each invoke
 
     newCell = updateCell(newCell,neighbours);
 
-
+    if (isnan(newCell.thermalEnergy)) {
+        newCell.thermalEnergy = 2;
+    }
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

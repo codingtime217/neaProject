@@ -32,6 +32,7 @@ func simDataSetup():
 	dataArray = simData[1]
 	thermShader = $thermal
 	nukeShader = $nuclear
+	print(simData)
 	width = simData[0][0]["width"]
 	keyToMat = simData[0][1]
 	thermShader.dataSetup(simData)
@@ -56,11 +57,14 @@ func updateDataArray(newDataArray : Array): #this will follow the data format of
 func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	thermShader._runShader() #this won't work, i need a universal to change them back into the universal format for this to work
 	var currentData = thermShader.returnOutput()
+	#print("inital ", dataArray)
 	updateDataArray(currentData)
+	#print("posth thermal: ",dataArray)
 	nukeShader.updateInput(dataArray)
 	nukeShader._runShader() 
 	currentData = nukeShader.returnOutput()
 	updateDataArray(currentData)
+	print("post nuke: ",dataArray)
 	thermShader.updateInput(dataArray)
 	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)

@@ -5,7 +5,11 @@
 		"specificHeat" : 4184.0,
 		"density" : 1000.0,
 		"moderationCrossSection" : 4.5,
-		"moderationFactor" : 0.84},
+		"moderationFactor" : 0.84,
+		"thermalCrossSection" : 0,
+		"averageNeutrons" : 0,
+		"neutronEnergy" : 0,
+		"deltaE" : 0 },
 	"void" : {
 		"fissile" : false,
 		"conductivity" : 0.0,

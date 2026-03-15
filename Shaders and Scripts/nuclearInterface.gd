@@ -65,6 +65,7 @@ func dataSetup(initalData) -> void:
 	
 	
 func makeBufferArray(data:Array) -> PackedByteArray:
+	print(data)
 	var newData := PackedByteArray()
 	newData.resize(len(data) * 32)
 	@warning_ignore("integer_division")
@@ -90,12 +91,12 @@ func matDictToBytes(dict : Dictionary):
 			var mat = dict[i]
 			var properties = materialDict[mat]
 			if properties["fissile"] == true:
-				arrayForm.encode_double(i*32,properties["thermalCrossSection"])
-				arrayForm.encode_double(i*32+8,properties["averageNeutrons"])
-				arrayForm.encode_float(i*32+16,properties["neutronEnergy"])
-				arrayForm.encode_double(i*32+20,properties["deltaE"])
-			arrayForm.encode_float(i*32 + 28,properties.get("moderationFactor",0))
-			arrayForm.encode_double(i*32 + 32,properties.get("moderationCrossSection",0))
+				arrayForm.encode_double(i*48,properties["thermalCrossSection"])
+				arrayForm.encode_double(i*48+8,properties["averageNeutrons"])
+				arrayForm.encode_double(i*48+16,properties["neutronEnergy"])
+				arrayForm.encode_double(i*48+24,properties["deltaE"])
+			arrayForm.encode_double(i*48 + 32,properties.get("moderationFactor",0))
+			arrayForm.encode_double(i*48 + 40,properties.get("moderationCrossSection",0))
 	return arrayForm
 
 
@@ -143,6 +144,7 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 	var newData = rd.buffer_get_data(outBufferRID)
+	print(makeItBackIntoTheArray(newData))
 	rd.buffer_update(inBufferRID,0,newData.size(),newData)
 	rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
 	rd.submit()

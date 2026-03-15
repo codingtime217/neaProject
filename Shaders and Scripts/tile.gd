@@ -3,7 +3,7 @@ extends Node2D
 var compound = "water"
 var vector = Vector2(0,0) #starts as nothing, used for visualising flux atm
 var temperature = 293.15 #in kelvin
-var thermal_energy = 10.0
+var thermalEnergy = 10.0
 var conductivity = 1.0 #in Wm^-1K^-1 a proportionality constant on thermal flux
 var specificHeatCap = 100.0 #in KJ^-1kg^-1
 var colour = Color(0,0,0)
@@ -60,7 +60,7 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = materialsDict[compound]
-	variables = {"temperature" = temperature}
+	variables = {"temperature" = temperature, "thermalEnergy" = thermalEnergy}
 	if fissile == true:
 		var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = 10000, "fastNeutronFlux" = 10000}
 		variables.merge(nuclearData)
@@ -70,12 +70,12 @@ func _update_properties(properties : Dictionary) -> void:
 	for i in properties.keys():
 		if get(i) != null:
 			set(i,properties[i])
-	if properties.get("thermal_energy") != null:
-		thermal_energy = properties.get("thermal_energy")
-		temperature = mass*specificHeatCap/thermal_energy
+	if properties.get("thermalEnergy") != null:
+		thermalEnergy = properties.get("thermalEnergy")
+		temperature = mass*specificHeatCap/thermalEnergy
 	elif properties.get("temperature") != null:
 		temperature = properties.get("temperature")
-		thermal_energy = temperature*mass*specificHeatCap
+		thermalEnergy = temperature*mass*specificHeatCap
 	if properties.get("enrichment") != null:
 		fissileDensity = atomDensity * enrichment/100
 		pass
@@ -105,7 +105,7 @@ func _updateColour(colours : Dictionary):#make colour chnage with temperature, t
 		var minV = colours["min"]
 		var key = colours["mode"]
 		if key == "thermal energy":
-			key = "thermal_energy"
+			key = "thermalEnergy"
 		colour = grad.sample((get(key)-minV)/(maxV-minV))	
 	queue_redraw()
 
@@ -125,7 +125,7 @@ func setup(mat = "void"):
 	atomDensity = properties.get("atomDensity",0)
 	thermalCrossSection = properties.get("thermalCrossSection",0)
 	
-	thermal_energy = temperature*mass*specificHeatCap
+	thermalEnergy = temperature*mass*specificHeatCap
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
