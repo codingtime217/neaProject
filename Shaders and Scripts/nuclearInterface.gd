@@ -65,6 +65,7 @@ func dataSetup(initalData) -> void:
 	
 	
 func makeBufferArray(data:Array) -> PackedByteArray:
+	#print(data)
 	var newData := PackedByteArray()
 	newData.resize(len(data) * 32)
 	@warning_ignore("integer_division")
@@ -75,6 +76,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))
 		newData.encode_double(i*32 + 16,data[i][1].get("thermalNeutronFlux",0))
 		newData.encode_double(i*32 + 24,data[i][1].get("thermalEnergy",0))
+	print(newData)
 	return newData
 	
 	
@@ -143,11 +145,12 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 	var newData = rd.buffer_get_data(outBufferRID)
-	#print(makeItBackIntoTheArray(newData))
+	print(newData)
+	print("step1 data: ", makeItBackIntoTheArray(newData))
 	rd.buffer_update(inBufferRID,0,newData.size(),newData)
-	rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
-	rd.submit()
-	rd.sync()
+	#rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
+	#rd.submit()
+	#rd.sync()
 
 func returnOutput() -> Array:
 	var temp = makeItBackIntoTheArray(get_output(rd,outBufferRID))
@@ -167,8 +170,7 @@ func makeItBackIntoTheArray(data : PackedByteArray) -> Array:
 
 
 func updateInput(newInputData) -> void:
-	inputBytes = newInputData
-	inputBytes = makeBufferArray(newInputData) #this does not work, the two datas are not the same
+	inputBytes = makeBufferArray(newInputData) #this does work
 	rd.buffer_update(inBufferRID,0,inputBytes.size(),inputBytes)
 
 

@@ -67,7 +67,7 @@ uint getNoFissions(in cell cell1) {
 }
 
 
-cell updateCell(out cell cell1,in uint noFissions) {
+cell updateCell(in cell cell1,in uint noFissions) {
  
 
     material celMat = materialArray[cell1.materialIndex];
@@ -77,9 +77,14 @@ cell updateCell(out cell cell1,in uint noFissions) {
         return cell(0,2,1,0,0);
     } else if (isnan(celMat.neutronEnergy)) {
         return cell(0,3,2,1,0);
-    }
+    };
+    if (noFissions < 1) {
+        noFissions = 0;
+    };
     cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
-    
+    if (isnan(cell1.fastNeutronFlux)) {
+        return cell(0,1,2,3,4);
+    };
     double deltaFlux;
     deltaFlux = noFissions*2190.0*(1/pow(dis,3));
     double temp = cell1.thermalNeutronFlux;
@@ -120,11 +125,7 @@ void main() { // for each invoke
      
     cell newCell = copyCell(currentCell);
     noFissions = getNoFissions(newCell);
-    //newCell = updateCell(newCell,noFissions);
-
-    //newCell.thermalEnergy = noFissions;  
-
-   // newCell = cell(1,float(materialArray[currentCell.materialIndex].averageNoNeutrons),materialArray[currentCell.materialIndex].neutronEnergy,materialArray[currentCell.materialIndex].deltaE,materialArray[currentCell.materialIndex].averageNoNeutrons);
+    newCell = updateCell(newCell,noFissions);
 
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
