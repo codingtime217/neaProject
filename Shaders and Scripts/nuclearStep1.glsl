@@ -59,7 +59,7 @@ uint getNoFissions(in cell cell1) {
     double fissionCrossSection = cellMat.fissionCrossSection;
     if (fissionCrossSection== 0) {
         return 0;
-    }
+    };
     double neutronFluxes = cell1.thermalNeutronFlux;
     uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
 
@@ -89,6 +89,9 @@ cell updateCell(in cell cell1,in uint noFissions) {
     deltaFlux = noFissions*2190.0*(1/pow(dis,3));
     double temp = cell1.thermalNeutronFlux;
     cell1.thermalNeutronFlux = temp - deltaFlux;
+    if ((noFissions * celMat.deltaE) > 0) {
+        return cell(0,6,2,3,1);
+    };
     cell1.thermalEnergy += noFissions * celMat.deltaE;
     cell1.fissileDensity -= noFissions/pow(dis,3);
     return cell1;

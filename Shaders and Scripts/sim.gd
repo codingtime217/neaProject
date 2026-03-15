@@ -61,7 +61,7 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	print("posth thermal: ",dataArray)
 	nukeShader.updateInput(dataArray)
 	nukeShader._runShader() 
-	#currentData = nukeShader.returnOutput()
+	currentData = nukeShader.returnOutput()
 	updateDataArray(currentData)
 	#print("post nuke: ",dataArray)
 	thermShader.updateInput(dataArray)
