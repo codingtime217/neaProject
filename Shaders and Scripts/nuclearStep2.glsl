@@ -17,13 +17,10 @@ struct cell { // defining as a structure to simplify things
 
 
 struct material {
-    
-    double fissionCrossSection;  //fission cross section of each nuclei, first item is thermal, 2nd is fast
+    double fissionCrossSection;  //thermal fission cross Section
     double averageNoNeutrons;
-    double deltaE; //energy emitted per fission as thermal fragments and such
-   
-   
-    // other properties needed for moderators
+    double neutronEnergy; //average no. of neutrons emitted per fission * t
+    double deltaE; //energy emitted per fission as thermal fragments and such// other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
     double moderationCrossSection;
 };

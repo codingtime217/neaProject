@@ -65,7 +65,6 @@ func dataSetup(initalData) -> void:
 	
 	
 func makeBufferArray(data:Array) -> PackedByteArray:
-	print(data)
 	var newData := PackedByteArray()
 	newData.resize(len(data) * 32)
 	@warning_ignore("integer_division")
@@ -144,7 +143,7 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 	var newData = rd.buffer_get_data(outBufferRID)
-	print(makeItBackIntoTheArray(newData))
+	#print(makeItBackIntoTheArray(newData))
 	rd.buffer_update(inBufferRID,0,newData.size(),newData)
 	rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
 	rd.submit()

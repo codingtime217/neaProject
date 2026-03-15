@@ -17,7 +17,6 @@ struct cell { // defining as a structure to simplify things
 
 
 struct material {
-    
     double fissionCrossSection;  //thermal fission cross Section
     double averageNoNeutrons;
     double neutronEnergy; //average no. of neutrons emitted per fission * t
@@ -72,10 +71,15 @@ cell updateCell(out cell cell1,in uint noFissions) {
  
 
     material celMat = materialArray[cell1.materialIndex];
-    cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
-    if (isnan(cell1.fastNeutronFlux)) {
-        return cell(0,float(celMat.averageNoNeutrons),celMat.neutronEnergy,celMat.deltaE,celMat.moderationCrossSection);
+    if (isnan(noFissions)) {
+        return cell(0,1,0,0,0);
+    } else if (isnan(celMat.averageNoNeutrons)) {
+        return cell(0,2,1,0,0);
+    } else if (isnan(celMat.neutronEnergy)) {
+        return cell(0,3,2,1,0);
     }
+    cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
+    
     double deltaFlux;
     deltaFlux = noFissions*2190.0*(1/pow(dis,3));
     double temp = cell1.thermalNeutronFlux;
@@ -116,7 +120,7 @@ void main() { // for each invoke
      
     cell newCell = copyCell(currentCell);
     noFissions = getNoFissions(newCell);
-    newCell = updateCell(newCell,noFissions);
+    //newCell = updateCell(newCell,noFissions);
 
     //newCell.thermalEnergy = noFissions;  
 

@@ -32,7 +32,6 @@ func simDataSetup():
 	dataArray = simData[1]
 	thermShader = $thermal
 	nukeShader = $nuclear
-	print(simData)
 	width = simData[0][0]["width"]
 	keyToMat = simData[0][1]
 	thermShader.dataSetup(simData)
@@ -64,7 +63,7 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	nukeShader._runShader() 
 	currentData = nukeShader.returnOutput()
 	updateDataArray(currentData)
-	print("post nuke: ",dataArray)
+	#print("post nuke: ",dataArray)
 	thermShader.updateInput(dataArray)
 	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)
@@ -79,15 +78,15 @@ func updateGrid(data : Dictionary) -> void:
 		var tile = dataGrid.get(i,null)
 		if data[i]["mat"] == 0:
 			continue
-		if data[i]["temperature"] > tempRange.max_value:
-			tempRange.max_value = data[i]["temperature"]
-		elif data[i]["temperature"] < tempRange.min_value:
-			tempRange.min_value = data[i]["temperature"]
 		if tile == null:
 			dataGrid[i] = newTile(data[i],i)
 			add_child(dataGrid[i])
 		else:
 			dataGrid[i]._update_properties(data[i])
+		if dataGrid[i]["temperature"] > tempRange.max_value:
+			tempRange.max_value = data[i]["temperature"]
+		elif dataGrid[i]["temperature"] < tempRange.min_value:
+			tempRange.min_value = data[i]["temperature"]
 
 func newTile(values,pos):
 	var tilePosition = _local_to_global(pos)

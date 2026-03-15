@@ -72,7 +72,7 @@ func _update_properties(properties : Dictionary) -> void:
 			set(i,properties[i])
 	if properties.get("thermalEnergy") != null:
 		thermalEnergy = properties.get("thermalEnergy")
-		temperature = mass*specificHeatCap/thermalEnergy
+		temperature = thermalEnergy/(mass*specificHeatCap)
 	elif properties.get("temperature") != null:
 		temperature = properties.get("temperature")
 		thermalEnergy = temperature*mass*specificHeatCap
