@@ -98,8 +98,8 @@ func matDictToBytes(dict : Dictionary):
 				arrayForm.encode_double(i*64+24,properties["deltaE"])
 			arrayForm.encode_double(i*64 + 32,properties.get("moderationFactor",0))
 			arrayForm.encode_double(i*64 + 40,properties.get("moderationCrossSection",0))
-			arrayForm.encode_double(i*64 + 32,properties.get("absorbtionCrossSection",0))
-			arrayForm.encode_double(i*64 + 40,properties.get("atomDensity",0))
+			arrayForm.encode_double(i*64 + 48,properties.get("absorbtionCrossSection",0))
+			arrayForm.encode_double(i*64 + 56,properties.get("atomDensity",0))
 	return arrayForm
 
 

@@ -76,7 +76,7 @@ cell updateCell(in cell cell1, in cell[4] neightbour) {
     double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * pow(10,-28); //* pow(10,-28) is to convert form barns to m^2
     
     cell1.fastNeutronFlux -= moderatedFlux;
-    cell1.thermalNeutronFlux += moderatedFlux;
+    cell1.thermalNeutronFlux += moderatedFlux; //this is wrong, the increase in thermal flux should be less than the decrease in fast as the neutrons are slower
     
     return cell1;
 }
@@ -93,12 +93,12 @@ cell copyCell(in cell cellToCopy) {
 }
 
 
-cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
+cell tryGet(in uint index,out ,fetchedCell) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
         return cell(0,0,0,0,0); };
     
     cell fetchedCell = inBuffer.grid[index];
-    return copyCell(fetchedCell);
+    return fetchedCell;
 }
 
 cell[4] getNeighbours(in uint index) {

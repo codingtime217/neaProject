@@ -63,8 +63,10 @@ uint getNoFissions(in cell cell1) {
         return 0;
     };
     double neutronFluxes = cell1.thermalNeutronFlux;
-    uint thermalFissions = int( cell1.fissileDensity * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
-
+    uint thermalFissions = uint( cell1.fissileDensity * pow((dis/100),3) * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
+    if (noFissions < 1) { //its a uint so should be 0 or > but just in case
+        noFissions = 0;
+    };
     return thermalFissions;
 }
 
@@ -80,30 +82,36 @@ cell updateCell(in cell cell1,in uint noFissions) {
     } else if (isnan(celMat.neutronEnergy)) {
         return cell(0,3,2,1,0);
     };
-    if (noFissions < 1) {
-        noFissions = 0;
-    };
+    
 
-    cell1.fastNeutronFlux -= cell1.fastNeutronFlux *(celMat.nuclearDensity - cell1.fissileDensity) * (celMat.absorbtionCrossSection - celMat.fissionCrossSection) * pow(10,-28);
-    cell1.thermalNeutronFlux -= cell1.thermalNeutronFlux * (celMat.nuclearDensity - cell1.fissileDensity) *(celMat.absorbtionCrossSection - celMat.fissionCrossSection) * pow(10,-28);
-    cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
+    cell1.fastNeutronFlux -= cell1.fastNeutronFlux *(celMat.nuclearDensity - cell1.fissileDensity) * (celMat.absorbtionCrossSection - celMat.fissionCrossSection) * (dis/100) * pow(10,-28);
+    cell1.thermalNeutronFlux -= cell1.thermalNeutronFlux * (celMat.nuclearDensity - cell1.fissileDensity) *(celMat.absorbtionCrossSection - celMat.fissionCrossSection) * (dis/100) * pow(10,-28);
+
+    cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy; // this is wrong, should be velcty not energy
+    
     if (isnan(cell1.fastNeutronFlux)) {
         return cell(0,1,2,3,4);
     };
+    
+    
     double deltaFlux;
+
     deltaFlux = noFissions*2190.0*(1/pow(dis,3));
+
     double temp = cell1.thermalNeutronFlux;
+    
     cell1.thermalNeutronFlux = temp - deltaFlux;
+    
     if ((noFissions * celMat.deltaE) > 0) {
         return cell(0,6,2,3,1);
     };
+    
     cell1.thermalEnergy += noFissions * celMat.deltaE;
     cell1.fissileDensity -= noFissions/pow(dis,3);
+
+    
     return cell1;
 }
-
-
-
 
 
 uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
