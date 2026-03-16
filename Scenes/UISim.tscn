@@ -228,6 +228,39 @@ expand_mode = 2
 layout_mode = 2
 theme = ExtResource("1_tu31e")
 
+[node name="FoldableContainer" type="FoldableContainer" parent="CanvasLayer"]
+offset_left = 1.0
+offset_top = 212.0
+offset_right = 109.0
+offset_bottom = 547.0
+title = "Control Rod Insertion"
+title_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/FoldableContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+text = "Fully Inserted"
+horizontal_alignment = 1
+
+[node name="VSlider" type="VSlider" parent="CanvasLayer/FoldableContainer/VBoxContainer"]
+custom_minimum_size = Vector2(20, 250)
+layout_mode = 2
+size_flags_horizontal = 1
+max_value = 1.0
+step = 0.01
+value = 1.0
+tick_count = 10
+ticks_on_borders = true
+ticks_position = 2
+
+[node name="Label2" type="Label" parent="CanvasLayer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+text = "Fully Retracted"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="CanvasLayer/SpeedOptions/HBoxContainer/Pause" to="CanvasLayer/SpeedOptions/HBoxContainer/Pause" method="_on_pressed"]
 [connection signal="colourMode" from="CanvasLayer/DrawModes" to="CanvasLayer/ColourKeys" method="colourModeChanged"]
 [connection signal="item_selected" from="CanvasLayer/DrawModes/Control/VBoxContainer/ItemList" to="CanvasLayer/DrawModes" method="changeColourMode"]

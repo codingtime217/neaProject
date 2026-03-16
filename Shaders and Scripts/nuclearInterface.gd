@@ -34,6 +34,8 @@ var matRID : RID
 var inBufferRID : RID
 var outBufferRID : RID
 
+var controlRodInsertion : float
+
 var inUniform : RDUniform
 var matUniform : RDUniform
 var constUniform : RDUniform
@@ -53,7 +55,7 @@ func dataSetup(initalData) -> void:
 	inputBytes = makeBufferArray(initalData[1])
 	var matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
-	
+	controlRodInsertion = 1.0
 	workGroups = Vector3(width,height,1)
 	constantInts = [10,width,1]
 	constBytes.resize(16)
@@ -65,6 +67,9 @@ func dataSetup(initalData) -> void:
 	outputBytes = inputBytes
 	
 	
+func controlRodMoved(newPosition) -> void:
+	controlRodInsertion = newPosition
+	
 func makeBufferArray(data:Array) -> PackedByteArray:
 	#print(data)
 	var newData := PackedByteArray()
@@ -73,7 +78,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	height = len(data)/ width
 	for i in range(0,len(data)):
 		newData.encode_u32(i*32,data[i][0])
-		newData.encode_float(i*32 + 4,data[i][1].get("fissileDensity",0))
+		newData.encode_float(i*32 + 4,data[i][1].get("fissileDensity",0) * controlRodInsertion)
 		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))
 		newData.encode_double(i*32 + 16,data[i][1].get("thermalNeutronFlux",0))
 		newData.encode_double(i*32 + 24,data[i][1].get("thermalEnergy",0))
