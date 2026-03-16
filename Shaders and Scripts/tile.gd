@@ -22,11 +22,6 @@ var fastNeutronFlux := 0.0
 var thermalCrossSection  : float # in barns
 var fissileDensity = 0.0
 var enrichment = 0.0
-var specificActivity #decays per unit mass
-var decayDistribution #lists what % is what type of decy
-var absorbChance : float
-var fissionChance : float
-var atomicMass
 var drawMode = "static"
 var atomDensity
 
@@ -47,6 +42,7 @@ static func newTile(pos : Vector2, mat : String, drawModeIN = "static"):
 	return tileInstance
 
 func _ready():
+	setup(compound)
 	if drawMode == "static":
 		button.texture_normal = load("res://materials/" + compound + ".tres")
 	button.size = Vector2(16,16)
@@ -63,9 +59,9 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	var variables : Dictionary
 	constants = materialsDict[compound]
 	variables = {"thermalEnergy" = thermalEnergy,"temperature" = temperature}
-	if fissile == true:
-		var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = thermalNeutronFlux, "fastNeutronFlux" = fastNeutronFlux}
-		variables.merge(nuclearData)
+	
+	var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = thermalNeutronFlux, "fastNeutronFlux" = fastNeutronFlux}
+	variables.merge(nuclearData)
 	return [constants,variables]
 	
 func _update_properties(properties : Dictionary) -> void:
@@ -123,11 +119,10 @@ func setup(mat = "void"):
 	fissile = properties["fissile"]
 	atomDensity = properties.get("atomDensity",0)
 	thermalCrossSection = properties.get("thermalCrossSection",0)
-	
 	thermalEnergy = temperature*mass*specificHeatCap
-	if properties.get(fissile,false) == true:
-		thermalNeutronFlux = 10000000000000
-		fastNeutronFlux = 10000000000000
+	if properties.get("fissile",false) == true:
+		thermalNeutronFlux = 1E24
+		fastNeutronFlux = 1E24
 
 func _on_button_toggled(toggled_on: bool) -> void:
 	overlay.visible = toggled_on

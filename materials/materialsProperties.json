@@ -44,9 +44,9 @@
 	"boron" : {
 		"fissile" : false,
 		"control" : true,
-		"density" : 1,
-		"conductivity" : 27.5,
-		"specificHeat" : 116.225,
+		"density" : 2450,
+		"conductivity" : 27.4,
+		"specificHeat" : 1025.624,
 		"atomDensity" : 0.1364E27,
 		"absorbtionCrossSection" : 755
 		}

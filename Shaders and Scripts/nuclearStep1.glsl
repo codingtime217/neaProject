@@ -94,7 +94,7 @@ cell updateCell(in cell cell1,in uint noFissions) {
         cell1.thermalNeutronFlux = 0;
     }
     cell1.thermalEnergy += noFissions * celMat.deltaE;
-    cell1.fissileDensity -= timeStep * noFissions/pow(dis,3) ;
+    cell1.fissileDensity -= timeStep * noFissions ;
 
     
     return cell1;

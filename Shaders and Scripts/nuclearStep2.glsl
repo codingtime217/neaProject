@@ -58,6 +58,8 @@ outBuffer;
 
 cell updateCell(in cell cell1, in cell[4] neightbour) {
     uint noFissions = 0;
+    cell1.fastNeutronFlux = 0;
+    cell1.thermalNeutronFlux = 0;
     for(int i = 0; i < 4; i++) {
         cell consideringNeighbour = neightbour[i];
         if (consideringNeighbour.thermalNeutronFlux == 0 || consideringNeighbour.fastNeutronFlux == 0) {
@@ -73,11 +75,17 @@ cell updateCell(in cell cell1, in cell[4] neightbour) {
 
 
     double temp = cell1.fastNeutronFlux;
-    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * timeStep; //* pow(10,-28) is to convert form barns to m^2
+    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * timeStep* pow(10,-28);// is to convert form barns to m^2
     
     cell1.fastNeutronFlux -= moderatedFlux;
-    cell1.thermalNeutronFlux += moderatedFlux; //this is wrong, the increase in thermal flux should be less than the decrease in fast as the neutrons are slower
-    
+    if (cell1.fastNeutronFlux < 0) {
+        cell1.fastNeutronFlux = 0;
+        cell1.thermalNeutronFlux += temp;
+    } else {
+        cell1.thermalNeutronFlux += moderatedFlux; //this is wrong, the increase in thermal flux should be less than the decrease in fast as the neutrons are slower
+    }
+
+
     return cell1;
 }
 

@@ -11,7 +11,7 @@ var texture : Texture2D
 @onready var valueBox = $propertyData
 @onready var textureBox = $TextureRect
 
-const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)", "temperature" : "(K)","thermalCrossSection" : "(barns)","thermalNeutronFlux" : "/cm^2s"}
+const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)", "temperature" : "(K)","thermalCrossSection" : "(barns)","thermalNeutronFlux" : "/cm^2s","fastNeutronFlux" : "/cm^2s", "fissileDensity" : "m^-3"}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

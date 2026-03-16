@@ -53,7 +53,7 @@ func _ready() -> void:
 
 func dataSetup(initalData) -> void:
 	width = initalData[0][0]["width"]
-	controlRodInsertion = 1.0
+	controlRodInsertion = 0.1
 	matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
 	inputBytes = makeBufferArray(initalData[1])
@@ -164,9 +164,12 @@ func _runShader() -> void:
 	#print(newData)
 	#print("step1 data: ", makeItBackIntoTheArray(newData))
 	rd.buffer_update(inBufferRID,0,newData.size(),newData)
-	#rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
-	#rd.submit()
-	#rd.sync()
+	rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
+	rd.submit()
+	rd.sync()
+	newData = rd.buffer_get_data(outBufferRID)
+	#print(newData)
+	#print("step2 data: ", makeItBackIntoTheArray(newData))
 
 func returnOutput() -> Array:
 	var temp = makeItBackIntoTheArray(get_output(rd,outBufferRID))

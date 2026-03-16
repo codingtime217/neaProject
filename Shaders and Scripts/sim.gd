@@ -60,13 +60,13 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	updateDataArray(currentData)
 	nukeShader.updateInput(dataArray)
 	nukeShader._runShader() 
-	#currentData = nukeShader.returnOutput()
+	currentData = nukeShader.returnOutput()
 	updateDataArray(currentData)
-	print(dataArray)
 	thermShader.updateInput(dataArray)
 	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)
 	updatedGrid.emit(colourKeys)
+	pass
 	
 func drawUpdate(data : Dictionary) -> void:
 	colourKeys = data
