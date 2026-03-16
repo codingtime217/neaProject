@@ -54,7 +54,7 @@ func _ready():
 	var sim = get_node(^"/root/mainNode/Sim")
 	if sim != null:
 		sim.updatedGrid.connect(_updateColour)
-	var editor = get_node("../..")
+	var editor = get_node("../gridManager")
 	if editor != null:
 		editor.freeGrid.connect(queue_free)
 

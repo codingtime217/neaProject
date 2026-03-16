@@ -4,14 +4,14 @@
 		"conductivity" : 0.6089,
 		"specificHeat" : 4184.0,
 		"density" : 1000.0,
-		"moderationCrossSection" : 4.5,
+		"moderationCrossSection" : 103,
 		"moderationFactor" : 0.84,
 		"thermalCrossSection" : 0,
 		"averageNeutrons" : 0,
 		"neutronEnergy" : 0,
 		"deltaE" : 0,
-		"absorbtionCrossSection" : 0,
-		"atomDensity" :  },
+		"absorbtionCrossSection" : 0.66,
+		"atomDensity" :  3.31E28},
 	"void" : {
 		"fissile" : false,
 		"conductivity" : 0.0,
@@ -26,5 +26,7 @@
 		"thermalCrossSection" : 585.1 ,
 		"averageNeutrons" : 2.42,
 		"neutronEnergy" : 4.5E6,
-		"deltaE" : 3.24E-11 }
-}
+		"deltaE" : 3.24E-11,
+		"absorbtionCrossSection" : 7.68,
+		 }
+	}
