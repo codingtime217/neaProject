@@ -51,7 +51,7 @@ func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid
 	return global
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var mousePos = get_local_mouse_position() #updates mouse position
 	if Input.is_action_pressed("left_click"): #left click events place tiles
 		var tilePos = _global_to_local(mousePos)
@@ -92,7 +92,7 @@ func load() -> void:
 	freeGrid.emit()
 	grid.clear()
 	while len(grid.keys()) < len(bulkData):
-		var currentCell = bulkData[i]
+		var currentCell = bulkData[i + j*width]
 		var localCoord = Vector2(i,j)
 		_place_tile_("l",localCoord,indexToMat[str(int(currentCell[0]))])
 		grid[localCoord]._update_properties(currentCell[1])
