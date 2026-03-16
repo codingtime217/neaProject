@@ -11,7 +11,7 @@
 [ext_resource type="Script" uid="uid://do7lswmbe4y8o" path="res://Scenes/draw_modes.gd" id="9_0p5x0"]
 [ext_resource type="Script" uid="uid://brbpatql1g87i" path="res://Scenes/grid_keys.gd" id="9_3k808"]
 [ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_k7ktk"]
-[ext_resource type="Script" uid="uid://caov33h76bgts" path="res://Scenes/v_slider.gd" id="12_fohhf"]
+[ext_resource type="Script" uid="uid://caov33h76bgts" path="res://Shaders and Scripts/v_slider.gd" id="12_fohhf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
 

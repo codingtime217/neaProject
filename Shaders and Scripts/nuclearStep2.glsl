@@ -57,9 +57,8 @@ outBuffer;
 
 
 cell updateCell(in cell cell1, in cell[4] neightbour) {
-    uint noFissions = 0;
-    cell1.fastNeutronFlux = 0;
-    cell1.thermalNeutronFlux = 0;
+    cell1.fastNeutronFlux = cell1.fastNeutronFlux * 0.9;
+    cell1.thermalNeutronFlux = cell1.thermalNeutronFlux * 0.9;
     for(int i = 0; i < 4; i++) {
         cell consideringNeighbour = neightbour[i];
         if (consideringNeighbour.thermalNeutronFlux == 0 || consideringNeighbour.fastNeutronFlux == 0) {

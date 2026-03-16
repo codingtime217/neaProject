@@ -161,15 +161,11 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 	var newData = rd.buffer_get_data(outBufferRID)
-	#print(newData)
-	#print("step1 data: ", makeItBackIntoTheArray(newData))
 	rd.buffer_update(inBufferRID,0,newData.size(),newData)
 	rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
 	rd.submit()
 	rd.sync()
 	newData = rd.buffer_get_data(outBufferRID)
-	#print(newData)
-	#print("step2 data: ", makeItBackIntoTheArray(newData))
 
 func returnOutput() -> Array:
 	var temp = makeItBackIntoTheArray(get_output(rd,outBufferRID))
