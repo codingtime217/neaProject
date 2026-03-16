@@ -187,7 +187,7 @@ func free_RIDS() ->void:
 
 
 func changeTimeScale(button : Button) -> void:
-	timestep = (button.get_index()-1) * 60
+	timestep = (button.get_index()-1) * 360
 	constantInts = [10,width,1]
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:

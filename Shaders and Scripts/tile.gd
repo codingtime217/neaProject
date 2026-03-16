@@ -17,8 +17,8 @@ var colourKeySetter
 #The actual neutron flux in each direaction is stored as average energy (eV), no. of neutrons and a flow direction
 
 var fissile = false
-var thermalNeutronFlux : float
-var fastNeutronFlux : float
+var thermalNeutronFlux := 0.0
+var fastNeutronFlux := 0.0
 var thermalCrossSection  : float # in barns
 var fissileDensity = 0.0
 var enrichment = 0.0
@@ -64,7 +64,7 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	constants = materialsDict[compound]
 	variables = {"thermalEnergy" = thermalEnergy,"temperature" = temperature}
 	if fissile == true:
-		var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = 10000, "fastNeutronFlux" = 10000}
+		var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = thermalNeutronFlux, "fastNeutronFlux" = fastNeutronFlux}
 		variables.merge(nuclearData)
 	return [constants,variables]
 	
@@ -125,6 +125,9 @@ func setup(mat = "void"):
 	thermalCrossSection = properties.get("thermalCrossSection",0)
 	
 	thermalEnergy = temperature*mass*specificHeatCap
+	if properties.get(fissile,false) == true:
+		thermalNeutronFlux = 10000000000000
+		fastNeutronFlux = 10000000000000
 
 func _on_button_toggled(toggled_on: bool) -> void:
 	overlay.visible = toggled_on

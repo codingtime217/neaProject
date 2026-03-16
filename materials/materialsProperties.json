@@ -23,10 +23,10 @@
 		"specificHeat" : 116.225,
 		"density" : 19050.0,
 		"atomDensity" : 4.8185E28,
-		"thermalCrossSection" : 100E28 ,
-		"averageNeutrons" : 100,
+		"thermalCrossSection" : 100E4 ,
+		"averageNeutrons" : 100000,
 		"neutronEnergy" : 4.5E6,
-		"deltaE" : 3.24E-11,
+		"deltaE" : 3.24E10,
 		"absorbtionCrossSection" : 7.68,
 		 }
 	}

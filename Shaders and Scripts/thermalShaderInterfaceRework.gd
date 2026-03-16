@@ -165,7 +165,7 @@ func updateInput(newInputData) -> void:
 	rd.buffer_update(inBufferRID,0,inputBytes.size(),inputBytes)
 	
 func changeTimeScale(button : Button) -> void:
-	timestep = (button.get_index()-1) * 60
+	timestep = (button.get_index()-1) * 360
 	constantInts = [10,width,1]
 	for i in range(len(constantInts)):
 		if constantInts[i] < 0:

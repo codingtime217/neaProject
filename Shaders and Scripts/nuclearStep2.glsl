@@ -73,7 +73,7 @@ cell updateCell(in cell cell1, in cell[4] neightbour) {
 
 
     double temp = cell1.fastNeutronFlux;
-    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * pow(10,-28); //* pow(10,-28) is to convert form barns to m^2
+    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * timeStep; //* pow(10,-28) is to convert form barns to m^2
     
     cell1.fastNeutronFlux -= moderatedFlux;
     cell1.thermalNeutronFlux += moderatedFlux; //this is wrong, the increase in thermal flux should be less than the decrease in fast as the neutrons are slower
@@ -134,10 +134,6 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell);
 
     newCell = updateCell(newCell,neighbours);
-
-    if (isnan(newCell.thermalEnergy)) {
-        newCell.thermalEnergy = 2;
-    }
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

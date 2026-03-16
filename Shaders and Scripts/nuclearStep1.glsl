@@ -19,7 +19,7 @@ struct cell { // defining as a structure to simplify things
 struct material {
     double fissionCrossSection;  //thermal fission cross Section
     double averageNoNeutrons;
-    double neutronEnergy; //average no. of neutrons emitted per fission * t
+    double neutronEnergy; //average no. of neutrons emitted per fission * t /
     double deltaE; //energy emitted per fission as thermal fragments and such// other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
     double moderationCrossSection;
@@ -63,10 +63,11 @@ uint getNoFissions(in cell cell1) {
         return 0;
     };
     double neutronFluxes = cell1.thermalNeutronFlux;
-    uint thermalFissions = uint( cell1.fissileDensity * pow((dis/100),3) * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
-    if (thermalFissions < 1) { //its a uint so should be 0 or > but just in case
-        thermalFissions = 0;
-    };
+    double macroCrossSection = cell1.fissileDensity * fissionCrossSection * pow(10,-28);
+    uint thermalFissions = uint( macroCrossSection* neutronFluxes* timeStep); //* pow(10,-28) is to convert form barns to m^2
+    //if (thermalFissions < 1) { //its a uint so should be 0 or > but just in case
+    //    thermalFissions = 0;
+    //};
     return thermalFissions;
 }
 
@@ -75,39 +76,25 @@ cell updateCell(in cell cell1,in uint noFissions) {
  
 
     material celMat = materialArray[cell1.materialIndex];
-    if (isnan(noFissions)) {
-        return cell(0,1,0,0,0);
-    } else if (isnan(celMat.averageNoNeutrons)) {
-        return cell(0,2,1,0,0);
-    } else if (isnan(celMat.neutronEnergy)) {
-        return cell(0,3,2,1,0);
-    };
-    
 
     cell1.fastNeutronFlux -= cell1.fastNeutronFlux *(celMat.nuclearDensity - cell1.fissileDensity) * (celMat.absorbtionCrossSection - celMat.fissionCrossSection) * (dis/100) * pow(10,-28);
     cell1.thermalNeutronFlux -= cell1.thermalNeutronFlux * (celMat.nuclearDensity - cell1.fissileDensity) *(celMat.absorbtionCrossSection - celMat.fissionCrossSection) * (dis/100) * pow(10,-28);
 
     cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy; // this is wrong, should be velcty not energy
     
-    if (isnan(cell1.fastNeutronFlux)) {
-        return cell(0,1,2,3,4);
-    };
-    
     
     double deltaFlux;
 
-    deltaFlux = noFissions*2190.0*(1/pow(dis,3));
+    deltaFlux = noFissions;
 
     double temp = cell1.thermalNeutronFlux;
     
-    cell1.thermalNeutronFlux = temp - deltaFlux;
-    
-    if ((noFissions * celMat.deltaE) > 0) {
-        return cell(0,6,2,3,1);
-    };
-    
+    cell1.thermalNeutronFlux = temp - (deltaFlux);
+    if (cell1.thermalNeutronFlux < 0) {
+        cell1.thermalNeutronFlux = 0;
+    }
     cell1.thermalEnergy += noFissions * celMat.deltaE;
-    cell1.fissileDensity -= noFissions/pow(dis,3);
+    cell1.fissileDensity -= timeStep * noFissions/pow(dis,3) ;
 
     
     return cell1;
@@ -142,7 +129,7 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell);
     noFissions = getNoFissions(newCell);
     newCell = updateCell(newCell,noFissions);
-
+    //newCell.thermalEnergy = noFissions;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

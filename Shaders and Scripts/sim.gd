@@ -50,6 +50,8 @@ func updateDataArray(newDataArray : Array): #this will follow the data format of
 		for j in newDataArray[i][1].keys():
 			dataArray[i][1].erase("temperature")
 			dataArray[i][1][j] = newDataArray[i][1][j]
+			if j == "thermalNeutronFlux":
+				print(newDataArray[i][1][j])
 	pass
 	
 	
@@ -57,7 +59,6 @@ func updateDataArray(newDataArray : Array): #this will follow the data format of
 func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	thermShader._runShader() #this won't work, i need a universal to change them back into the universal format for this to work
 	var currentData = thermShader.returnOutput()
-	#print("inital ", dataArray)
 	updateDataArray(currentData)
 	nukeShader.updateInput(dataArray)
 	nukeShader._runShader() 
