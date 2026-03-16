@@ -79,7 +79,7 @@ func _update_properties(properties : Dictionary) -> void:
 		temperature = properties.get("temperature")
 		thermalEnergy = temperature*mass*specificHeatCap
 	if properties.get("enrichment") != null:
-		fissileDensity = atomDensity * enrichment/100
+		fissileDensity = atomDensity * (enrichment/100)
 		pass
 
 var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
