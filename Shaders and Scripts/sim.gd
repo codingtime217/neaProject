@@ -48,8 +48,9 @@ func _local_to_global(local : Vector2i) -> Vector2: #converts coords on the grid
 func updateDataArray(newDataArray : Array): #this will follow the data format of simData
 	for i in range(0,len(newDataArray)):
 		for j in newDataArray[i][1].keys():
+			dataArray[i][1].erase("temperature")
 			dataArray[i][1][j] = newDataArray[i][1][j]
-	
+	pass
 	
 	
 	
@@ -58,12 +59,10 @@ func _process(_delta: float) -> void: #call the two shaders in sequence then idk
 	var currentData = thermShader.returnOutput()
 	#print("inital ", dataArray)
 	updateDataArray(currentData)
-	print("posth thermal: ",dataArray)
 	nukeShader.updateInput(dataArray)
 	nukeShader._runShader() 
 	currentData = nukeShader.returnOutput()
 	updateDataArray(currentData)
-	#print("post nuke: ",dataArray)
 	thermShader.updateInput(dataArray)
 	var dictData = toDictForm(dataArray)
 	updateGrid(dictData)
@@ -82,11 +81,12 @@ func updateGrid(data : Dictionary) -> void:
 			dataGrid[i] = newTile(data[i],i)
 			add_child(dataGrid[i])
 		else:
+			data[i].erase("temperature")
 			dataGrid[i]._update_properties(data[i])
 		if dataGrid[i]["temperature"] > tempRange.max_value:
-			tempRange.max_value = data[i]["temperature"]
+			tempRange.max_value = dataGrid[i]["temperature"]
 		elif dataGrid[i]["temperature"] < tempRange.min_value:
-			tempRange.min_value = data[i]["temperature"]
+			tempRange.min_value = dataGrid[i]["temperature"]
 
 func newTile(values,pos):
 	var tilePosition = _local_to_global(pos)

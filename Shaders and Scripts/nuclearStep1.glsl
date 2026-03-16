@@ -64,8 +64,8 @@ uint getNoFissions(in cell cell1) {
     };
     double neutronFluxes = cell1.thermalNeutronFlux;
     uint thermalFissions = uint( cell1.fissileDensity * pow((dis/100),3) * fissionCrossSection * pow(10,-28) * neutronFluxes); //* pow(10,-28) is to convert form barns to m^2
-    if (noFissions < 1) { //its a uint so should be 0 or > but just in case
-        noFissions = 0;
+    if (thermalFissions < 1) { //its a uint so should be 0 or > but just in case
+        thermalFissions = 0;
     };
     return thermalFissions;
 }

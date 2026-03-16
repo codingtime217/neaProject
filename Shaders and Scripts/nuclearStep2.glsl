@@ -93,12 +93,12 @@ cell copyCell(in cell cellToCopy) {
 }
 
 
-cell tryGet(in uint index,out ,fetchedCell) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
+cell tryGet(in uint index) { // used to fetch cells from the grid, returning a vacuum cell if outside the bounds    
     if (index >= inBuffer.grid.length()) {
         return cell(0,0,0,0,0); };
     
     cell fetchedCell = inBuffer.grid[index];
-    return fetchedCell;
+    return copyCell(fetchedCell);
 }
 
 cell[4] getNeighbours(in uint index) {

@@ -54,6 +54,7 @@ func dataSetup(initalData) -> void:
 	var matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
 	
+	workGroups = Vector3(width,height,1)
 	constantInts = [10,width,1]
 	constBytes.resize(16)
 	for i in range(len(constantInts)):
@@ -76,7 +77,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))
 		newData.encode_double(i*32 + 16,data[i][1].get("thermalNeutronFlux",0))
 		newData.encode_double(i*32 + 24,data[i][1].get("thermalEnergy",0))
-	print(newData)
+	#print(newData)
 	return newData
 	
 	
@@ -147,8 +148,8 @@ func _runShader() -> void:
 	rd.submit()
 	rd.sync()
 	var newData = rd.buffer_get_data(outBufferRID)
-	print(newData)
-	print("step1 data: ", makeItBackIntoTheArray(newData))
+	#print(newData)
+	#print("step1 data: ", makeItBackIntoTheArray(newData))
 	rd.buffer_update(inBufferRID,0,newData.size(),newData)
 	#rdManager.runShader(rd,pipeline2,{0: uniformSet2},workGroups)
 	#rd.submit()

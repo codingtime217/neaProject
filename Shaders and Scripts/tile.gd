@@ -62,7 +62,7 @@ func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of
 	var constants : Dictionary
 	var variables : Dictionary
 	constants = materialsDict[compound]
-	variables = {"temperature" = temperature, "thermalEnergy" = thermalEnergy}
+	variables = {"thermalEnergy" = thermalEnergy,"temperature" = temperature}
 	if fissile == true:
 		var nuclearData = {"enrichment" = enrichment,"fissileDensity" = fissileDensity,"thermalNeutronFlux" = 10000, "fastNeutronFlux" = 10000}
 		variables.merge(nuclearData)
@@ -111,9 +111,6 @@ func _updateColour(colours : Dictionary):#make colour chnage with temperature, t
 		colour = grad.sample((get(key)-minV)/(maxV-minV))	
 	queue_redraw()
 
-
-
-
 func setup(mat = "void"):
 	var properties = materialsDict.get(mat,null)
 	if properties == null:
@@ -128,16 +125,6 @@ func setup(mat = "void"):
 	thermalCrossSection = properties.get("thermalCrossSection",0)
 	
 	thermalEnergy = temperature*mass*specificHeatCap
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	
-	#queue_redraw()
-	pass
-
-
- # Replace with function body.
 
 func _on_button_toggled(toggled_on: bool) -> void:
 	overlay.visible = toggled_on

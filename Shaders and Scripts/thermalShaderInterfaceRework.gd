@@ -133,7 +133,6 @@ func outputGrid(buffer : PackedByteArray) -> void:
 		toPrint.append("Row: " + str(i))
 		for j in range(0,width):
 			toPrint.append(str(buffer.decode_u32(i*width*16 + j*16)) + ", temp:" + str(buffer.decode_double(i*width*16 + j*16 + 8 )))
-		print(toPrint)
 	
 func _ready() -> void:
 	var buttonGroup = load("res://UI Themes and Schemes/speedControlsGroup.tres")
