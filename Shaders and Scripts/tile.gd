@@ -54,7 +54,9 @@ func _ready():
 	var sim = get_node(^"/root/mainNode/Sim")
 	if sim != null:
 		sim.updatedGrid.connect(_updateColour)
-	
+	var editor = get_node("../..")
+	if editor != null:
+		editor.freeGrid.connect(queue_free)
 
 func get_variable_list() -> Array[Dictionary]: #will return an array of dicts of the properties, have first half be constants, 2nd half variables
 	var constants : Dictionary

@@ -7,6 +7,7 @@ var tileScene = preload("res://Shaders and Scripts/tile.gd")
 var grid : Dictionary
 var selectedMat := "water"
 var pastMousePose : Vector2
+signal freeGrid
 @onready var canvas = $CanvasLayer
 
 
@@ -15,16 +16,14 @@ func _link_signals(): #fetches the UI nodes and links the signals
 	UINode.item_selected.connect(changeSelected)
 	var saveButton = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/save")
 	saveButton.pressed.connect(save)
-
-	
+	var loadBUtton = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/load")
+	loadBUtton.pressed.connect(load)	
 
 
 func changeSelected(index : int):#updates which material is currently selected
 	var list = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/cont/ItemList")
 	selectedMat = list.get_item_text(index)
 	
-
-
 func _place_tile_(posMode : String, pos : Vector2, mat) -> void: #places a tile in the specified position
 	var tile
 	if posMode == "l": #if the coordinate is local do this
@@ -75,14 +74,33 @@ func save() -> void:
 	#use some stuff to turn the tileMap into a big string array
 	var fileNameNode = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
 	var fileName = fileNameNode.text + ".txt"
-	var metaInfo = str(dataArray[0][0]) + "\n" + str(dataArray[0][1]) + "\n"
-	if fileName == "":
-		fileName = "sim.txt"
-	var dataToWrite = ""
-	for i in dataArray[1]:
-		dataToWrite = dataToWrite + str(i) + "\n"
-	writeToFile(fileName,metaInfo + dataToWrite)
+	var dataToWrite = JSON.stringify(dataArray)
+	writeToFile(fileName,dataToWrite)
 	
+	
+func load() -> void:
+	var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
+	var fileNameNode = get_node(^"/root/mainNode/Editor/UIEditor/CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/simName")
+	var fileName = fileNameNode.text + ".txt"
+	var data
+	data = jsonLoader.loadingJsonFile(fileName)
+	var width = int(data[0][0]["width"])
+	var indexToMat = data[0][1]
+	var bulkData = data[1]
+	var j = 0
+	var i = 0
+	freeGrid.emit()
+	grid.clear()
+	while len(grid.keys()) < len(bulkData):
+		var currentCell = bulkData[i]
+		var localCoord = Vector2(i,j)
+		_place_tile_("l",localCoord,indexToMat[str(int(currentCell[0]))])
+		grid[localCoord]._update_properties(currentCell[1])
+		i += 1
+		if i % width == 0:
+			i = 0
+			j +=1
+
 func dictToArrayOfKeys(dict : Dictionary) -> Dictionary:
 	var array := [[]]
 	var maxX := 0 #small number
