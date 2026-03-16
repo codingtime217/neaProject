@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bk47kvhaeoo48"]
+[gd_scene load_steps=16 format=3 uid="uid://bk47kvhaeoo48"]
 
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="1_tu31e"]
 [ext_resource type="Texture2D" uid="uid://co4mtoujwtmca" path="res://Icons/halt.svg" id="2_2cg7b"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://do7lswmbe4y8o" path="res://Scenes/draw_modes.gd" id="9_0p5x0"]
 [ext_resource type="Script" uid="uid://brbpatql1g87i" path="res://Scenes/grid_keys.gd" id="9_3k808"]
 [ext_resource type="Script" uid="uid://bql1p4mrke8cy" path="res://Shaders and Scripts/currentSelectedSim.gd" id="9_k7ktk"]
+[ext_resource type="Script" uid="uid://caov33h76bgts" path="res://Scenes/v_slider.gd" id="12_fohhf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n5f6"]
 
@@ -254,6 +255,7 @@ value = 1.0
 tick_count = 10
 ticks_on_borders = true
 ticks_position = 2
+script = ExtResource("12_fohhf")
 
 [node name="Label2" type="Label" parent="CanvasLayer/FoldableContainer/VBoxContainer"]
 layout_mode = 2

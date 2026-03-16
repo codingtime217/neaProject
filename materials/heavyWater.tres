@@ -1,0 +1,17 @@
+[gd_resource type="NoiseTexture2D" load_steps=3 format=3 uid="uid://d1ao22j16gw4x"]
+
+[ext_resource type="Gradient" uid="uid://bj1ss8yg3aks4" path="res://materials/waterGrad.tres" id="1_jtaxg"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8gs6s"]
+seed = 2
+frequency = 0.0152
+offset = Vector3(52.75, -181.81, 0)
+fractal_type = 3
+
+[resource]
+width = 16
+height = 16
+noise = SubResource("FastNoiseLite_8gs6s")
+color_ramp = ExtResource("1_jtaxg")
+seamless = true
+seamless_blend_skirt = 0.528

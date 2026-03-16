@@ -50,8 +50,6 @@ func updateDataArray(newDataArray : Array): #this will follow the data format of
 		for j in newDataArray[i][1].keys():
 			dataArray[i][1].erase("temperature")
 			dataArray[i][1][j] = newDataArray[i][1][j]
-			if j == "thermalNeutronFlux":
-				print(newDataArray[i][1][j])
 	pass
 	
 	

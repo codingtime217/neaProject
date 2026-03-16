@@ -27,6 +27,7 @@ var constBytes := PackedByteArray()
 var output : PackedFloat64Array
 var outputBytes : PackedByteArray
 
+var matDict : Dictionary
 var matDictBytes : PackedByteArray
 
 var constRID : RID
@@ -52,10 +53,11 @@ func _ready() -> void:
 
 func dataSetup(initalData) -> void:
 	width = initalData[0][0]["width"]
-	inputBytes = makeBufferArray(initalData[1])
-	var matDict = initalData[0][1]
-	matDictBytes = matDictToBytes(matDict)
 	controlRodInsertion = 1.0
+	matDict = initalData[0][1]
+	matDictBytes = matDictToBytes(matDict)
+	inputBytes = makeBufferArray(initalData[1])
+	
 	workGroups = Vector3(width,height,1)
 	constantInts = [10,width,1]
 	constBytes.resize(16)
@@ -76,9 +78,15 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 	newData.resize(len(data) * 32)
 	@warning_ignore("integer_division")
 	height = len(data)/ width
+	var jsonLoader = load("res://Shaders and Scripts/jsonLoader.gd")
+	var materialDict = jsonLoader.loadingJsonFile("res://materials/materialsProperties.json")
 	for i in range(0,len(data)):
 		newData.encode_u32(i*32,data[i][0])
-		newData.encode_float(i*32 + 4,data[i][1].get("fissileDensity",0) * controlRodInsertion)
+		var materialProp = materialDict[matDict[data[i][0]]]
+		if materialProp.get("control",false) == true:
+			newData.encode_float(i*32 + 4,materialProp.get("atomDensity") * controlRodInsertion)
+		else:
+			newData.encode_float(i*32 + 4,data[i][1].get("fissileDensity",0))
 		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))
 		newData.encode_double(i*32 + 16,data[i][1].get("thermalNeutronFlux",0))
 		newData.encode_double(i*32 + 24,data[i][1].get("thermalEnergy",0))

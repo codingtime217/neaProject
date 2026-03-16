@@ -11,7 +11,20 @@
 		"neutronEnergy" : 0,
 		"deltaE" : 0,
 		"absorbtionCrossSection" : 0.66,
-		"atomDensity" :  3.31E28},
+		"atomDensity" :  3.35E25},
+	"heavywater" : {
+		"fissile" : false,
+		"conductivity" : 0.6089,
+		"specificHeat" : 4184.0,
+		"density" : 1100.0,
+		"moderationCrossSection" : 13.6,
+		"moderationFactor" : 0.570,
+		"thermalCrossSection" : 0,
+		"averageNeutrons" : 0,
+		"neutronEnergy" : 0,
+		"deltaE" : 0,
+		"absorbtionCrossSection" : 0.001,
+		"atomDensity" :  3.31E25},
 	"void" : {
 		"fissile" : false,
 		"conductivity" : 0.0,
@@ -22,10 +35,19 @@
 		"conductivity" : 27.5,
 		"specificHeat" : 116.225,
 		"density" : 19050.0,
-		"atomDensity" : 4.8185E28,
+		"atomDensity" : 0.04783E27,
 		"thermalCrossSection" : 577,
-		"averageNeutrons" : 100000,
+		"averageNeutrons" : 2.4355,
 		"neutronEnergy" : 4.5E6,
-		"deltaE" : 3.24E10,
-		"absorbtionCrossSection" : 7.68 }
-	}
+		"deltaE" : 3.24E-11,
+		"absorbtionCrossSection" : 7.68 },
+	"boron" : {
+		"fissile" : false,
+		"control" : true,
+		"density" : 1,
+		"conductivity" : 27.5,
+		"specificHeat" : 116.225,
+		"atomDensity" : 0.1364E27,
+		"absorbtionCrossSection" : 755
+		}
+}

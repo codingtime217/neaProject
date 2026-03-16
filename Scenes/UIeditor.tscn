@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ctt21mckv2qd3"]
+[gd_scene load_steps=10 format=3 uid="uid://ctt21mckv2qd3"]
 
 [ext_resource type="Script" uid="uid://cumi0nvxjnvst" path="res://Shaders and Scripts/matSelected.gd" id="1_ib31x"]
 [ext_resource type="Script" uid="uid://ncx5os7ugqts" path="res://Shaders and Scripts/linkSignals.gd" id="1_pla2u"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://bvvaaa6p254pk" path="res://Shaders and Scripts/currentSelectedEditor.gd" id="4_56m11"]
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="5_pla2u"]
 [ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="6_rjp24"]
+[ext_resource type="Texture2D" uid="uid://d1ao22j16gw4x" path="res://materials/heavyWater.tres" id="7_viqls"]
+[ext_resource type="Texture2D" uid="uid://d1m7o1sfwmdjy" path="res://materials/boron.tres" id="8_fllsd"]
 
 [node name="UIEditor" type="Control"]
 layout_mode = 3
@@ -68,12 +70,16 @@ focus_mode = 0
 
 [node name="ItemList" type="ItemList" parent="CanvasLayer/cont"]
 layout_mode = 2
-item_count = 2
+item_count = 4
 max_columns = 2
 item_0/text = "Water"
 item_0/icon = ExtResource("1_pmaai")
 item_1/text = "Uranium"
 item_1/icon = ExtResource("2_ib31x")
+item_2/text = "HeavyWater"
+item_2/icon = ExtResource("7_viqls")
+item_3/text = "Boron"
+item_3/icon = ExtResource("8_fllsd")
 script = ExtResource("1_ib31x")
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]

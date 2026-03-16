@@ -32,7 +32,7 @@ func changeSelected(button : BaseButton):
 	display.size = Vector2(16,16)
 	var properties = selected.get_variable_list()
 	for i in properties[0].keys():
-		if i != "fissile":
+		if i != "fissile" and i != "control":
 			addDisplay(i,properties[0][i])
 	for i in properties[1].keys():
 		addDisplay(i,properties[1][i])
