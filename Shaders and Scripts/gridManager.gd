@@ -84,6 +84,10 @@ func load() -> void:
 	var fileName = fileNameNode.text + ".txt"
 	var data
 	data = jsonLoader.loadingJsonFile(fileName)
+	if data == null:
+		data = jsonLoader.loadingJsonFile(fileName) #if it didn't work try again
+	if data == null:
+		return #if it defintly didn't work then don't bother
 	var width = int(data[0][0]["width"])
 	var indexToMat = data[0][1]
 	var bulkData = data[1]
