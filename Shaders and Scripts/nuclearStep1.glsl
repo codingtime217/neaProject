@@ -23,6 +23,8 @@ struct material {
     double deltaE; //energy emitted per fission as thermal fragments and such// other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
     double moderationCrossSection;
+    double absorbtionCrossSection;
+    double nuclearDensity;
 };
 
 
@@ -81,6 +83,12 @@ cell updateCell(in cell cell1,in uint noFissions) {
     if (noFissions < 1) {
         noFissions = 0;
     };
+
+    cell1.fastNeutronFlux -= cell1.fastNeutronFlux *(celMat.nuclearDensity - cell1.fissileDensity) * (celMat.absorbtionCrossSection - celMat.fissionCrossSection) * pow(10,-28);
+    cell1.thermalNeutronFlux -= cell1.thermalNeutronFlux * (celMat.nuclearDensity - cell1.fissileDensity) *(celMat.absorbtionCrossSection - celMat.fissionCrossSection) * pow(10,-28);
+
+
+
     cell1.fastNeutronFlux += noFissions * celMat.averageNoNeutrons * celMat.neutronEnergy;
     if (isnan(cell1.fastNeutronFlux)) {
         return cell(0,1,2,3,4);

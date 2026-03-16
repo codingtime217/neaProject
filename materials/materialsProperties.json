@@ -9,7 +9,9 @@
 		"thermalCrossSection" : 0,
 		"averageNeutrons" : 0,
 		"neutronEnergy" : 0,
-		"deltaE" : 0 },
+		"deltaE" : 0,
+		"absorbtionCrossSection" : 0,
+		"atomDensity" :  },
 	"void" : {
 		"fissile" : false,
 		"conductivity" : 0.0,

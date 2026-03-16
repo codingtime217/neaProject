@@ -23,6 +23,8 @@ struct material {
     double deltaE; //energy emitted per fission as thermal fragments and such// other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
     double moderationCrossSection;
+    double absorbtionCrossSection;
+    double nuclearDensity;
 };
 
 
@@ -67,8 +69,11 @@ cell updateCell(in cell cell1, in cell[4] neightbour) {
     
     material celMat = materialArray[cell1.materialIndex];
     
+    
+
+
     double temp = cell1.fastNeutronFlux;
-    double moderatedFlux = cell1.fastNeutronFlux * cell1.fissileDensity * celMat.moderationFactor * celMat.moderationCrossSection * pow(10,-28); //* pow(10,-28) is to convert form barns to m^2
+    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * pow(10,-28); //* pow(10,-28) is to convert form barns to m^2
     
     cell1.fastNeutronFlux -= moderatedFlux;
     cell1.thermalNeutronFlux += moderatedFlux;

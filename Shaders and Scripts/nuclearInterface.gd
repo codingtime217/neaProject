@@ -92,12 +92,14 @@ func matDictToBytes(dict : Dictionary):
 			var mat = dict[i]
 			var properties = materialDict[mat]
 			if properties["fissile"] == true:
-				arrayForm.encode_double(i*48,properties["thermalCrossSection"])
-				arrayForm.encode_double(i*48+8,properties["averageNeutrons"])
-				arrayForm.encode_double(i*48+16,properties["neutronEnergy"])
-				arrayForm.encode_double(i*48+24,properties["deltaE"])
-			arrayForm.encode_double(i*48 + 32,properties.get("moderationFactor",0))
-			arrayForm.encode_double(i*48 + 40,properties.get("moderationCrossSection",0))
+				arrayForm.encode_double(i*64,properties["thermalCrossSection"])
+				arrayForm.encode_double(i*64+8,properties["averageNeutrons"])
+				arrayForm.encode_double(i*64+16,properties["neutronEnergy"])
+				arrayForm.encode_double(i*64+24,properties["deltaE"])
+			arrayForm.encode_double(i*64 + 32,properties.get("moderationFactor",0))
+			arrayForm.encode_double(i*64 + 40,properties.get("moderationCrossSection",0))
+			arrayForm.encode_double(i*64 + 32,properties.get("absorbtionCrossSection",0))
+			arrayForm.encode_double(i*64 + 40,properties.get("atomDensity",0))
 	return arrayForm
 
 
