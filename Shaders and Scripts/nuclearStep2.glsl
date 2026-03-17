@@ -3,28 +3,27 @@
 // setup stuff
 
 
-// this cell will consider fission events caused by neutrons from neigbouring cells
+// this cell will consider neutrons moving in from neighbouring cells and the effect of moderators
 
-struct cell { // defining as a structure to simplify things
- //used for bit count shenanigans
+struct cell { // defining as a structure
     uint materialIndex;
-    float fissileDensity; //this is density of fissile nuclei in a cell
-    double fastNeutronFlux; //since they are emitted in random directions we can treat all neutrons as being equal spread accross the four edges. The flux is the product of density and velocity so contains info about neutron avverage eneryg
-    double thermalNeutronFlux;// this will both be neutrons per cell ie per 1000cm^3 = 0.001m^3
-    double thermalEnergy; 
-    
+    float fissileDensity;  //this is density of fissile nuclei in a cell, stored as a float to compact this slightly
+    double fastNeutronFlux; //fluxes are number of neutrons * avg velocity
+    double thermalNeutronFlux;
+    double thermalEnergy; //thermal energy of the cell
+   
 };
 
 
 struct material {
     double fissionCrossSection;  //thermal fission cross Section
-    double averageNoNeutrons;
-    double neutronEnergy; //average no. of neutrons emitted per fission * t
+    double averageNoNeutrons; //average no. of neutrons emitted per fission 
+    double neutronEnergy; //average energy of fission neutrons
     double deltaE; //energy emitted per fission as thermal fragments and such// other properties needed for moderators
     double moderationFactor; //proportion of fast neutrons converted to thermal (after being hit)
-    double moderationCrossSection;
-    double absorbtionCrossSection;
-    double nuclearDensity;
+    double moderationCrossSection; //neutron cross section for moderation collisions
+    double absorbtionCrossSection; //cross section for absorbtion without fission
+    double nuclearDensity; //density of nuclei
 };
 
 
@@ -57,34 +56,30 @@ outBuffer;
 
 
 cell updateCell(in cell cell1, in cell[4] neightbour) {
-    cell1.fastNeutronFlux = cell1.fastNeutronFlux * 0.6;
+    cell1.fastNeutronFlux = cell1.fastNeutronFlux * 0.6;//decrease the neutron fluxes, assuming 2/5 leaves the cell
     cell1.thermalNeutronFlux = cell1.thermalNeutronFlux * 0.6;
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++) { //iterate through neighbours
         cell consideringNeighbour = neightbour[i];
         if (consideringNeighbour.thermalNeutronFlux == 0 || consideringNeighbour.fastNeutronFlux == 0) {
-            continue;
+            continue; //ignore them if no neutrons
         };
-        cell1.thermalNeutronFlux += int(consideringNeighbour.thermalNeutronFlux * 0.1);
+        cell1.thermalNeutronFlux += int(consideringNeighbour.thermalNeutronFlux * 0.1); //add 1/10 of their flux to this cell as 1/4 of the 2/5 lost should go here
         cell1.fastNeutronFlux += int(consideringNeighbour.fastNeutronFlux *0.1);
     };  
     
     material celMat = materialArray[cell1.materialIndex];
-    
-    
-
 
     double temp = cell1.fastNeutronFlux;
-    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * timeStep* pow(10,-28);// is to convert form barns to m^2
+    //find the flux moderated from fast to thermal
+    double moderatedFlux = cell1.fastNeutronFlux * celMat.nuclearDensity * celMat.moderationFactor * celMat.moderationCrossSection * timeStep* pow(10,-28);
     
-    cell1.fastNeutronFlux -= moderatedFlux;
-    if (cell1.fastNeutronFlux < 0) {
+    cell1.fastNeutronFlux -= moderatedFlux; //max moderated is = to fast
+    if (cell1.fastNeutronFlux < 0) { //so if fast would become <0, make the amount moderated = to fast
         cell1.fastNeutronFlux = 0;
         cell1.thermalNeutronFlux += temp;
     } else {
-        cell1.thermalNeutronFlux += moderatedFlux; //this is wrong, the increase in thermal flux should be less than the decrease in fast as the neutrons are slower
+        cell1.thermalNeutronFlux += moderatedFlux; //add the moderated flux
     }
-
-
     return cell1;
 }
 
@@ -96,7 +91,7 @@ uint findIndex(in uint globalX, in uint globalY, in uint gridX) {
 }
 
 cell copyCell(in cell cellToCopy) {
-    return cellToCopy; //used to copy a cell as structs get treated as memeory refs rather than data
+    return cellToCopy; //used to copy a cell as structs get treated as memory refs rather than data
 }
 
 
@@ -111,7 +106,8 @@ cell tryGet(in uint index) { // used to fetch cells from the grid, returning a v
 cell[4] getNeighbours(in uint index) {
     cell[4] neighbours;
 
-    neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); //list of neighbours in clockwise order, starting with the one to the right
+    neighbours = cell[4](tryGet(index + 1),tryGet(index + gridx),tryGet(index - 1),tryGet(index - gridx)); 
+    //list of neighbours in clockwise order, starting with the one to the right
     if ((index % gridx) == 0) { //accounts for cells on the left edges,
         neighbours[2] = cell(0,0,0,0,0);
     } else if ((index + 1) % gridx == 0) {

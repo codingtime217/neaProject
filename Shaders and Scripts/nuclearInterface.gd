@@ -57,7 +57,6 @@ func dataSetup(initalData) -> void:
 	matDict = initalData[0][1]
 	matDictBytes = matDictToBytes(matDict)
 	inputBytes = makeBufferArray(initalData[1])
-	
 	workGroups = Vector3(width,height,1)
 	constantInts = [10,width,1]
 	constBytes.resize(16)
