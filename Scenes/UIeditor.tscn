@@ -1,6 +1,5 @@
-[gd_scene load_steps=10 format=3 uid="uid://ctt21mckv2qd3"]
+[gd_scene load_steps=9 format=3 uid="uid://ctt21mckv2qd3"]
 
-[ext_resource type="Script" uid="uid://cumi0nvxjnvst" path="res://Shaders and Scripts/matSelected.gd" id="1_ib31x"]
 [ext_resource type="Script" uid="uid://ncx5os7ugqts" path="res://Shaders and Scripts/linkSignals.gd" id="1_pla2u"]
 [ext_resource type="Texture2D" uid="uid://dda0e4llbxvcg" path="res://materials/water.tres" id="1_pmaai"]
 [ext_resource type="Texture2D" uid="uid://bp2f0nqlptst1" path="res://materials/uranium.tres" id="2_ib31x"]
@@ -79,7 +78,6 @@ item_2/text = "HeavyWater"
 item_2/icon = ExtResource("7_viqls")
 item_3/text = "Boron"
 item_3/icon = ExtResource("8_fllsd")
-script = ExtResource("1_ib31x")
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 2.0
