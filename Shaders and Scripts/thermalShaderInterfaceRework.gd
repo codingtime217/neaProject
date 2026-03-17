@@ -115,7 +115,8 @@ func _ready() -> void: #load the time scale buttons and connect them
 	buttonGroup.pressed.connect(changeTimeScale)
 	
 func freeRIDS() -> void:
-	#frees all the rids to prevent unneeded memeory usage
+	#this is run when the node leaves the tree
+	#frees RIDs to avoid memeory leaks
 	rd.free_rid(inBufferRID)
 	rd.free_rid(outBufferRID)
 	rd.free_rid(constRID)

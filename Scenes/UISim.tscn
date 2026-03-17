@@ -186,9 +186,10 @@ layout_mode = 2
 theme = ExtResource("1_tu31e")
 allow_search = false
 wraparound_items = false
-item_count = 2
+item_count = 3
 item_0/text = "Temperature"
 item_1/text = "Thermal Energy"
+item_2/text = "Material"
 
 [node name="CurrentSelected" type="FoldableContainer" parent="CanvasLayer"]
 anchors_preset = 2
