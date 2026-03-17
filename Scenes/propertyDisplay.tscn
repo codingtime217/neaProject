@@ -8,12 +8,12 @@ script = ExtResource("1_vmq37")
 
 [node name="propertyLabel" type="Label" parent="."]
 layout_mode = 2
-text = "Uranium 235"
+text = "Label Preview Text"
 
 [node name="propertyData" type="Label" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Uranium 235"
+text = "0.0"
 horizontal_alignment = 2
 
 [node name="TextureRect" type="TextureRect" parent="."]

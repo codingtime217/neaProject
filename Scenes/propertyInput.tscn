@@ -8,7 +8,7 @@ script = ExtResource("1_jr4nj")
 
 [node name="propertyLabel" type="Label" parent="."]
 layout_mode = 2
-text = "Uranium 235"
+text = "Label Preview Text"
 
 [node name="SpinBox" type="SpinBox" parent="."]
 layout_mode = 2

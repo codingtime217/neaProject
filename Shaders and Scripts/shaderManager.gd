@@ -25,13 +25,13 @@ func createUniform(type : RenderingDevice.UniformType, binding : int, buffer : R
 	return uniform #return the uniform
 
 func bindUnifromSet(rd : RenderingDevice, compileList, unifromSet : RID, setId : int) -> void:
-	rd.compute_list_bind_uniform_set(compileList,unifromSet,setId) #literally just does this one thing
+	rd.compute_list_bind_uniform_set(compileList,unifromSet,setId) #binds a uniform set
 
 func runShader(rd : RenderingDevice, pipeline : RID, uniformSets : Dictionary, workGroups : Vector3i ) -> void: #unifrom sets is a dictionary of {setID: unifromSet}
-	var compileList = rd.compute_list_begin()
-	rd.compute_list_bind_compute_pipeline(compileList, pipeline)
-	for i in uniformSets.keys():
+	var compileList = rd.compute_list_begin() #make a compue list
+	rd.compute_list_bind_compute_pipeline(compileList, pipeline) #bind the uniform set and pipeline together
+	for i in uniformSets.keys(): #bind the unifroms in the right order
 		bindUnifromSet(rd,compileList,uniformSets[i],i)
-	rd.compute_list_dispatch(compileList,workGroups.x,workGroups.y,workGroups.z)
-	rd.compute_list_end()
+	rd.compute_list_dispatch(compileList,workGroups.x,workGroups.y,workGroups.z) #dispatch the compute list and workgroups
+	rd.compute_list_end()#mark it as finished
 	

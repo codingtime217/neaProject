@@ -1,37 +1,39 @@
 extends Control
 
-
+#collection of properties predefine
 var parent : Node
 var label : String
 var value
 var mat : String
 var mode = "static"
 var texture : Texture2D
+#nodes inside the scene that will be interacted with
 @onready var labelBox = $propertyLabel
 @onready var valueBox = $propertyData
 @onready var textureBox = $TextureRect
-
+#units dicitonary
 const units :=  {"conductivity" : " (W/mK)", "specificHeatCap" : " (J/kgK)", "density" : " (kg/m^3)", "temperature" : "(K)","thermalCrossSection" : "(barns)","thermalNeutronFlux" : "/cm^2s","fastNeutronFlux" : "/cm^2s", "fissileDensity" : "m^-3"}
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if mode == "static":
+	if mode == "static": #if static then normal
 		parent = get_node("../..")
-		parent.connect("freeDisplays",queue_free)
+		parent.connect("freeDisplays",queue_free) #link so it can be removed
 		mat = parent.mat
 		if units.get(label,null) == null:
-			queue_free()#ths will allow some ineffeceint but easy stuff
-		labelBox.text = cleanup(label)
+			queue_free()#simplifies display creation by removing any with a property not in the units dictionary
+			
+		#set the text to display
+		labelBox.text = cleanup(label) 
 		valueBox.text = toExponentialNotation(str(value))
 	else:
+		#if the other kind then just label + texture
 		labelBox.text = cleanup(label)
 		valueBox.visible = false
 		textureBox.visible = true
 		textureBox.texture = texture
-	pass # Replace with function body.
 
 
-func toExponentialNotation(number : String) -> String:
+func toExponentialNotation(number : String) -> String: #converts a string number to exponential notation
 	var whole = number.split(".")[0]
 	var decimal
 	if len(number.split(".")) > 1:
@@ -49,7 +51,7 @@ func toExponentialNotation(number : String) -> String:
 		return number
 
 
-func cleanup(text : String) -> String:
+func cleanup(text : String) -> String: #cleans up the units by adding spaces and capitalising
 	var cleanedText = ""
 	var text2 = text.split("_")
 	for i in text2:
@@ -58,4 +60,4 @@ func cleanup(text : String) -> String:
 	if units.get(text) != null:
 		return cleanedText + units[text] +  ":"
 	else:
-		return toExponentialNotation(cleanedText)
+		return toExponentialNotation(cleanedText) #also expontiated it if its a number set
