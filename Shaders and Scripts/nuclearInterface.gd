@@ -84,7 +84,7 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 		newData.encode_u32(i*32,data[i][0])
 		var materialProp = materialDict[matDict[data[i][0]]]
 		if materialProp.get("control",false) == true:
-			newData.encode_float(i*32 + 4,materialProp.get("atomDensity") * controlRodInsertion)
+			newData.encode_float(i*32 + 4,materialProp.get("atomDensity") * (1-controlRodInsertion))
 		else:
 			newData.encode_float(i*32 + 4,data[i][1].get("fissileDensity",0))
 		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))

@@ -186,12 +186,9 @@ layout_mode = 2
 theme = ExtResource("1_tu31e")
 allow_search = false
 wraparound_items = false
-item_count = 5
+item_count = 2
 item_0/text = "Temperature"
-item_1/text = "Neutron Flux"
-item_2/text = "Thermal Energy"
-item_3/text = "Material"
-item_4/text = "Fission Events"
+item_1/text = "Thermal Energy"
 
 [node name="CurrentSelected" type="FoldableContainer" parent="CanvasLayer"]
 anchors_preset = 2
