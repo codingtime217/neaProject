@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://bvvaaa6p254pk" path="res://Shaders and Scripts/currentSelectedEditor.gd" id="4_56m11"]
 [ext_resource type="Theme" uid="uid://xd21ediqvmb5" path="res://UI Themes and Schemes/theme.tres" id="5_pla2u"]
 [ext_resource type="Texture2D" uid="uid://cqrc0k11botej" path="res://UI Themes and Schemes/U235Example.tres" id="6_rjp24"]
-[ext_resource type="Texture2D" uid="uid://d1ao22j16gw4x" path="res://materials/heavyWater.tres" id="7_viqls"]
+[ext_resource type="Texture2D" uid="uid://d1ao22j16gw4x" path="res://materials/heavywater.tres" id="7_viqls"]
 [ext_resource type="Texture2D" uid="uid://d1m7o1sfwmdjy" path="res://materials/boron.tres" id="8_fllsd"]
 
 [node name="UIEditor" type="Control"]

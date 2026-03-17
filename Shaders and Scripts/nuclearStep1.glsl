@@ -94,7 +94,7 @@ cell updateCell(in cell cell1,in uint noFissions) {
         cell1.thermalNeutronFlux = 0;
     }
     cell1.thermalEnergy += noFissions * celMat.deltaE;
-    cell1.fissileDensity -= timeStep * noFissions ;
+    cell1.fissileDensity -= timeStep * noFissions;
 
     
     return cell1;
@@ -129,7 +129,6 @@ void main() { // for each invoke
     cell newCell = copyCell(currentCell);
     noFissions = getNoFissions(newCell);
     newCell = updateCell(newCell,noFissions);
-    //newCell.thermalEnergy = noFissions;
     outBuffer.newGrid[currentIndex] = newCell; //write to output buffer
 }
 

@@ -49,7 +49,10 @@ func updateDataArray(newDataArray : Array): #this will follow the data format of
 	for i in range(0,len(newDataArray)):
 		for j in newDataArray[i][1].keys():
 			dataArray[i][1].erase("temperature")
+			dataArray[i][1].erase("enrichment")
 			dataArray[i][1][j] = newDataArray[i][1][j]
+			if j == "fissileDensity":
+				print(newDataArray[i][1]["fissileDensity"])
 	pass
 	
 	

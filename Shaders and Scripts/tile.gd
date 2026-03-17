@@ -74,7 +74,7 @@ func _update_properties(properties : Dictionary) -> void:
 	elif properties.get("temperature") != null:
 		temperature = properties.get("temperature")
 		thermalEnergy = temperature*mass*specificHeatCap
-	if properties.get("enrichment") != null:
+	if properties.get("enrichment") != null and materialsDict[compound].get("fissile",false) == true:
 		fissileDensity = atomDensity * (enrichment/100)
 		pass
 

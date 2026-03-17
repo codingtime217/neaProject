@@ -90,7 +90,6 @@ func makeBufferArray(data:Array) -> PackedByteArray:
 		newData.encode_double(i*32 + 8,data[i][1].get("fastNeutronFlux",0))
 		newData.encode_double(i*32 + 16,data[i][1].get("thermalNeutronFlux",0))
 		newData.encode_double(i*32 + 24,data[i][1].get("thermalEnergy",0))
-	#print(newData)
 	return newData
 	
 	

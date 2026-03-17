@@ -22,7 +22,7 @@ func _ready() -> void:
 		if units.get(label,null) == null:
 			queue_free()#ths will allow some ineffeceint but easy stuff
 		labelBox.text = cleanup(label)
-		valueBox.text = str(value)
+		valueBox.text = toExponentialNotation(str(value))
 	else:
 		labelBox.text = cleanup(label)
 		valueBox.visible = false
@@ -31,18 +31,19 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-func toExponentialNotation(number : String):
+func toExponentialNotation(number : String) -> String:
 	var whole = number.split(".")[0]
 	var decimal
 	if len(number.split(".")) > 1:
 		decimal = number.split(".")
-	if len(whole) >= 1:
+	if len(whole) >= 3:
 		@warning_ignore("integer_division")
-		whole = str(roundi(int(whole)*100)/100) + "10^" + str(len(whole) -1)
+		whole = whole[0]+whole[1]+whole[2] + "*10^" + str(len(whole)-3)
 		return whole
 	elif len(decimal) > 1:
+		decimal = str(decimal)
 		var noZeros = decimal.count("0",0,-1)
-		decimal = str(int(decimal) / (10**(len(decimal)-noZeros))) + "10^-" + noZeros 
+		decimal = str(int(decimal) / (10**(len(decimal)-noZeros))) + "10^-" + str(noZeros) 
 		return decimal
 	else:
 		return number

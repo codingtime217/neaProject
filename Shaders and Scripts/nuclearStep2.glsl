@@ -57,15 +57,15 @@ outBuffer;
 
 
 cell updateCell(in cell cell1, in cell[4] neightbour) {
-    cell1.fastNeutronFlux = cell1.fastNeutronFlux * 0.9;
-    cell1.thermalNeutronFlux = cell1.thermalNeutronFlux * 0.9;
+    cell1.fastNeutronFlux = cell1.fastNeutronFlux * 0.6;
+    cell1.thermalNeutronFlux = cell1.thermalNeutronFlux * 0.6;
     for(int i = 0; i < 4; i++) {
         cell consideringNeighbour = neightbour[i];
         if (consideringNeighbour.thermalNeutronFlux == 0 || consideringNeighbour.fastNeutronFlux == 0) {
             continue;
         };
-        cell1.thermalNeutronFlux += int(consideringNeighbour.thermalNeutronFlux / 4);
-        cell1.fastNeutronFlux += int(consideringNeighbour.fastNeutronFlux / 4);
+        cell1.thermalNeutronFlux += int(consideringNeighbour.thermalNeutronFlux * 0.1);
+        cell1.fastNeutronFlux += int(consideringNeighbour.fastNeutronFlux *0.1);
     };  
     
     material celMat = materialArray[cell1.materialIndex];
