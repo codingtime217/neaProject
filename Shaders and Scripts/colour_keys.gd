@@ -30,7 +30,7 @@ func toExponentialNotation(number : String): #used to convert a number string in
 	if len(whole) > 1: #if its >1 then display as whole number
 		whole = str(roundf(int(whole)*100)/(10**(len(whole)+1))) + "*10^" + str(len(whole) -1)
 		return whole
-	elif len(decimal) > 1: #otherwise decimal
+	if decimal != null and len(decimal) > 1: #otherwise decimal
 		var noZeros = decimal.count("0",0,-1)
 		decimal = str(int(decimal) / (10**(len(decimal)-noZeros))) + "10^-" + noZeros 
 		return decimal
